@@ -1,0 +1,262 @@
+module Base
+{
+    sound EHRCough
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_cough_male.ogg,
+            distanceMax = 30,
+        }
+    }
+
+    sound EHRCoughMale
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_cough_male.ogg,
+            distanceMax = 30,
+        }
+    }
+
+    sound EHRCoughFemale
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_cough_female.ogg,
+            distanceMax = 30,
+        }
+    }
+
+    sound EHRCoughSevere
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_cough_severe_male.ogg,
+            distanceMax = 45,
+        }
+    }
+
+    sound EHRCoughSevereMale
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_cough_severe_male.ogg,
+            distanceMax = 45,
+        }
+    }
+
+    sound EHRCoughSevereFemale
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_cough_severe_female.ogg,
+            distanceMax = 45,
+        }
+    }
+
+    sound EHRSneeze
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_sneeze_male.ogg,
+            distanceMax = 25,
+        }
+    }
+
+    sound EHRSneezeMale
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_sneeze_male.ogg,
+            distanceMax = 25,
+        }
+    }
+
+    sound EHRSneezeFemale
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_sneeze_female.ogg,
+            distanceMax = 25,
+        }
+    }
+
+    sound EHRDeliriumAliensSound
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_AliensSound.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumBigBell
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_BigBell.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumCantSleepVoices
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_CantGoingToSleepVoices.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumChicken
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_Chiken.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumClownBackground
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_ClownBackground.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumClownJingle
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_ClownJingle.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumClownLaugh
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_ClownLaugh.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumComicLaugh
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_ComicLaugh.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumCreepyLaugh
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_CreepyLaugh.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumCreepyVoicesWhisper
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_CreepyVoicsesWhisper.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumDevilishVoice
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_DevilishVoice.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumHideClownSound
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_HideClownSound.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumSchoolBell
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_SchoolBell.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumStrangeWhispers
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_StrangeWhispers.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumTheyKnowNothingVoices
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_TheyKnowNothingVoices.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumWhisperVoicesA
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_WhisperVoicesA.ogg,
+            distanceMax = 18,
+        }
+    }
+
+    sound EHRDeliriumWhisperVoicesB
+    {
+        category = Player,
+        clip
+        {
+            file = media/sound/ehr_WhisperVoicesB.ogg,
+            distanceMax = 18,
+        }
+    }
+}

@@ -1,0 +1,326 @@
+module ExtensiveHealth
+{
+    /** =========================================
+        DISEASE INFORMATION FLYERS
+        Reading a flyer unlocks disease identification
+        and grants First Aid XP.
+        B42 format: ItemType = base:literature
+    ========================================= **/
+
+    item DiseaseFlyer_CommonCold
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Common Cold,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_CommonCold,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 5,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+
+    item DiseaseFlyer_Pneumonia
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Pneumonia,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Pneumonia,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 12,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_FoodPoisoning
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Food Poisoning,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_FoodPoisoning,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 6,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_Hypothermia
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Hypothermia,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Hypothermia,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 8,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_HeatExhaustion
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Heat Exhaustion,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_HeatExhaustion,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 7,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_Sepsis
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Sepsis,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Sepsis,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 15,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_CorpseSickness
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Corpse Exposure Illness,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_CorpseSickness,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 10,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+
+    item DiseaseFlyer_Gastroenteritis
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Gastroenteritis,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Gastroenteritis,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 8,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_Dysentery
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Dysentery,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Dysentery,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 10,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_Trichinosis
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Trichinosis,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Trichinosis,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 12,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_HyperkeratoticScabies
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Hyperkeratotic Scabies,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_HyperkeratoticScabies,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 14,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_ToxinPoisoning
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Toxin Poisoning,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_ToxinPoisoning,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 10,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_HeatStroke
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Heat Stroke,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_HeatStroke,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 10,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_CadavericAspergillosis
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Cadaveric Aspergillosis,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_CadavericAspergillosis,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 14,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_Tetanus
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Tetanus,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Tetanus,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 14,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_WoundInfection
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Wound Infection,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_WoundInfection,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 9,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_Cellulitis
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Cellulitis,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_Cellulitis,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 10,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_AHTR
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: AHTR,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_AHTR,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 16,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    item DiseaseFlyer_BloodType
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Medical Information: Blood Types,
+        Weight = 0.1,
+        Icon = DiseaseFlyer_BloodType,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 12,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    /** =========================================
+        EHR MEDICINE RECIPES
+    ========================================= **/
+
+    item EhrRecipePlantBasedAntibiotics
+    {
+        DisplayCategory = RecipeResource,
+        ItemType = base:literature,
+        DisplayName = Recipe: Plant-Based Antibiotics,
+        Weight = 0.1,
+        Icon = EhrRecipePlantBasedAntibiotics,
+        Tooltip = Tooltip_EhrRecipePlantBasedAntibiotics,
+        LearnedRecipes = MakePlantBasedAntibiotics,
+        WorldStaticModel = Magazine,
+        NumberOfPages = 12,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+    item EhrRecipeUltimateCraftGuide
+    {
+        DisplayCategory = RecipeResource,
+        ItemType = base:literature,
+        DisplayName = Recipe: EHR Medicine Crafting Guide,
+        Weight = 0.2,
+        Icon = EhrRecipeUltimateCraftGuide,
+        Tooltip = Tooltip_EhrRecipeUltimateCraftGuide,
+        LearnedRecipes = MakePlantBasedAntibiotics;MakeHomemadeActivatedCharcoal;MakeHomemadeAntisepticCream;MakeHomemadeAntibioticOintment;MakeHomemadeTopicalPermethrin;MakeHomemadeCoughSyrup;MakeHomemadeMuscleRelaxant;MakeHomemadePainkillers;MakeHomemadeSleepingPills;MakeCommonColdTea;MakeAntipyreticTea;MakeRelaxantTea;MakeSpiderwebBandage;MakeHoneyFromHoneycomb;MakeSutureNeedleFromSpiderweb;PrepareTallowMixture;StrainRenderedTallow;MakeHomemadeSyringes;CutPlasticStripsSmall;CutPlasticStripsBottle;CutPlasticStripsLarge;CutPlasticStripsHeavy;PrepareHomemadeBloodBag;MakeHomemadeIVKit,
+        WorldStaticModel = Magazine,
+        NumberOfPages = 24,
+        BoredomChange = -15,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+    item MedicalWildPlants
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Medical Guide: Wild Medicinal Plants,
+        Weight = 0.1,
+        Icon = MedicalWildPlants,
+        Tooltip = Tooltip_MedicalWildPlants,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 12,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+}

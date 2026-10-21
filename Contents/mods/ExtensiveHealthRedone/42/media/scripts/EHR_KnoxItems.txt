@@ -1,0 +1,50 @@
+module ExtensiveHealth
+{
+    /** =========================================
+        KNOX INFECTION TREATMENT
+        Experimental treatments for the Knox Virus
+        Ultra-rare military/research items
+    ========================================= **/
+
+    item GeneTherapyKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Gene Therapy Injector,
+        Icon = GeneTherapyInjector,
+        Weight = 0.3,
+        Medical = true,
+    }
+
+    item PhalanxPills
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Phalanx Suppressant Pills,
+        Icon = PillsCaffeine,
+        Weight = 0.1,
+        UseDelta = 0.3333,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntibodyTestKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Antibody Compatibility Test,
+        Icon = AntibodyCompTest,
+        Weight = 0.2,
+        Medical = true,
+    }
+
+    item ImmunoboosterShot
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Immunobooster Shot,
+        Icon = ImmunoboosterShot,
+        Weight = 0.1,
+        Medical = true,
+    }
+}

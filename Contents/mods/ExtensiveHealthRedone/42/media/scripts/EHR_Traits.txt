@@ -1,0 +1,22 @@
+module ExtensiveHealth
+{
+    character_trait_definition ExtensiveHealth:patientzero
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:patientzero,
+        Cost = 20,
+        UIName = UI_trait_EHR_PatientZero,
+        UIDescription = UI_trait_EHR_PatientZeroDesc,
+    }
+
+    character_trait_definition ExtensiveHealth:scalpelmaster
+    {
+        IsProfessionTrait = true,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:scalpelmaster,
+        Cost = 0,
+        UIName = UI_trait_EHR_ScalpelMaster,
+        UIDescription = UI_trait_EHR_ScalpelMasterDesc,
+    }
+}

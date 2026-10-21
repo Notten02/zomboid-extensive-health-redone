@@ -1,0 +1,141 @@
+module ExtensiveHealth
+{
+    craftRecipe MakeHomemadeSyringes
+    {
+        timedAction = Making,
+        time = 180,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 5 [Base.Pen;Base.BluePen;Base.RedPen;Base.PenFancy;Base.PenMultiColor;Base.PenSpiffo] flags[ItemCount],
+            item 5 [Base.Needle;Base.Needle_Bone;Base.Needle_Brass;Base.Needle_Forged;Base.SutureNeedle] flags[ItemCount],
+            item 1 [Base.File] mode:keep,
+            item 1 [Base.Razor] mode:keep,
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+            item 1 [Base.DuctTape;Base.Scotchtape],
+            item 1 [Base.Glue;Base.Epoxy],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeSyringe,
+        }
+    }
+
+    /* Explicit size groups give deterministic output and exclude glass,
+       electronics, furniture and occupied containers from recycling. */
+    craftRecipe CutPlasticStripsSmall
+    {
+        timedAction = Making,
+        time = 30,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+            item 1 [Base.PlasticCup;Base.PlasticFork;Base.PlasticKnife;Base.PlasticSpoon] flags[IsEmpty;ItemCount],
+        }
+        outputs
+        {
+            item 2 ExtensiveHealth.PlasticStrips,
+        }
+    }
+
+    craftRecipe CutPlasticStripsBottle
+    {
+        timedAction = Making,
+        time = 40,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+            item 1 [Base.WaterBottle;Base.Bleach;Base.CleaningLiquid2;Base.FeedingBottle;Base.Sportsbottle] flags[IsEmpty;ItemCount],
+        }
+        outputs
+        {
+            item 3 ExtensiveHealth.PlasticStrips,
+        }
+    }
+
+    craftRecipe CutPlasticStripsLarge
+    {
+        timedAction = Making,
+        time = 50,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+            item 1 [Base.PopBottle;Base.PopBottleRare;Base.PlasticTray] flags[IsEmpty;ItemCount],
+        }
+        outputs
+        {
+            item 4 ExtensiveHealth.PlasticStrips,
+        }
+    }
+
+    craftRecipe CutPlasticStripsHeavy
+    {
+        timedAction = Making,
+        time = 60,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+            item 1 [Base.CuttingBoardPlastic;Base.WaterDispenserBottle] flags[IsEmpty;ItemCount],
+        }
+        outputs
+        {
+            item 5 ExtensiveHealth.PlasticStrips,
+        }
+    }
+
+    craftRecipe PrepareHomemadeBloodBag
+    {
+        timedAction = Making,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 1 [Base.BakingTray;Base.BakingPan] mode:keep,
+            item 10 [ExtensiveHealth.PlasticStrips] flags[ItemCount],
+            item 1 [Base.RubberHose] flags[ItemCount],
+            item 1 [ExtensiveHealth.Syringe;ExtensiveHealth.HomemadeSyringe],
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.PreparedHomemadeBloodBag,
+        }
+    }
+
+    craftRecipe MakeHomemadeIVKit
+    {
+        timedAction = Making,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        inputs
+        {
+            item 3 [ExtensiveHealth.Syringe;ExtensiveHealth.HomemadeSyringe],
+            item 2 [Base.RubberHose] flags[ItemCount],
+            item 1 [Base.Razor] mode:keep,
+            item 1 tags[base:scissors;base:sharpknife;base:dullknife] mode:keep,
+            item 1 [Base.PopBottle;Base.PopBottleRare;Base.WaterBottle;Base.Bleach;Base.CleaningLiquid2;Base.FeedingBottle;Base.Sportsbottle;Base.WaterDispenserBottle] flags[IsEmpty;ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeIVKit,
+        }
+    }
+}

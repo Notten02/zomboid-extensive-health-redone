@@ -1,0 +1,48 @@
+module ExtensiveHealth
+{
+    /** =========================================
+        MEDICAL MONITOR WATCH
+        Digital watch with EHR blood-volume sensor access.
+        Uses vanilla red digital watch clothing/world models.
+    ========================================= **/
+
+    item EHRMedicalWatch_Right
+    {
+        DisplayCategory = Accessory,
+        ItemType = base:alarmclockclothing,
+        DisplayName = Medical Monitor Watch,
+        Weight = 0.1,
+        Icon = EhrWatch,
+        AlarmSound = WatchAlarmLoop,
+        BodyLocation = base:rightwrist,
+        ClothingExtraSubmenu = RightWrist,
+        ClothingItem = WristWatch_Right_DigitalRed,
+        ClothingItemExtra = ExtensiveHealth.EHRMedicalWatch_Left,
+        ClothingItemExtraOption = LeftWrist,
+        Cosmetic = true,
+        MetalValue = 3.0,
+        SoundRadius = 7,
+        WorldStaticModel = DigitalWatchRed,
+        Tags = base:digital;base:hasmetal;base:morewhennozombies,
+    }
+
+    item EHRMedicalWatch_Left
+    {
+        DisplayCategory = Accessory,
+        ItemType = base:alarmclockclothing,
+        DisplayName = Medical Monitor Watch,
+        Weight = 0.1,
+        Icon = EhrWatch,
+        AlarmSound = WatchAlarmLoop,
+        BodyLocation = base:leftwrist,
+        ClothingExtraSubmenu = LeftWrist,
+        ClothingItem = WristWatch_Left_DigitalRed,
+        ClothingItemExtra = ExtensiveHealth.EHRMedicalWatch_Right,
+        ClothingItemExtraOption = RightWrist,
+        Cosmetic = true,
+        MetalValue = 3.0,
+        SoundRadius = 7,
+        WorldStaticModel = DigitalWatchRed,
+        Tags = base:digital;base:hasmetal;base:morewhennozombies,
+    }
+}

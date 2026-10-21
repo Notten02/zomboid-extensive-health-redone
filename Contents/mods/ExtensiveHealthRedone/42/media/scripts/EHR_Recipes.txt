@@ -1,0 +1,479 @@
+module ExtensiveHealth
+{
+    /* The 17 medicine and material recipes (v0.9), auto-learned at First Aid 6 plus Foraging 4. Changes from v0.9:
+       the fresh-herb OnTest is our own global (Game/RecipeCode.lua); Permethrin takes 0.1 L of alcohol from any
+       container instead of a whole wipes pack or a possibly empty Disinfectant bottle; tea mugs must be empty;
+       honey needs a whole honeycomb. The clean bandage pack recipes follow at the end. */
+    craftRecipe MakePlantBasedAntibiotics
+    {
+        timedAction = MixingMortarPestle,
+        time = 180,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 1 [Base.Garlic;Base.WildGarlic2] flags[ItemCount],
+            item 1 [Base.Oregano] flags[ItemCount],
+            item 1 [Base.Thyme] flags[ItemCount],
+            item 1 [Base.Lavender] flags[ItemCount],
+            item 1 [Base.GingerRoot] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.PlantBasedAntibiotics,
+        }
+    }
+
+    craftRecipe MakeHomemadeActivatedCharcoal
+    {
+        timedAction = MixingMortarPestle,
+        time = 120,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 1 [Base.Charcoal],
+            item 1 [Base.Lemon] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomeMadeActivatedCharcoal,
+        }
+    }
+
+    craftRecipe MakeHomemadeAntisepticCream
+    {
+        timedAction = MixingMortarPestle,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 1 [ExtensiveHealth.Tallow;Base.Lard] flags[ItemCount],
+            item 1 [Base.Honey] flags[ItemCount],
+            item 1 [Base.Garlic;Base.WildGarlic2] flags[ItemCount],
+            item 3 [Base.Plantain] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeAntisepticCream,
+        }
+    }
+
+    craftRecipe MakeHomemadeAntibioticOintment
+    {
+        timedAction = MixingMortarPestle,
+        time = 180,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 1 [ExtensiveHealth.Tallow;Base.Lard] flags[ItemCount],
+            item 1 [Base.Honey] flags[ItemCount],
+            item 1 [Base.Lavender] flags[ItemCount],
+            item 3 [Base.Garlic;Base.WildGarlic2] flags[ItemCount],
+            item 2 [Base.Plantain] flags[ItemCount],
+            item 3 [Base.Comfrey] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeAntibioticOintment,
+        }
+    }
+
+    craftRecipe MakeHomemadeTopicalPermethrin
+    {
+        timedAction = MixingMortarPestle,
+        time = 180,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 4 [Base.Marigold] flags[ItemCount],
+            /* vanilla DisinfectRag pattern */
+            item 1 [*],
+            -fluid 0.1 [RubbingAlcohol;Vodka;Whiskey],
+            item 1 [Base.Garlic;Base.WildGarlic2] flags[ItemCount],
+            item 1 [Base.Honey] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeTopicalPermethrin,
+        }
+    }
+
+    craftRecipe MakeHomemadeCoughSyrup
+    {
+        timedAction = MixingMortarPestle,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 1 [Base.PopBottle;Base.PopBottleRare;Base.WaterBottle] flags[IsEmpty;ItemCount],
+            item 1 [*],
+            -fluid 0.5 categories[Water] mode:mixture,
+            item 1 [Base.Honey] flags[ItemCount],
+            item 2 [Base.CommonMallow] flags[ItemCount],
+            item 1 [Base.Chamomile] flags[ItemCount],
+            item 1 [Base.BerryBlack;Base.BerryBlue;Base.BerryGeneric1;Base.BerryGeneric2;Base.BerryGeneric3;Base.BerryGeneric4;Base.BerryGeneric5] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeCoughSyrup,
+        }
+    }
+
+    craftRecipe MakeHomemadeMuscleRelaxant
+    {
+        timedAction = MixingMortarPestle,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 2 [Base.BlackSage] flags[ItemCount],
+            item 1 [Base.Chamomile] flags[ItemCount],
+            item 1 [Base.Comfrey] flags[ItemCount],
+            item 1 [Base.Honey] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeMuscleRelaxant,
+        }
+    }
+
+    craftRecipe MakeHomemadePainkillers
+    {
+        timedAction = MixingMortarPestle,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 5 [Base.BlackSage] flags[ItemCount],
+            item 3 [Base.Chamomile] flags[ItemCount],
+            item 1 [Base.LemonGrass] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadePainkillers,
+        }
+    }
+
+    craftRecipe MakeHomemadeSleepingPills
+    {
+        timedAction = MixingMortarPestle,
+        time = 150,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 3 [Base.Chamomile] flags[ItemCount],
+            item 1 [Base.BlackSage] flags[ItemCount],
+            item 1 [Base.Honey] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.HomemadeSleepingPills,
+        }
+    }
+
+    craftRecipe MakeCommonColdTea
+    {
+        timedAction = MixingBowl,
+        time = 90,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 [Base.Mugl;Base.MugWhite;Base.MugSpiffo;Base.Teacup;Base.CeramicTeacup] flags[IsEmpty;ItemCount],
+            item 1 [*],
+            -fluid 0.3 categories[Water] mode:mixture,
+            item 1 [Base.GingerRoot] flags[ItemCount],
+            item 2 [Base.Chamomile] flags[ItemCount],
+            item 3 [Base.BerryBlack;Base.BerryBlue;Base.BerryGeneric1;Base.BerryGeneric2;Base.BerryGeneric3;Base.BerryGeneric4;Base.BerryGeneric5] flags[ItemCount],
+            item 1 [Base.Honey] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.CommonColdTea,
+        }
+    }
+
+    craftRecipe MakeAntipyreticTea
+    {
+        timedAction = MixingBowl,
+        time = 90,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 [Base.Mugl;Base.MugWhite;Base.MugSpiffo;Base.Teacup;Base.CeramicTeacup] flags[IsEmpty;ItemCount],
+            item 1 [*],
+            -fluid 0.3 categories[Water] mode:mixture,
+            item 2 [Base.LemonGrass] flags[ItemCount],
+            item 1 [Base.Chamomile] flags[ItemCount],
+            item 2 [Base.Thyme] flags[ItemCount],
+            item 1 [Base.Lavender] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.AntipyreticTea,
+        }
+    }
+
+    craftRecipe MakeRelaxantTea
+    {
+        timedAction = MixingMortarPestle,
+        time = 120,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        OnTest = EHRRecipeCode.FreshMedicinalIngredients,
+        inputs
+        {
+            item 1 tags[base:mortarpestle] mode:keep,
+            item 1 [Base.Mugl;Base.MugWhite;Base.MugSpiffo;Base.Teacup;Base.CeramicTeacup] flags[IsEmpty;ItemCount],
+            item 1 [*],
+            -fluid 0.3 categories[Water] mode:mixture,
+            item 2 [Base.Chamomile] flags[ItemCount],
+            item 3 [Base.Lavender] flags[ItemCount],
+            item 1 [Base.CommonMallow] flags[ItemCount],
+            item 1 [Base.BerryBlack;Base.BerryBlue;Base.BerryGeneric1;Base.BerryGeneric2;Base.BerryGeneric3;Base.BerryGeneric4;Base.BerryGeneric5] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.RelaxantTea,
+        }
+    }
+
+    craftRecipe MakeSpiderwebBandage
+    {
+        timedAction = Making,
+        time = 90,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        inputs
+        {
+            item 15 [ExtensiveHealth.Spiderweb],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.SpiderwebBandage,
+        }
+    }
+
+    craftRecipe MakeHoneyFromHoneycomb
+    {
+        timedAction = Making,
+        time = 60,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        inputs
+        {
+            item 1 [Base.HammerStone;Base.WoodenMallet;Base.MortarPestle;Base.CeramicMortarandPestle] mode:keep,
+            item 1 [ExtensiveHealth.Honeycomb] flags[ItemCount;IsWholeFoodItem],
+        }
+        outputs
+        {
+            item 1 Base.Honey,
+        }
+    }
+
+    craftRecipe MakeSutureNeedleFromSpiderweb
+    {
+        timedAction = Making,
+        time = 60,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        inputs
+        {
+            item 5 [ExtensiveHealth.Spiderweb],
+            item 1 tags[base:sewingneedle],
+        }
+        outputs
+        {
+            item 1 Base.SutureNeedle,
+        }
+    }
+
+    craftRecipe PrepareTallowMixture
+    {
+        timedAction = MixingBowl,
+        time = 180,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        inputs
+        {
+            item 1 [Base.Pot;Base.PotForged;Base.Saucepan;Base.SaucepanCopper] mode:keep flags[ItemCount],
+            -fluid 0.6 categories[Water] mode:mixture,
+            item 1 [Base.Beef;Base.MuttonChop] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.PreparedTallowMixture,
+        }
+    }
+
+    craftRecipe StrainRenderedTallow
+    {
+        timedAction = Making,
+        time = 120,
+        NeedToBeLearn = true,
+        Tags = AnySurfaceCraft;Health,
+        category = EHRMedicine,
+        AutoLearnAll = Doctor:6;PlantScavenging:4,
+        inputs
+        {
+            item 1 [ExtensiveHealth.RenderedTallowMixture] flags[ItemCount],
+            item 1 [Base.RippedSheets] flags[ItemCount],
+            item 1 [Base.TinCanEmpty;Base.EmptyJar;Base.JarCrafted] flags[ItemCount],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.Tallow,
+        }
+    }
+
+    /* Clean bandage pack (ExtensiveHealth.SterilizedBandages, 5 uses = 5 bandages), modelled on vanilla's cigarette
+       pack recipes. Not learned. The engine runs them on the authority and syncs the items; Lua only sets the counts
+       the script can't express (Game/RecipeCode.lua). Applying a bandage straight from the pack stays
+       unsupported (W24): take one out (double-click the pack) and use the vanilla Health tab. */
+    craftRecipe EHRTakeBandageFromPack
+    {
+        timedAction = UnPackBox_Small,
+        time = 15,
+        NeedToBeLearn = false,
+        Tags = InHandCraft;CanBeDoneInDark,
+        category = Medical,
+        inputs
+        {
+            item 1 [ExtensiveHealth.SterilizedBandages] flags[AllowFavorite;InheritFavorite],
+        }
+        outputs
+        {
+            item 1 Base.Bandage,
+        }
+    }
+
+    craftRecipe EHRUnpackBandagePack
+    {
+        timedAction = UnPackBox_Small,
+        time = 25,
+        NeedToBeLearn = false,
+        Tags = InHandCraft;CanBeDoneInDark,
+        category = Medical,
+        inputs
+        {
+            item 1 [ExtensiveHealth.SterilizedBandages] mode:destroy flags[IsFull;AllowFavorite;InheritFavorite],
+        }
+        outputs
+        {
+            item 5 Base.Bandage,
+        }
+    }
+
+    craftRecipe EHRPackBandages
+    {
+        timedAction = PackingBox_Small,
+        time = 25,
+        NeedToBeLearn = false,
+        Tags = InHandCraft;CanBeDoneInDark,
+        category = Medical,
+        inputs
+        {
+            item 5 [Base.Bandage] flags[AllowFavorite;InheritFavorite],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.SterilizedBandages,
+        }
+    }
+
+    craftRecipe EHRAddBandageToPack
+    {
+        timedAction = PackingBox_Small,
+        time = 15,
+        NeedToBeLearn = false,
+        OnCreate = EHRRecipeCode.AddBandageToPack,
+        Tags = InHandCraft;CanBeDoneInDark,
+        category = Medical,
+        inputs
+        {
+            item 1 [Base.Bandage] flags[AllowFavorite;InheritFavorite],
+            item 1 [ExtensiveHealth.SterilizedBandages] mode:keep flags[NotFull;AllowFavorite;InheritFavorite],
+        }
+        outputs
+        {
+        }
+    }
+
+    craftRecipe EHRStartBandagePack
+    {
+        timedAction = PackingBox_Small,
+        time = 15,
+        NeedToBeLearn = false,
+        OnCreate = EHRRecipeCode.StartBandagePack,
+        Tags = InHandCraft;CanBeDoneInDark,
+        category = Medical,
+        inputs
+        {
+            item 1 [Base.Bandage] flags[AllowFavorite;InheritFavorite],
+        }
+        outputs
+        {
+            item 1 ExtensiveHealth.SterilizedBandages,
+        }
+    }
+}

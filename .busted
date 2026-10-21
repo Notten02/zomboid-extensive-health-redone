@@ -1,0 +1,10 @@
+-- busted config. Run through tools/test.sh, which starts busted under Lua 5.1.
+local mod = "Contents/mods/ExtensiveHealthRedone/42/media/lua/"
+return {
+    default = {
+        ROOT = { "tests" },
+        pattern = "_spec",
+        lpath = mod .. "shared/?.lua;" .. mod .. "shared/?/init.lua;tests/?.lua;tools/lib/?.lua",
+        verbose = true,
+    },
+}

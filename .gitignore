@@ -1,0 +1,16 @@
+# Downloaded dev dependencies (tools/fetch-umbrella.sh)
+.cache/
+
+# Test and coverage output
+luacov.*.out
+*.log
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Leftovers that must never ship
+*.bak

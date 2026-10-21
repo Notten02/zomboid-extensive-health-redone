@@ -1,0 +1,26 @@
+module ExtensiveHealth
+{
+    model EHR_MedicineStorageBox
+    {
+        mesh = EHR/MedicineStorageBox,
+        texture = MedicineStorageBox,
+    }
+
+    item MedicineStorageBox
+    {
+        DisplayCategory = Container,
+        ItemType = base:container,
+        Weight = 1.0,
+        Icon = MedicalStorageBox,
+        CanHaveHoles = false,
+        Capacity = 5,
+        WeightReduction = 50,
+        Medical = true,
+        CloseSound = CloseFirstAidKitCamping,
+        OpenSound = OpenFirstAidKitCamping,
+        PutInSound = StoreItemFirstAidKitCamping,
+        WorldStaticModel = EHR_MedicineStorageBox,
+        MaxItemSize = 2.0,
+        Tags = base:neverempty;base:bagsfillexception;base:alwayshasstuff,
+    }
+}

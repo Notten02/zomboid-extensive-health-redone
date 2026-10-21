@@ -1,0 +1,182 @@
+-- LuaLS's bundled luassert definitions omit the optional failure-message argument.
+---@diagnostic disable: redundant-parameter
+local StateStore = require("ExtensiveHealthRedone/Core/StateStore")
+local Sync = require("ExtensiveHealthRedone/Core/Sync")
+
+local SECTIONS = { "identity", "blood", "diseases" }
+
+local function newState()
+    return { identity = { bloodType = "A+" }, blood = { volume = 5000 }, diseases = {} }
+end
+
+describe("StateStore", function()
+    it("sends nothing until a section is marked dirty", function()
+        local store = StateStore.new(SECTIONS, "e1")
+        store:attach("p1", newState())
+        assert.is_nil(store:takeDelta("p1"))
+    end)
+
+    it("sends only dirty sections, bumps their revision, then clears the flags", function()
+        local store = StateStore.new(SECTIONS, "e1")
+        local state = newState()
+        store:attach("p1", state)
+        state.blood.volume = 4500
+        store:markDirty("p1", "blood")
+        local msg = store:takeDelta("p1")
+        assert.same({ "blood" }, (function()
+            local names = {}
+            for name in pairs(msg.sections) do names[#names + 1] = name end
+            return names
+        end)())
+        assert.equal(2, msg.sections.blood.rev)
+        assert.equal(4500, msg.sections.blood.data.volume)
+        assert.is_false(msg.full)
+        assert.equal("p1", msg.owner)
+        assert.equal("e1", msg.epoch)
+        assert.is_nil(store:takeDelta("p1"))
+        assert.equal(1, store:revision("p1", "identity"))
+    end)
+
+    it("lists the players with pending changes until they are taken or detached", function()
+        local store = StateStore.new(SECTIONS, "e1")
+        store:attach("p1", newState())
+        store:attach("p2", newState())
+        store:attach("p3", newState())
+        assert.same({}, store:dirtyKeys())
+        store:markDirty("p3", "blood")
+        store:markDirty("p1", "diseases")
+        assert.same({ "p1", "p3" }, store:dirtyKeys())
+        store:takeDelta("p1")
+        store:detach("p3")
+        assert.same({}, store:dirtyKeys())
+    end)
+
+    it("copies section data, so later changes don't leak into a sent message", function()
+        local store = StateStore.new(SECTIONS, "e1")
+        local state = newState()
+        store:attach("p1", state)
+        store:markDirty("p1", "blood")
+        local msg = store:takeDelta("p1")
+        state.blood.volume = 1
+        assert.equal(5000, msg.sections.blood.data.volume)
+    end)
+
+    it("snapshots every section without clearing pending changes", function()
+        local store = StateStore.new(SECTIONS, "e1")
+        store:attach("p1", newState())
+        store:markDirty("p1", "diseases")
+        local snap = store:snapshot("p1")
+        assert.is_true(snap.full)
+        assert.truthy(snap.sections.identity and snap.sections.blood and snap.sections.diseases)
+        assert.truthy(store:takeDelta("p1"))
+    end)
+
+    it("rejects unknown sections and unattached players", function()
+        local store = StateStore.new(SECTIONS, "e1")
+        store:attach("p1", newState())
+        assert.has_error(function() store:markDirty("p1", "nope") end)
+        assert.has_error(function() store:markDirty("p2", "blood") end)
+        store:detach("p1")
+        assert.is_false(store:has("p1"))
+    end)
+end)
+
+describe("Sync mirror", function()
+    local function setup()
+        local store = StateStore.new(SECTIONS, "e1")
+        local state = newState()
+        store:attach("p1", state)
+        return store, state, Sync.newMirror()
+    end
+
+    it("asks for a hello before it has a snapshot", function()
+        local store, state, mirror = setup()
+        state.blood.volume = 4000
+        store:markDirty("p1", "blood")
+        local changed, status = mirror:apply(Sync.encode(store:takeDelta("p1")))
+        assert.equal("needHello", status)
+        assert.same({}, changed)
+    end)
+
+    it("follows a snapshot with deltas", function()
+        local store, state, mirror = setup()
+        local changed, status = mirror:apply(Sync.encode(store:snapshot("p1")))
+        assert.equal("ok", status)
+        assert.same({ "blood", "diseases", "identity" }, changed)
+        state.blood.volume = 3000
+        store:markDirty("p1", "blood")
+        changed = mirror:apply(Sync.encode(store:takeDelta("p1")))
+        assert.same({ "blood" }, changed)
+        assert.equal(3000, mirror:section("p1", "blood").volume)
+        assert.equal("A+", mirror:section("p1", "identity").bloodType)
+    end)
+
+    it("ignores a delta older than what it has", function()
+        local store, state, mirror = setup()
+        mirror:apply(Sync.encode(store:snapshot("p1")))
+        store:markDirty("p1", "blood")
+        local old = Sync.encode(store:takeDelta("p1"))
+        state.blood.volume = 100
+        store:markDirty("p1", "blood")
+        mirror:apply(Sync.encode(store:takeDelta("p1")))
+        local changed = mirror:apply(old)
+        assert.same({}, changed)
+        assert.equal(100, mirror:section("p1", "blood").volume)
+    end)
+
+    it("starts over when the server epoch changes (server restart)", function()
+        local store, _, mirror = setup()
+        mirror:apply(Sync.encode(store:snapshot("p1")))
+        local restarted = StateStore.new(SECTIONS, "e2")
+        local state2 = newState()
+        restarted:attach("p1", state2)
+        state2.blood.volume = 1234
+        restarted:markDirty("p1", "blood")
+        local _, status = mirror:apply(Sync.encode(restarted:takeDelta("p1")))
+        assert.equal("needHello", status)
+        local changed = mirror:apply(Sync.encode(restarted:snapshot("p1")))
+        assert.equal(3, #changed)
+        assert.equal(1234, mirror:section("p1", "blood").volume)
+    end)
+
+    it("keeps revisions rising when a player is detached and attached again", function()
+        local store, state, mirror = setup()
+        mirror:apply(Sync.encode(store:snapshot("p1")))
+        state.blood.volume = 4000
+        store:markDirty("p1", "blood")
+        mirror:apply(Sync.encode(store:takeDelta("p1")))
+        store:detach("p1")
+        store:attach("p1", state)
+        state.blood.volume = 3500
+        store:markDirty("p1", "blood")
+        local changed = mirror:apply(Sync.encode(store:takeDelta("p1")))
+        assert.same({ "blood" }, changed)
+        assert.equal(3500, mirror:section("p1", "blood").volume)
+        -- A snapshot after re-attaching is accepted too.
+        store:detach("p1")
+        store:attach("p1", newState())
+        changed = mirror:apply(Sync.encode(store:snapshot("p1")))
+        assert.equal(3, #changed)
+        assert.equal(5000, mirror:section("p1", "blood").volume)
+    end)
+
+    it("ignores messages from another protocol version", function()
+        local store, _, mirror = setup()
+        local msg = store:snapshot("p1")
+        msg.v = Sync.PROTOCOL + 1
+        local _, status = mirror:apply(msg)
+        assert.equal("protocol", status)
+        assert.is_false(mirror:has("p1"))
+    end)
+
+    it("keeps owners apart", function()
+        local store, _, mirror = setup()
+        store:attach("p2", { identity = { bloodType = "O-" }, blood = {}, diseases = {} })
+        mirror:apply(Sync.encode(store:snapshot("p1")))
+        mirror:apply(Sync.encode(store:snapshot("p2")))
+        assert.equal("A+", mirror:section("p1", "identity").bloodType)
+        assert.equal("O-", mirror:section("p2", "identity").bloodType)
+        mirror:forget("p2")
+        assert.is_nil(mirror:section("p2", "identity"))
+    end)
+end)

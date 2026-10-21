@@ -1,0 +1,73 @@
+module ExtensiveHealth
+{
+    item HomemadeSyringe
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Syringe (Pack),
+        Icon = HomemadeSyringe,
+        Weight = 0.1,
+        UseDelta = 0.2,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item PlasticStrips
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        DisplayName = Plastic Strips,
+        Icon = PlasticStrips,
+        Weight = 0.02,
+    }
+
+    /* Food is required only for the game's heating/replacement pipeline.
+       This assembly is not edible and never spoils. On completion the
+       engine replaces it with a normal medical item, including MP sync. */
+    item PreparedHomemadeBloodBag
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Prepared Homemade Blood Bag,
+        Icon = HomemadeBloodBagEmpty,
+        Weight = 0.2,
+        WorldStaticModel = MedicalParcel_Green,
+        Medical = true,
+        CantEat = true,
+        IsCookable = true,
+        MinutesToCook = 30,
+        MinutesToBurn = 120,
+        ReplaceOnCooked = ExtensiveHealth.HomemadeEmptyBloodBag,
+        HungerChange = 0.0,
+        ThirstChange = 0.0,
+        Calories = 0.0,
+        Carbohydrates = 0.0,
+        Lipids = 0.0,
+        Proteins = 0.0,
+        FoodType = NoExplicit,
+        Tags = base:nocookingxp,
+    }
+
+    item HomemadeEmptyBloodBag
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Homemade Empty Blood Bag,
+        Icon = HomemadeBloodBagEmpty,
+        Weight = 0.2,
+        WorldStaticModel = MedicalParcel_Green,
+        Medical = true,
+    }
+
+    item HomemadeIVKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade IV Administration Kit,
+        Icon = HomemadeIVKit,
+        Weight = 0.3,
+        UseDelta = 1.0,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+}

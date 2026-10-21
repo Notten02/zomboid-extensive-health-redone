@@ -1,0 +1,1064 @@
+module ExtensiveHealth
+{
+    /** ===========================================
+        EXTENSIVE HEALTH REWORK - MEDICAL ITEMS
+        Blood Bags, Saline, and Medication System
+        Updated for B42 with balanced multi-dose packages
+    =========================================== **/
+
+    model EHR_ActivatedCharcoal
+    {
+        mesh = EHR/ActivatedCharcoal,
+        texture = ActivatedCharcoal,
+
+    }
+ model EHR_AntibioticOintment
+    {
+        mesh = EHR/AntibioticOintment,
+        texture = AntibioticOintment,
+	scale=0.3,
+
+    }
+   
+
+    /** =========================================
+        BLOOD BAGS (Single Use - Perishable)
+        Fresh for ~1 hour outside frozen storage.
+        Spoiled by ~2 hours if not frozen.
+        Using spoiled blood causes severe illness.
+
+        STORAGE:
+        - Room temp / fridge: Spoils in ~2 hours
+        - Freezer: Preserved while frozen
+    ========================================= **/
+
+    item BloodBagONeg
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (O-),
+        Icon = BloodBagONeg,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagOPos
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (O+),
+        Icon = BloodBagOPos,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagANeg
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (A-),
+        Icon = BloodBagANeg,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagAPos
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (A+),
+        Icon = BloodBagAPos,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagBNeg
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (B-),
+        Icon = BloodBagBNeg,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagBPos
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (B+),
+        Icon = BloodBagBPos,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagABNeg
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (AB-),
+        Icon = BloodBagABNeg,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    item BloodBagABPos
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Blood Bag (AB+),
+        Icon = BloodBagABPos,
+        Weight = 0.5,
+        WorldStaticModel = MedicalParcel_Red,
+        Medical = true,
+        CantEat = true,
+        BadInMicrowave = true,
+        IsCookable = false,
+    }
+
+    /** =========================================
+        EMPTY BLOOD BAG (For self-donation)
+        Can be filled with player's own blood
+    ========================================= **/
+
+    item EmptyBloodBag
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Empty Blood Bag,
+        Icon = BloodBagEmpty,
+        Weight = 0.2,
+        WorldStaticModel = MedicalParcel_Green,
+        Medical = true,
+    }
+
+    /** =========================================
+        IV SUPPLIES (Single/Limited Use)
+    ========================================= **/
+
+    item SalineBag
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Saline IV Bag,
+        Icon = SalineBag,
+        Weight = 0.4,
+        WorldStaticModel = MedicalParcel_Green,
+        Medical = true,
+    }
+
+    item IVKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = IV Administration Kit,
+        Icon = IVKit,
+        Weight = 0.3,
+        UseDelta = 1.0,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item Syringe
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Sterile Syringe (Pack),
+        Icon = SterileSyringe,
+        Weight = 0.1,
+        UseDelta = 0.2,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item SterilizedBandages
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Clean Bandages (Pack),
+        Icon = SterilizedBandages,
+        Weight = 0.3,
+        UseDelta = 0.2,
+        UseWhileEquipped = false,
+        ConsolidateOption = ContextMenu_Merge,
+        Medical = true,
+        WorldStaticModel = MedicalParcel_Green,
+        DoubleClickRecipe = ExtensiveHealth.EHRTakeBandageFromPack,
+    }
+
+    item AlchoholicBandage
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Alcoholic Bandage,
+        Icon = AlchoholicBandage,
+        Weight = 0.1,
+        Alcoholic = true,
+        AlwaysWelcomeGift = true,
+        BandagePower = 4.0,
+        CanBandage = true,
+        count = 1,
+        Medical = true,
+        ReplaceOnUse = Base.BandageDirty,
+        WorldStaticModel = Bandage,
+        Tags = base:nopour,
+    }
+
+    item SpiderwebBandage
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Spiderweb Bandage,
+        Icon = SpiderwebBandage,
+        Weight = 0.1,
+        Tooltip = Tooltip_SpiderwebBandage,
+        AlwaysWelcomeGift = true,
+        BandagePower = 4.0,
+        CanBandage = true,
+        count = 1,
+        Medical = true,
+        ReplaceOnUse = Base.BandageDirty,
+        WorldStaticModel = Bandage,
+        Tags = base:isfirefuel;base:isfiretinder;base:nopour,
+        FireFuelRatio = 0.25,
+    }
+
+    item Epinephrine
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Epinephrine Auto-Injector,
+        Icon = Epinephrine,
+        Weight = 0.1,
+        Medical = true,
+    }
+
+    item LastChanceEpinephrine
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Emergency Epinephrine Auto-Injector,
+        Icon = Epinephrine,
+        Weight = 0.1,
+        Medical = true,
+    }
+
+    /** =========================================
+        TIER 1 - OTC (OVER THE COUNTER)
+        Balanced multi-dose package sizes
+    ========================================= **/
+
+    item ColdFluTablets
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Cold and Flu Tablets,
+        Icon = ColdFluTablets,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntipyreticTablets
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antipyretic Tablets,
+        Icon = AntipyreticTablets,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item CoughSyrup
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Cough Syrup,
+        Icon = CoughSyrup,
+        Weight = 0.3,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item HomemadeCoughSyrup
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Cough Syrup,
+        Icon = HomemadeCoughSyrup,
+        Weight = 0.3,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item ElectrolytePowder
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Electrolyte Powder (Box),
+        Icon = ElectrolytePowder,
+        Weight = 0.15,
+        UseDelta = 0.25,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item BronchodilatorInhaler
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Bronchodilator Inhaler,
+        Icon = BronchodilatorInhaler,
+        Weight = 0.1,
+        UseDelta = 0.025,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntiNauseaTablets
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Anti-Nausea Tablets,
+        Icon = AntiNauseaTablets,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntiInflammatory
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Anti-Inflammatory Pills,
+        Icon = AntiInflammatory,
+        Weight = 0.1,
+        UseDelta = 0.0625,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntiDiarrheal
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Anti-Diarrheal Tablets,
+        Icon = AntiDiarrheal,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item MuscleRelaxants
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Muscle Relaxants,
+        Icon = MuscleRelaxants,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item HomemadeMuscleRelaxant
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Muscle Relaxant,
+        Icon = HomemadeMuscleRelaxant,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item HomemadePainkillers
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Painkillers,
+        Icon = HomemadePainkillers,
+        Weight = 0.2,
+        UseDelta = 0.0625,
+        UseWhileEquipped = false,
+        Medical = true,
+        Tags = base:consumable,
+    }
+
+    item HomemadeSleepingPills
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Sleeping Pills,
+        Icon = HomemadeSleepingPills,
+        Weight = 0.2,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+        Tags = base:consumable,
+    }
+
+    item CommonColdTea
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Herbal Tea,
+        Icon = CommonColdTea,
+        Weight = 0.5,
+        EatType = Popcan,
+        PourType = Mug,
+        GoodHot = true,
+        IsCookable = true,
+        ReplaceOnUse = Base.MugWhite,
+        MinutesToCook = 10,
+        MinutesToBurn = 50,
+        ThirstChange = -10.0,
+        UnhappyChange = -5,
+        CustomContextMenu = Drink,
+        CustomEatSound = DrinkingFromMug,
+        StaticModel = MugWhite,
+        WorldStaticModel = MugWhite,
+        Tags = base:herbaltea,
+        CookingSound = BoilingFood,
+        Eattime = 160,
+        Medical = true,
+    }
+
+    item AntipyreticTea
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Antipyretic Tea,
+        Icon = AntipyreticTea,
+        Weight = 0.5,
+        EatType = Popcan,
+        PourType = Mug,
+        GoodHot = true,
+        IsCookable = true,
+        ReplaceOnUse = Base.MugWhite,
+        MinutesToCook = 10,
+        MinutesToBurn = 50,
+        ThirstChange = -10.0,
+        UnhappyChange = -5,
+        CustomContextMenu = Drink,
+        CustomEatSound = DrinkingFromMug,
+        StaticModel = MugWhite,
+        WorldStaticModel = MugWhite,
+        Tags = base:herbaltea,
+        CookingSound = BoilingFood,
+        Eattime = 160,
+        Medical = true,
+    }
+
+    item RelaxantTea
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:food,
+        DisplayName = Relaxant Tea,
+        Icon = RelaxantTea,
+        Weight = 0.5,
+        EatType = Popcan,
+        PourType = Mug,
+        GoodHot = true,
+        IsCookable = true,
+        ReplaceOnUse = Base.MugWhite,
+        MinutesToCook = 10,
+        MinutesToBurn = 50,
+        ThirstChange = -10.0,
+        UnhappyChange = -10,
+        CustomContextMenu = Drink,
+        CustomEatSound = DrinkingFromMug,
+        StaticModel = MugWhite,
+        WorldStaticModel = MugWhite,
+        Tags = base:herbaltea,
+        CookingSound = BoilingFood,
+        Eattime = 160,
+        Medical = true,
+    }
+
+    item NitricOxideBooster
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Nitric Oxide Boosters,
+        Icon = NitricOxideBooster,
+        Weight = 0.1,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item CombatStimulants
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Combat Stimulants,
+        Icon = CombatStimulants,
+        Weight = 0.2,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item CoughSuppressant
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Cough Suppressant,
+        Icon = CoughSuppressant,
+        Weight = 0.1,
+        UseDelta = 0.0833,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntisepticCream
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antiseptic Cream,
+        Icon = AntisepticCream,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item HomemadeAntisepticCream
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Antiseptic Cream,
+        Icon = HomemadeAntisepticCream,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    /** =========================================
+        TIER 2 - PRESCRIPTION MEDICATION
+        Balanced prescription package sizes
+    ========================================= **/
+
+    item AntiviralCapsules
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antiviral Capsules,
+        Icon = AntiviralCapsules,
+        Weight = 0.1,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item PrescriptionAntibiotics
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Prescription Antibiotics,
+        Icon = PrescriptionAntibiotics,
+        Weight = 0.1,
+        UseDelta = 0.1,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item AntifungalTablets
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antifungal Tablets,
+        Icon = AntifungalTablets,
+        Weight = 0.1,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item ActivatedCharcoal
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Activated Charcoal,
+        Icon = ActivatedCharcoal,
+        Weight = 0.2,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        StaticModel = EHR_ActivatedCharcoal,
+        WorldStaticModel = EHR_ActivatedCharcoal,
+        Medical = true,
+    }
+
+    item HomeMadeActivatedCharcoal
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Activated Charcoal,
+        Icon = HomeMadeActivatedCharcoal,
+        Weight = 0.2,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        StaticModel = EHR_ActivatedCharcoal,
+        WorldStaticModel = EHR_ActivatedCharcoal,
+        Medical = true,
+    }
+
+    item AntiparasiticPills
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antiparasitic Pills,
+        Icon = AntiparasiticPills,
+        Weight = 0.1,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item TopicalPermethrin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Topical Permethrin,
+        Icon = TopicalPermethrin,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item HomemadeTopicalPermethrin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Topical Permethrin,
+        Icon = HomemadeTopicalPermethrin,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item OralRehydrationKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Oral Rehydration Kit,
+        Icon = OralRehydrationKit,
+        Weight = 0.2,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item InstantIcePack
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Instant Ice Pack (Box),
+        Icon = InstantIcePack,
+        Weight = 0.4,
+        UseDelta = 0.25,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item WarmingPack
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Warming Pack,
+        Icon = WarmingPackeges,
+        Weight = 0.15,
+        Medical = true,
+    }
+
+    item Furosemide
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Furosemide,
+        Icon = Furosemide,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item Antipsychotics
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antipsychotics,
+        Icon = Antipsychotics,
+        Weight = 0.1,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item DualOrexinReceptor
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Dual Orexin Receptor,
+        Icon = DualOrexinReceptor,
+        Weight = 0.1,
+        UseDelta = 0.125,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item Buprenorphine
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Buprenorphine,
+        Icon = Buprenorphine,
+        Weight = 0.1,
+        UseDelta = 0.1,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item TetanusAntitoxin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Tetanus Antitoxin,
+        Icon = TetanusAntitoxin,
+        Weight = 0.1,
+        Medical = true,
+    }
+
+
+    item AntibioticOintment
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Antibiotic Ointment,
+        Icon = AntibioticOintment,
+        Weight = 0.1,
+  	StaticModel = EHR_AntibioticOintment,
+        WorldStaticModel = EHR_AntibioticOintment,
+
+        UseDelta = 0.1666667,
+
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item HomemadeAntibioticOintment
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Homemade Antibiotic Ointment,
+        Icon = AntibioticOitment,
+        Weight = 0.1,
+        StaticModel = EHR_AntibioticOintment,
+        WorldStaticModel = EHR_AntibioticOintment,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item BroadSpectrumAntibiotics
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Broad Spectrum Antibiotics,
+        Icon = BroadSpectrumAntibiotics,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item PlantBasedAntibiotics
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Plant-Based Antibiotics,
+        Icon = PlantBasedAntibiotics,
+        Weight = 0.1,
+        UseDelta = 0.1666667,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    /** =========================================
+        TIER 3 - CLINICAL GRADE MEDICATION
+        Hospital supplies (mostly single-use)
+    ========================================= **/
+
+    item CorticosteroidInjection
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Corticosteroid Injection,
+        Icon = CorticosteroidInjection,
+        Weight = 0.1,
+        Medical = true,
+    }
+
+    item RespiratorySupportKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Respiratory Support Kit,
+        Icon = RespiratorySupportKit,
+        Weight = 0.5,
+        UseDelta = 0.3333,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item IVFluids
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = IV Fluids,
+        Icon = IVFluids,
+        Weight = 0.6,
+        WorldStaticModel = MedicalParcel_Green,
+        WorldStaticScale = 0.06,
+        Medical = true,
+    }
+
+    item IVAntibiotics
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = IV Antibiotics,
+        Icon = IVAntibiotics,
+        Weight = 0.4,
+        WorldStaticScale = 0.06,
+        Medical = true,
+    }
+
+    item IVMetronidazole
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = IV Metronidazole,
+        Icon = IVMetronidazole,
+        Weight = 0.4,
+        WorldStaticScale = 0.06,
+        Medical = true,
+    }
+
+    item IVAmphotericin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = IV Amphotericin B,
+        Icon = IVAmphotericin,
+        Weight = 0.4,
+        WorldStaticScale = 0.06,
+        Medical = true,
+    }
+
+    item ChelationKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Chelation Therapy Kit,
+        Icon = ChelationKit,
+        Weight = 0.5,
+        Medical = true,
+    }
+
+    item AlbendazoleInjection
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Albendazole Injection,
+        Icon = AlbendazoleInjection,
+        Weight = 0.1,
+        Medical = true,
+    }
+
+    item IVCiprofloxacin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = IV Ciprofloxacin,
+        Icon = IVCiprofloxacin,
+        Weight = 0.4,
+        WorldStaticScale = 0.06,
+        Medical = true,
+    }
+
+    item TetanusImmunoglobulin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Tetanus Immunoglobulin,
+        Icon = TetanusImmunoglobulin,
+        Weight = 0.2,
+        Medical = true,
+    }
+
+
+    item IVVancomycin
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = IV Vancomycin,
+        Icon = IVVancomycin,
+        Weight = 0.4,
+        WorldStaticScale = 0.06,
+        Medical = true,
+    }
+
+    item EmergencySepsisKit
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:normal,
+        DisplayName = Emergency Sepsis Kit,
+        Icon = EmergencySepsisKit,
+        Weight = 0.6,
+        Medical = true,
+    }
+
+    item Honeycomb
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        DisplayName = Honeycomb,
+        Icon = EHR_Honeycomb,
+        Weight = 0.4,
+        Tooltip = Tooltip_EHR_Honeycomb,
+        CantBeFrozen = true,
+        EatType = GlugFood,
+        EvolvedRecipe = Cake:5;Sandwich:2;FruitSalad:2;HotDrink:2;Pancakes:2;ConeIcecream:2;PieSweet:5;Toast:2;Oatmeal:2,
+        Packaged = true,
+        Spice = true,
+        HungerChange = -20.0,
+        Calories = 660.0,
+        Carbohydrates = 187.0,
+        Lipids = 0.0,
+        Proteins = 0.0,
+        CustomContextMenu = Drink,
+        CustomEatSound = DrinkingFromCan,
+        StaticModel = Honey,
+        WorldStaticModel = Honey,
+        Tags = base:boostsflurecovery;base:herbaltea;base:wetbeverageingredient,
+    }
+
+    item PreparedTallowMixture
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        DisplayName = Prepared Tallow Mixture,
+        Icon = RenderedTallowMixture,
+        Weight = 0.8,
+        Tooltip = Tooltip_PreparedTallowMixture,
+        CantEat = true,
+        BadInMicrowave = true,
+        GoodHot = true,
+        IsCookable = true,
+        MinutesToCook = 90,
+        MinutesToBurn = 180,
+        ReplaceOnCooked = ExtensiveHealth.RenderedTallowMixture,
+        HungerChange = 0.0,
+        UnhappyChange = 30,
+        Calories = 0.0,
+        Carbohydrates = 0.0,
+        Lipids = 0.0,
+        Proteins = 0.0,
+        FoodType = NoExplicit,
+        CookingSound = BoilingFood,
+        StaticModel = Lard_Ground,
+        WorldStaticModel = Lard_Ground,
+    }
+
+    item RenderedTallowMixture
+    {
+        DisplayCategory = Food,
+        ItemType = base:normal,
+        DisplayName = Rendered Tallow Mixture,
+        Icon = RenderedTallowMixture,
+        Weight = 0.6,
+        Tooltip = Tooltip_RenderedTallowMixture,
+        StaticModel = Lard_Ground,
+        WorldStaticModel = Lard_Ground,
+    }
+
+    item Tallow
+    {
+        DisplayCategory = Food,
+        ItemType = base:food,
+        DisplayName = Tallow,
+        Icon = Tallow,
+        Weight = 0.3,
+        Tooltip = Tooltip_Tallow,
+        EvolvedRecipe = Sandwich:2;Stir fry:4;Pasta:4;Taco:2;Burrito:2;Toast:2;Soup:4;Stew:4,
+        FoodType = NoExplicit,
+        Spice = true,
+        Packaged = true,
+        HungerChange = -22.0,
+        UnhappyChange = 30,
+        Calories = 3900.0,
+        Carbohydrates = 0.0,
+        Lipids = 430.0,
+        Proteins = 0.0,
+        StaticModel = Lard_Ground,
+        WorldStaticModel = Lard_Ground,
+        Tags = base:bakingfat,
+    }
+
+    item Spiderweb
+    {
+        DisplayCategory = Material,
+        ItemType = base:normal,
+        DisplayName = Spiderweb,
+        Icon = EHR_Spiderweb,
+        Weight = 0.01,
+        Tooltip = Tooltip_EHR_Spiderweb,
+        WorldStaticModel = Thread,
+    }
+
+    /** =========================================
+        KNOX INFECTION TREATMENT
+        Moved to EHR_KnoxItems.txt
+    ========================================= **/
+}
