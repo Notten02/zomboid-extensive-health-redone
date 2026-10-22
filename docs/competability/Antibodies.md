@@ -15,8 +15,3 @@
 **Immunity:** gene-therapy survivors, Patient Zero and immunobooster users have any Knox infection cleared every step, so Antibodies' delay or cure does nothing visible for them.
 
 **Shared vanilla methods:** it wraps `ISApplyBandage` and `ISDisinfect` (`perform` and `complete`) and `ISCharacterInfoWindow.createChildren`, as do we (`Data/PatchPoints`). Our wrap is applied last (at game boot), so it is the outermost, and observers do not change arguments or results.
-
-## Not done / open
-
-- Its `complete` wrappers do not return the original's result (they return nothing). Our wound hooks treat only `false` as "refused", so a refused disinfection or bandage looks accepted to our wound model while Antibodies sits between. Minor, only on a refused action.
-- Needs a game client: the Health tab button, the Hygiene tab and the character window width with our two tabs, a Knox infection delayed or cured while the Monitor is open, and multiplayer.

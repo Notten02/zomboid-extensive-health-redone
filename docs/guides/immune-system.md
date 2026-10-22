@@ -145,13 +145,3 @@ Sandbox page **Immunity**:
 - *Immune Effect Strength*: scales the effect (0 = monitoring only, 1 = default, 2 = double, within safety caps. The
   multiplier on a disease chance never goes below 0.35 or above 2.0).
 - *Immunity Recovery Rate* and *Immunity Decline Rate*: scale how quickly the score rises and falls.
-
-## What changed from the original guide
-
-- **Tuberculosis** is gone from the supported list (the disease was removed).
-- Pneumonia and cellulitis are supported through their only real sources: the cold-to-pneumonia roll and the
-  rough-stitch cellulitis roll.
-- The guide never gave the weights. They are listed above, along with the hygiene curve and the disease pressure rules.
-- New characters start at 75 rather than at the neutral score.
-- Suppression also comes from the Corticosteroid Injection and the Phalanx debuff, and the Monitor lists them.
-- Effects can be switched to monitoring only, and scaled, in the sandbox.

@@ -21,8 +21,3 @@ with it switched off, everything says "nothing" and vanilla's air is used. Indoo
 | Room air feeds the meters | Inside a room the mod simulates, its air temperature replaces vanilla's in `facts.env.airC`, so the cold meter, the heat meter and heat-stroke cooling see heated houses, cold rooms and hot attics. Vanilla's reading is kept as `nativeAirC`. Body temperature stays vanilla's (the mod's warmth reaches it through its own heat sources). |
 | Single player and multiplayer | The server reads the player's sample through the public API. Indoor Climate Redone simulates rooms on the dedicated server, so the server has the real value; no client report is needed or trusted. |
 | The original Indoor Climate (EHR Addon) | It uses the same API, so it still works in single player. It computes samples only on the client, so on a dedicated server we get none and use vanilla's air. Use Indoor Climate Redone instead; the two cannot be enabled together. |
-
-## Not done / open
-
-- Revisit cooling if summer rooms feel wrong.
-- Needs a game client: single player and a dedicated server with the real mod.

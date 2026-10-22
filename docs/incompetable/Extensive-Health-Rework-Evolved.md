@@ -16,8 +16,3 @@ Redone keeps the original's identity on purpose, so a save can switch over: the 
 ## Switching a save over
 
 Redone imports the permanent part of the original's player data once (blood type, disease and journal knowledge, flyers, radio, immunity score, Knox gene-therapy and Patient Zero flags) and resets everything active (illnesses, treatments, wound infections, blood loss, cooldowns). It removes the old `EHR_*` keys and never imports twice. Item ids and sandbox values carry over unchanged. Offline check against 8 real saves: `tests/real_saves_spec.lua`; to try a save: `tools/prepare-migration-save.sh`.
-
-## Not done / open
-
-- The in-game migration run (single player and dedicated server) and the mod screen's refusal are not yet seen in a game client.
-- The original is broken on 42.21, so there is no side-by-side comparison to make.

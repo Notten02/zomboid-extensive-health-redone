@@ -5,7 +5,7 @@
 - **Status:** **no conflict found, but untested, and it wraps the same vanilla actions as we do.** Filed here until someone runs both in a game client. Read in the compatibility scan (2026-10-21) and again for this file; nothing was run.
 - **Where our wraps are defined:** `Core/PatchPoints.lua` and `Data/PatchPoints.lua`
 
-## Where the two meet
+## Where there is a conflict
 
 Survivor Quirks replaces these vanilla methods, and so do we (each wraps the one before it and calls it):
 
@@ -21,8 +21,3 @@ Its wraps call the original and return its result; ours are applied at game boot
 Its wrappers read fields of the stitch action (`self.doIt`, `self.otherPlayer`); our `ISStitch.new` intercept only returns our own action for the minigame, so those fields stay intact.
 
 Its items, traits and commands use its own module and ids; no ID, ModData key, global or command clash was found.
-
-## Not done / open
-
-- It registers the stitch and bandage wraps from both its client and its server file. In single player both run in one Lua state. Check that our stitch minigame and wound model still behave then.
-- Not looked at: what its trait effects do to stats we own (stat writer) beyond the vanilla methods above.

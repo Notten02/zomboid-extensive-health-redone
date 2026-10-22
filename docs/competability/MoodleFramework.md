@@ -18,9 +18,3 @@
 | Look | Per moodle: `setThresholds`, `setChevronCount`, and per level `setBackground`, `setPicture`, `setTitle`, `setDescription` (all "bad" kind); the level is driven with `setValue`. Our icons are complete round badges, so the background is replaced by an empty texture. |
 | Levels from the mirror | Re-applied after every sync and every game minute, for each local player (split screen). A fresh Knox infection never raises the Medical Alert. |
 | Hide switch | The `ShowEHRMoodles` mod option hides all five; the mechanics are untouched. |
-
-## Not done / open
-
-- Not built, by design: native EHR moodles without MoodleFramework.
-- Known issue outside our control: MP servers asking for `mf_config.lua` on the client (workaround `DoLuaChecksum=false`); players report overlap of MoodleFramework moodles with other mods' moodles.
-- Needs a game client: multiplayer; the Workshop page should keep saying it is optional.

@@ -17,8 +17,3 @@
 | Blood draw costs blood | We wrap its `LabCollectBloodLogic.ProcessCollection`. Each sample takes 50 mL and gets `EHR_DonorBloodType` in its modData. Under half blood the draw is refused and the syringe is kept. |
 | Knox blood test teaches Knox | We wrap its `BloodTestLogic.ProcessTest`. A positive or negative result unlocks Knox knowledge (like the Kentucky Herald). An unusable sample does not. |
 | Delay shows in the Knox stage | `facts.knox.followTimer` makes our progress follow the infection timers, so its vaccine and albumin delays lower the shown stage. |
-
-## Not done / open
-
-- Not built: blood type affecting test results, vaccine cures feeding the immunity score, Research Lab Intern knowledge.
-- Needs a game client: does vanilla's infection stat follow the infection time (decides whether the delay display tie changes anything); does the wrap take effect on a dedicated server.

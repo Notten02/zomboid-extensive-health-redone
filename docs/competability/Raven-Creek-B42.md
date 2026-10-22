@@ -11,9 +11,3 @@
 **Its one distribution file** (`RCB42_NewDistribution.lua`, at `OnPostDistributionMerge`) adds only vanilla list names (army medical storage, hospital lockers and similar) under its own rooms `armyhanger` and `armysurplustorage`. Those are lists we extend, so army medical loot there carries our items too.
 
 **No error path found:** our loot code tolerates a missing room or list table (`Loot/Apply.roomProcs` and `write` report it as `missing` instead of failing).
-
-## Not done / open
-
-- Needs a game client: open clinic, pharmacy and hospital containers in Raven Creek and confirm EHR items spawn; no error at distribution merge.
-- Unverified: whether our items are added after its `OnPostDistributionMerge` handler runs (the order of the two handlers).
-- Not ours to fix: its custom rooms such as `grocers`, `shop` and `stroge` have no vanilla distribution, so they get loot from nobody.

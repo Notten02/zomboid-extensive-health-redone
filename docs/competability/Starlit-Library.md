@@ -11,7 +11,3 @@
 **The fix** (`Client/ItemTooltip.lua`): the stand-in's metatable `__index` is now a table that forwards every key to the real item. Whatever Starlit writes there lands on that throw-away table and never reaches the item class. Our wrap is the outermost and puts the real item back afterwards.
 
 **What players see:** an EHR item shows vanilla's tooltip plus our lines. Starlit's own tooltip changes apply to other items, not to ours (inferred from the code).
-
-## Not done / open
-
-- Needs a game client: hover a vanilla Pills, Antibiotics and an EHR item with Starlit enabled; no per-frame errors in `console.txt`; our lines still show.

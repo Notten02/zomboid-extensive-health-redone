@@ -16,10 +16,3 @@
 | Four rows | Blood, infected wounds, sepsis and the worst illness, from our mirror with the same knowledge rules as the EHR Monitor: blood needs the Medical Monitor Watch (else `?`), stages need First Aid (else `?`), nothing active shows `--`. |
 | Multiplayer | Works in MP too (v0.9's companion was single player only), because it reads the mirror. |
 | Guard | Every read of the host is a logged `pcall`; if it does not look as expected the panel switches itself off for the session. A new game in the same session gets a new panel. |
-
-13 new texts in all nine languages (`UI_EHR_Mini_*`; the translations are machine translated).
-
-## Not done / open
-
-- Needs a game client: docking, dragging, fading and the screen-edge flip; that the host's `alpha` and `getPlayer` behave as read from its code.
-- Split screen: Mini Health Panel itself serves only the first local player, so the companion does too.

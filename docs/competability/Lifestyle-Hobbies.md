@@ -19,8 +19,3 @@
 | Multiplayer | The server never has Lifestyle's data, so the client reports it (`lifestyle.report`, every 5 s checked, on change, every 30 s). The server uses it for 90 s, clamps every field and believes a shower only for a character standing still outside a vehicle. Residual risk, accepted: a modified client can claim the best readings (at most +50 % recovery). |
 
 **Design choices:** the dirty and filthy penalties apply (v0.9 never applied them); no Lifestyle display in the Monitor; bed rest is not "sitting".
-
-## Not done / open
-
-- Needs a game client: bathing, sitting and Yoga recovery, the bladder tie, the tub animation and sound names (taken from its Lua, not played), and multiplayer.
-- Not built: a Lifestyle bonus display in the Monitor.

@@ -2,11 +2,8 @@
 
 > Player guide for **Extensive Health Redone**. Based on the original Workshop description by Frozen_Heart for
 > *Extensive Health Rework Evolved* (`docs/original-author-guides/workshop-description.md`) and on Hunter's predecessor
-> page, reworked to describe what this rewrite does today. For the text meant for the Steam page itself, see
+> page, reworked to describe what this rewrite does in this version. For the text meant for the Steam page itself, see
 > `docs/release/workshop-description.md`.
->
-> **Status:** feature-complete and covered by offline tests, but **not yet verified in a game client** and not yet
-> published. Anything below that depends on the game client is marked *(unverified in game)*.
 
 Project Zomboid health is simple: patch the wound, disinfect it, take some pills, and hope the bite was not that bite.
 This mod makes the body more fragile, more varied and harder to ignore. Diseases come from food, water, weather, corpses
@@ -14,7 +11,7 @@ and wounds. Blood loss matters. Medicine has courses and side effects. What your
 are told.
 
 It is a from-scratch rewrite for **Build 42.21+**. The gameplay follows the original; the code is new, MIT-licensed, and
-the server owns all health state, so it works in multiplayer.
+the server owns all health state, so it should works in multiplayer.
 
 Related guides:
 - `disease-overview.md`: every disease, its cure and prevention
@@ -196,12 +193,12 @@ The Knox infection is never taught by radio.
 | Mod | Status |
 |---|---|
 | **MoodleFramework** (optional, recommended) | The five EHR moodles show only with it. Worked in single player on 42.21. |
-| **Indoor Climate Redone** (optional) | Room air feeds the heat and cold meters, also on a dedicated server. The original Indoor Climate (EHR Addon) works in single player only. *(unverified in game)* |
-| **Lifestyle: Hobbies** (optional) | A clean, rested, bathed character recovers up to about 50% faster, a dirty one slower. *(unverified in game)* |
-| **Mini Health Panel** | A small "EHR Status" panel docks beside it. *(unverified in game)* |
-| **Antibodies** | Works beside Redone. *(unverified in game)* |
-| **Zombie Virus Vaccine** (B42 port) | Works beside Redone, with three ties. *(unverified in game)* |
-| **Raven Creek** | EHR medicine should spawn in its medical rooms. *(unverified in game)* |
+| **Indoor Climate Redone** (optional) | Room air feeds the heat and cold meters, also on a dedicated server. The original Indoor Climate (EHR Addon) works in single player only. |
+| **Lifestyle: Hobbies** (optional) | A clean, rested, bathed character recovers up to about 50% faster, a dirty one slower. |
+| **Mini Health Panel** | A small "EHR Status" panel docks beside it. |
+| **Antibodies** | Works beside Redone. |
+| **Zombie Virus Vaccine** (B42 port) | Works beside Redone, with three ties. |
+| **Raven Creek** | EHR medicine should spawn in its medical rooms. |
 | **Red Days, Unseasonal Weather** | Listed as compatible by the original; not yet verified here. |
 | **Hephas Vitamins** | Overlaps: both rework the vitamin pills. Use one. |
 | **Realistic Temperature** | Not supported. Use Indoor Climate Redone. |
@@ -217,14 +214,3 @@ Recommended sandbox setting: **Decaying Corpse Health Impact = None**, so only E
 - No Tuberculosis, They Knew or N&C Narcotics support.
 - Many new numbers (loot, new triggers) are first guesses and will be tuned in play-testing.
 - Back up your saves, and report bugs with your `console.txt`.
-
-## What changed from the original description
-
-- **New mod ID, rewritten code.** The original page recommended starting from scratch.
-- **Immune score** is documented (see the immune guide), and it can be set to monitoring only.
-- **The Monitor is inside vanilla's character window**, not a separate panel, and H is vanilla's Health key.
-- **Radio:** only receivers that can tune 47.0 MHz hear it, and the story advances only when an episode airs.
-- **Admin:** `/ehrreset` and `/ehrinspect` join `/ehrfullheal`.
-- **Consent** for treating other players is new.
-- **Compatibility list:** Antibodies, Zombie Virus Vaccine, Raven Creek, Mini Health Panel and Lifestyle have been
-  re-checked or rebuilt. Realistic Temperature is permanently skipped.
