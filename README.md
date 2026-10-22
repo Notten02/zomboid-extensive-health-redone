@@ -6,9 +6,6 @@ courses, an immune system and medical knowledge, and is multiplayer-safe with th
 
 Gameplay matches the original; the code does not.
 
-**Status:** feature-complete, pending in-game verification and the first release. Nothing is published to the Steam
-Workshop yet. What it covers:
-
 - **Blood and wounds:** blood volume and types, transfusion, bleeding, wound infection, sepsis, cellulitis, tetanus and
   the stitch minigame.
 - **Diseases:** food-borne, weather, corpse, scabies, concussion, mental and Knox, with the Knox items.
@@ -42,7 +39,7 @@ change.
 
 **Tests:** `tools/test.sh` (needs Lua 5.1 and busted, see Development below).
 
-**Art:** `python3 tools/make-release-art.py` (needs Python 3 and Pillow) regenerates `42/icon.png` (256x256),
+**''Art'':** `python3 tools/make-release-art.py` (needs Python 3 and Pillow) regenerates `42/icon.png` (256x256),
 `42/poster.png` (512x512) and `preview.png` (256x256, the Workshop thumbnail; the in-game uploader insists on exactly
 that size). The art is original: a blood drop with a pulse line.
 
