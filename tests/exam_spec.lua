@@ -89,6 +89,24 @@ insulate("examining another player", function()
     _G.HaloTextHelper = { shown = {}, addBadText = function(_, t) table.insert(HaloTextHelper.shown, t) end,
         addText = function(_, t) table.insert(HaloTextHelper.shown, t) end }
     rawset(_G.BodyPartType, "FromString", function(name) return { name = name } end)
+    _G.UIManager = { getSpeedControls = function() return { getCurrentGameSpeed = function() return 1 end } end }
+    _G.getDebug = function() return false end
+    -- Vanilla's Health panel: the exam treats through one made for the patient, recording what it is asked.
+    package.preload["XpSystem/ISUI/ISHealthPanel"] = function() return true end
+    local healthPanels = {}
+    _G.ISHealthPanel = {}
+    function ISHealthPanel:new(character)
+        local o = { character = character, menus = {}, drops = {} }
+        function o:initialise() end
+        function o:instantiate() end
+        function o:getAbsoluteX() return 0 end
+        function o:getAbsoluteY() return 0 end
+        function o:setOtherPlayer(p) self.otherPlayer = p end
+        function o:doBodyPartContextMenu(bp, x, y) self.menus[#self.menus + 1] = { bp, x, y } end
+        function o:dropItemsOnBodyPart(bp, items) self.drops[#self.drops + 1] = { bp, items } end
+        healthPanels[#healthPanels + 1] = o
+        return o
+    end
 
     -- A context menu like ISContextMenu: addOption, insertOptionAfter (addOption when the anchor is missing).
     local function newContext()
@@ -147,6 +165,7 @@ insulate("examining another player", function()
             return { getForename = function() return forename end, getSurname = function() return "Doe" end }
         end
         function player:getIndex() return self:getPlayerNum() end
+        function player.body:getBodyPart(t) return self:part(t.name) end
         player.square.moving = { player }
         function player.square:getMovingObjects()
             local list = self.moving
@@ -300,9 +319,54 @@ insulate("examining another player", function()
         assert.equal(100, window.view.overall)
         assert.equal(msg.model.parts.Head.value, window.view.diagram.values.Head)
         window.view:openHealth()          -- not the doctor's own Health tab (getPlayerInfoPanel would throw)
-        window.view:treat("Head", 0, 0)   -- nor the doctor's own treatment menu
-        window.view:treatWith("Head", {}) -- nor treatment with the doctor's dropped items
     end)
+
+    it("treats the patient from the exam diagram through vanilla's panel for the patient, within vanilla's reach",
+        function()
+            local window = ClientExam.window("sp:0", "sp:1")      -- the session the test above opened
+            local head = BodyPartType.FromString("Head")
+            window.view:treat(head, 50, 60)
+            local panel = healthPanels[#healthPanels]
+            assert.equal(patient, panel.character)
+            assert.equal(doctor, panel.otherPlayer)
+            assert.equal(doctor:getPerkLevel(Perks.Doctor), panel.doctorLevel)
+            assert.same({ { patient.body:part("Head"), 50, 60 } }, panel.menus)
+            window.view:treatWith(head, { "bandage" })
+            assert.same({ { patient.body:part("Head"), { "bandage" } } }, panel.drops)
+            assert.equal(1, #healthPanels)                -- one panel per window
+            -- Beyond vanilla's 2 tiles (still inside the exam's 3): no menu, a notice.
+            patient.x = 103
+            window.view:treat(head, 50, 60)
+            assert.equal(1, #panel.menus)
+            assert.equal("UI_EHR_Context_TooFar", HaloTextHelper.shown[#HaloTextHelper.shown])
+            patient.x = 101
+            -- MP: a remote patient's body damage. Treating reads it without asking again (asking resets it); the window
+            -- asks again when vanilla's Medical Check window for the patient closes, and stops asking on closing.
+            local isClientBefore, asks, remoteBody = _G.isClient, {}, { getBodyPart = function() return "remote" end }
+            local vanillaWindow = { visible = true, getIsVisible = function(w) return w.visible end }
+            finally(function()
+                _G.isClient = isClientBefore
+                _G.ISMedicalCheckAction = nil
+                patient.isLocalPlayer, patient.getBodyDamageRemote = nil, nil
+            end)
+            _G.isClient = function() return true end
+            function patient:isLocalPlayer() return false end
+            function patient:getBodyDamageRemote() return remoteBody end
+            function doctor:startReceivingBodyDamageUpdates(p) asks[#asks + 1] = { "start", p } end
+            function doctor:stopReceivingBodyDamageUpdates(p) asks[#asks + 1] = { "stop", p } end
+            _G.ISMedicalCheckAction = { getHealthWindowForPlayer = function(p) return p == patient and vanillaWindow end }
+            window.view:treat(head, 50, 60)
+            assert.equal("remote", panel.menus[#panel.menus][1])
+            assert.same({}, asks)
+            window:watchVanillaWindow()                     -- vanilla's window open: it receives the updates
+            window:receiveBodyDamage(false)                 -- and stopping now would cut it off
+            assert.same({}, asks)
+            vanillaWindow.visible = false
+            window:watchVanillaWindow()
+            assert.same({ { "start", patient } }, asks)
+            window:receiveBodyDamage(false)
+            assert.same({ { "start", patient }, { "stop", patient } }, asks)
+        end)
 
     it("names a condition only as far as the DOCTOR knows it, and sends nothing else of the patient", function()
         state(patient).conditions.active.tetanus = {
