@@ -36,9 +36,21 @@ local function addView(window, name, view)
     return view
 end
 
+-- Each view sets the window to its own width every frame (setWidthAndParentWidth through the tab panel), and vanilla
+-- sizes its views for its own five tabs only. With our tabs and other mods' (Antibodies' Hygiene, made at the window's
+-- starting 400) a narrow view shrank the window below its tab strip and left the strip scrolled (issue #2). The tab
+-- panel, and so the window, is never narrower than all its tabs.
+local function keepTabsInView(panel)
+    local setWidth = panel.setWidth
+    function panel:setWidth(w)
+        setWidth(self, math.max(w, self:getWidthOfAllTabs()))
+    end
+end
+
 Patches.on("characterInfoCreate", {
     name = "ehrTabs",
     after = function(_, window)
+        keepTabsInView(window.panel)
         local playerNum = window.playerNum
         window.ehrMonitorView = addView(window, CharacterWindow.monitorName(), MonitorView:new(0, 8, playerNum))
         if Immune.visible(Env.sandbox) then

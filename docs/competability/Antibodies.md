@@ -8,7 +8,7 @@
 
 **No conflicts found.** It keeps its own medical file per player (its own ModData namespace and `antibodies` network module) and adds its UI to vanilla panels, which we keep.
 
-**Its Health tab button replaces our "AB" button.** v0.9 had an "AB" button in its own panel. Antibodies adds its own "Knox infection" button to vanilla's `ISHealthPanel` (the Health tab) and a Hygiene tab to the character window, and we keep both, so we build nothing for it.
+**Its Health tab button replaces our "AB" button.** v0.9 had an "AB" button in its own panel. Antibodies adds its own "Knox infection" button to vanilla's `ISHealthPanel` (the Health tab) and a Hygiene tab to the character window, and we keep both, so we build nothing for it. Its Hygiene view sizes the window to its own width (about 400), narrower than the tabs once ours are added, so the character window is kept at least as wide as all its tabs (`Client/CharacterWindow`).
 
 **Knox:** it delays and cures the vanilla Knox infection by writing vanilla's infection time and flags (`setInfectionTime`, `setInfected(false)`, part flags). We leave vanilla as the owner of Knox and our `knox_infection` display only mirrors it, so a delay lowers the shown stage and a cure shows as recovered. Both it and we read the infection time as the character's **hours survived**.
 
