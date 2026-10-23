@@ -225,6 +225,46 @@ insulate("character window", function()
         assert.equal("UI_EHR_Tab_EHR", activeName())
     end)
 
+    it("opens vanilla's treatment menu for a Monitor body part through the window's Health panel", function()
+        build()
+        local part, menus = { name = "Hand_L" }, {}
+        local health = window.healthView
+        function health:getAbsoluteX() return 100 end
+        function health:getAbsoluteY() return 40 end
+        function health:getPatient()
+            return { getBodyDamage = function()
+                return { getBodyPart = function(_, t) return t == "Hand_L" and part or nil end }
+            end }
+        end
+        function health:doBodyPartContextMenu(bp, x, y) menus[#menus + 1] = { bp, x, y } end
+        local speed = 1
+        _G.UIManager = { getSpeedControls = function() return { getCurrentGameSpeed = function() return speed end } end }
+        _G.getDebug = function() return false end
+        window.panel:activateView("UI_EHR_Tab_EHR")
+        window.ehrMonitorView:treat("Hand_L", 350, 240)
+        assert.same({ { part, 250, 200 } }, menus)
+        assert.equal("UI_EHR_Tab_EHR", activeName())     -- stays on the Monitor (issue #1)
+        -- Paused: nothing, as on vanilla's Health tab.
+        speed = 0
+        window.ehrMonitorView:treat("Hand_L", 350, 240)
+        assert.equal(1, #menus)
+    end)
+
+    it("treats a Monitor body part with items dropped on it through the window's Health panel", function()
+        build()
+        local part, drops = { name = "Foot_R" }, {}
+        local health = window.healthView
+        function health:getPatient()
+            return { getBodyDamage = function()
+                return { getBodyPart = function(_, t) return t == "Foot_R" and part or nil end }
+            end }
+        end
+        function health:dropItemsOnBodyPart(bp, items) drops[#drops + 1] = { bp, items } end
+        local bandage = { type = "Bandage" }
+        window.ehrMonitorView:treatWith("Foot_R", { bandage })
+        assert.same({ { part, { bandage } } }, drops)
+    end)
+
     it("opens the handbook with J and undoes vanilla's Info toggle from the same press", function()
         build()
         Keys.onKey(Keyboard.KEY_J)
