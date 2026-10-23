@@ -54,6 +54,7 @@ Contents/mods/ExtensiveHealthRedone/   the mod (the repo root is the Workshop it
   42/media/                            versioned content: scripts, sandbox options, Lua, translations
   common/media/                        version-independent assets: textures, sounds, models, UI icons
 tests/                                 busted specs (offline, never shipped)
+tests/e2e/                             dev-only test mods for multiplayer end-to-end runs (never shipped)
 tools/                                 dev scripts (tools/lib: helpers shared by tools and tests)
 preview.png                            Workshop thumbnail (256x256), copied next to Contents/ when uploading
 docs/original-author-guides/           the original author's guides: the behaviour spec
@@ -132,6 +133,12 @@ Lua 5.1 is used rather than LuaJIT because it is closer to Kahlua, the game's Lu
 
 `tests/support/fake_game.lua` stands in for the game API, so `tests/wiring_spec.lua` can run the server and client
 wiring end to end in single-player mode. It is not a game: anything it doesn't fake fails loudly.
+
+`tests/e2e/` holds dev-only test mods for a real dedicated server with game clients (the `pz-mp-e2e` bench, which
+keeps its server and clients in `.cache/pz-e2e/`). Each mod requires the bench's `PZE2EHarness` and this mod.
+`EHRExamTreatE2E` checks that a doctor treats a remote patient from the exam window (issue #3). It needs two clients
+(`admin` the doctor, `player2` the patient), standing together (`teleport "player2" "admin"` on the server console),
+and a world without zombies, since attacks cancel the treatment.
 
 `tools/test.sh` first runs `tools/check-kahlua.lua`, which rejects Lua the game can't run: anything that fails
 `luac5.1 -p` (goto, `//`, bitwise operators) and uses of `io`, `os`, `debug`, `load` and 5.2+ library functions.

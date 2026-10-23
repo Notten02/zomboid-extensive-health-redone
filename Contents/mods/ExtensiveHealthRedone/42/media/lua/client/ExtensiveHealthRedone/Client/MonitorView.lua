@@ -14,9 +14,11 @@
 --
 -- The same view draws another player's Monitor in an exam window (Client/Exam): there a source replaces the local
 -- mirror. MonitorView:new(x, y, playerNum, source) with
---   source = { subject = IsoPlayer (the diagram's body shape), read = function() return model, overall end }
--- reads a finished model (built by the server with the doctor's knowledge) instead of building one, and the diagram's
--- right click does nothing (the doctor's own Health panel is not the patient's). The window owns the controller then.
+--   source = { subject = IsoPlayer (the diagram's body shape), read = function() return model, overall end,
+--              health = function(bodyPartType) return ISHealthPanel, BodyPart end (optional) }
+-- reads a finished model (built by the server with the doctor's knowledge) instead of building one, and the diagram
+-- treats through source.health's panel (the patient's), never the doctor's own; without it, it does not treat. The
+-- window owns the controller then.
 
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISButton"
@@ -198,10 +200,13 @@ function MonitorView:openHealth()
     end
 end
 
--- The character window's own vanilla Health panel and the patient's body part, for treatment from the diagram. Not
--- from an exam.
+-- The vanilla Health panel and the patient's body part for treatment from the diagram: the character window's own, or
+-- in an exam the one the source provides (nil: none).
 function MonitorView:healthPart(bodyPartType)
     if self.source then
+        if self.source.health then
+            return self.source.health(bodyPartType)
+        end
         return nil
     end
     local window = getPlayerInfoPanel(self.playerNum)

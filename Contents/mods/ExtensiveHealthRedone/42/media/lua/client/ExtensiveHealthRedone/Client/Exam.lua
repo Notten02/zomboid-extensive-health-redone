@@ -9,7 +9,9 @@
 -- The exam window: a collapsible window titled with the patient's name, one per patient (several patients at once
 -- are fine), drawing the server's model with the EHR Monitor's own view (Client/MonitorView with a source), compact
 -- or expanded like the Monitor tab. Its Administer button lists what the doctor can give this patient (Client/Give;
--- each dose asks its own consent). It sends "exam.keep" every KEEP_SECONDS while open, and closes on X (telling the
+-- each dose asks its own consent). Wounds are treated from its diagram as from the Monitor's (right click, items dropped
+-- on a part) through vanilla's treatment menu for the patient; the exam's yes stands for vanilla's Medical Check
+-- request (see Treatment below). It sends "exam.keep" every KEEP_SECONDS while open, and closes on X (telling the
 -- server), on "examEnd" from the server, on the doctor's death, and when the two are out of range here.
 -- Controller: the window takes the focus; B closes, A opens Administer, X switches compact/expanded, Y opens the
 -- handbook, d-pad up/down picks a body part, left/right scroll the details.
@@ -18,6 +20,7 @@
 
 require "ISUI/ISCollapsableWindowJoypad"
 require "ISUI/ISButton"
+require "XpSystem/ISUI/ISHealthPanel"
 
 local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"
 local Client = require "ExtensiveHealthRedone/Client/Client"
@@ -31,6 +34,7 @@ local Exam = {}
 
 Exam.RANGE = 3              -- Server/Exam.RANGE (Server/Consent.RANGE)
 Exam.KEEP_SECONDS = 30      -- well inside the server's 300 s idle limit
+Exam.TREAT_RANGE = 2        -- vanilla's Medical Check window: within 2 tiles each way (ISHealthPanel:update)
 
 -- Why the server ended an exam -> what the doctor reads ("closed": the doctor's own doing, nothing to say).
 local END_TEXT = {
@@ -217,6 +221,8 @@ Events.OnFillWorldObjectContextMenu.Add(fill)
 ---@field keptAt number
 ---@field view ExtensiveHealthRedoneMonitorView
 ---@field administerButton ISButton
+---@field health ISHealthPanel?  the patient's vanilla Health panel for treatment, made on first use
+---@field vanillaOpen boolean?   vanilla's Medical Check window for the patient was open last frame
 ---@field drawJoypadFocus boolean?
 local Window = ISCollapsableWindowJoypad:derive("ExtensiveHealthRedoneExamWindow")
 
@@ -248,6 +254,9 @@ function Window:createChildren()
         read = function()
             return window.model, window.overall
         end,
+        health = function(bodyPartType)
+            return window:healthPart(bodyPartType)
+        end,
     }
     self.view = MonitorView:new(0, self:titleBarHeight(), self.playerNum, source)
     self.view:initialise()
@@ -264,6 +273,71 @@ function Window:setModel(model, overall)
     self.model = model
     self.overall = overall
     self.view:markStale()
+end
+
+-- Treatment ---------------------------------------------------------------------------------------------------------
+-- Through a vanilla ISHealthPanel set up as vanilla's Medical Check sets one up (ISMedicalCheckAction:perform): the
+-- patient's panel with the doctor as its other player, so vanilla's handlers, timed actions and other mods' additions
+-- all apply. It is never shown, so the checks its update() makes are made here: the doctor within TREAT_RANGE (the
+-- exam itself allows RANGE), and the patient's body damage arriving. In MP the doctor's client receives a remote
+-- patient's body damage only while it asks for it: from the window opening to its closing. Asking is not repeated at
+-- treatment time (a menu built right after asking can find the remote body empty); instead the window asks again when
+-- vanilla's own Medical Check window for the same patient closes, since that stops the updates.
+
+local function remote(patient)
+    return isClient() and not patient:isLocalPlayer()
+end
+
+-- Vanilla's Medical Check window for this patient is open (it receives the same updates).
+local function vanillaWindowOpen(patient)
+    local window = ISMedicalCheckAction and ISMedicalCheckAction.getHealthWindowForPlayer(patient)
+    return window ~= nil and window:getIsVisible()
+end
+
+function Window:receiveBodyDamage(on)
+    if not remote(self.patient) then
+        return
+    end
+    if on then
+        self.doctor:startReceivingBodyDamageUpdates(self.patient)
+    elseif not vanillaWindowOpen(self.patient) then
+        self.doctor:stopReceivingBodyDamageUpdates(self.patient)
+    end
+end
+
+-- Each frame: vanilla's Medical Check window for the patient just closed, so its updates stopped; ask again.
+function Window:watchVanillaWindow()
+    local open = vanillaWindowOpen(self.patient)
+    if self.vanillaOpen and not open then
+        self:receiveBodyDamage(true)
+    end
+    self.vanillaOpen = open
+end
+
+-- Within vanilla's treatment reach: TREAT_RANGE tiles each way on the same floor, or in the same vehicle.
+function Window:inTreatRange()
+    local d = Exam.distance(self.doctor, self.patient)
+    return d ~= nil and (d == 0 or math.abs(self.doctor:getX() - self.patient:getX()) <= Exam.TREAT_RANGE
+        and math.abs(self.doctor:getY() - self.patient:getY()) <= Exam.TREAT_RANGE)
+end
+
+-- The patient's vanilla Health panel and body part for the diagram's treatment (Client/MonitorView), or nil with a
+-- notice beyond reach.
+function Window:healthPart(bodyPartType)
+    if not self:inTreatRange() then
+        HaloTextHelper.addBadText(self.doctor, getText("UI_EHR_Context_TooFar"))
+        return nil
+    end
+    if not self.health then
+        local health = ISHealthPanel:new(self.patient, 0, 0, 400, 400)
+        health:initialise()
+        health:instantiate()
+        health:setOtherPlayer(self.doctor)
+        self.health = health
+    end
+    self.health.doctorLevel = self.doctor:getPerkLevel(Perks.Doctor)
+    local body = remote(self.patient) and self.patient:getBodyDamageRemote() or self.patient:getBodyDamage()
+    return self.health, body:getBodyPart(bodyPartType)
 end
 
 -- Why the window must close here, or nil.
@@ -288,6 +362,7 @@ function Window:prerender()
         Exam.close(self.id, true, reason)
         return
     end
+    self:watchVanillaWindow()
     local now = getTimestampMs()
     if now - self.keptAt >= Exam.KEEP_SECONDS * 1000 then
         self.keptAt = now
@@ -415,6 +490,7 @@ function Exam.open(doctor, ref)
     window:setVisible(true)
     window:addToUIManager()
     window:bringToTop()
+    window:receiveBodyDamage(true)
     if JoypadState.players[playerNum + 1] then
         setJoypadFocus(playerNum, window)
     end
@@ -430,6 +506,7 @@ function Exam.close(id, notify, reason)
     windows[id] = nil
     window:setVisible(false)
     window:removeFromUIManager()
+    window:receiveBodyDamage(false)
     local doctor = window.doctor
     if notify then
         Client.send(doctor, "exam.close", { target = window.ref })

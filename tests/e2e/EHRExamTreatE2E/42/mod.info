@@ -1,0 +1,7 @@
+name=EHR exam treatment E2E test (dev only)
+id=EHRExamTreatE2E
+description=Dev-only end-to-end test: a doctor treats a remote patient's wounds from the EHR exam window (issue #3).
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness,\ExtensiveHealthRedone

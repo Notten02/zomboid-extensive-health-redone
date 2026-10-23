@@ -179,7 +179,9 @@ The Knox infection is never taught by radio.
 - **The server decides** every roll, item use and dose. Medical timers do not run while a player is offline.
 - **Examine Health** (right-click a player, after vanilla's Medical Check): they must be within 3 tiles and accept. The
   doctor then sees what the patient's own Monitor would show, limited by the doctor's knowledge. The session lasts about
-  5 minutes while the window is open.
+  5 minutes while the window is open. Treat the patient's wounds from the window's body diagram, within 2 tiles:
+  right-click a body part for vanilla's treatment menu, or drag an item from your inventory onto it. Their yes to the
+  exam covers this, so vanilla's separate Medical Check is not needed.
 - **Giving medicine, blood or saline** asks the patient first, one dose or item at a time, with a 45 second prompt.
   **Stitching another player** asks too. Teas and drinks cannot be given.
 - **Admin chat commands**, for roles with the medical-cheat capability (admin, moderator, GM; not observer):
