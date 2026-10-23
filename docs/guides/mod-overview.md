@@ -49,7 +49,8 @@ Monitor opens compact or full, and hide or show the EHR moodles.
 
 The **EHR Monitor** and **Immune System** tabs sit inside vanilla's character window. The vanilla **Health** tab
 stays beside them and is still where you bandage, disinfect, stitch, splint and remove glass or bullets, so wound items
-from other mods keep working.
+from other mods keep working. You can also treat from the Monitor's body diagram: right-click a body part for vanilla's
+treatment menu, or drag an item from your inventory onto it.
 
 The Monitor shows what your character can work out:
 - active illnesses, with their stage, time left and treatment as your knowledge allows,

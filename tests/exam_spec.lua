@@ -300,6 +300,8 @@ insulate("examining another player", function()
         assert.equal(100, window.view.overall)
         assert.equal(msg.model.parts.Head.value, window.view.diagram.values.Head)
         window.view:openHealth()          -- not the doctor's own Health tab (getPlayerInfoPanel would throw)
+        window.view:treat("Head", 0, 0)   -- nor the doctor's own treatment menu
+        window.view:treatWith("Head", {}) -- nor treatment with the doctor's dropped items
     end)
 
     it("names a condition only as far as the DOCTOR knows it, and sends nothing else of the patient", function()

@@ -5,8 +5,9 @@
 --
 -- Compact (blood, overview, body) or expanded (plus details) follows the OpenHealthPanelCompact mod option each time
 -- the tab is opened; the +/- button switches. The model is rebuilt when the mirror changes and at most once a real
--- second otherwise; drawing only reads it. Treatment stays on vanilla's Health tab: right click on the diagram, or A on
--- a controller, opens it.
+-- second otherwise; drawing only reads it. Treatment is vanilla's, through the window's own Health panel (so other mods'
+-- additions apply too): right click on a part of the diagram opens vanilla's treatment menu for it in place, items
+-- dragged from the inventory onto a part treat it as on vanilla's Health tab, and A on a controller opens that tab.
 --
 -- Controller: B closes, LB/RB switch tabs, d-pad up/down picks a body part, left/right scroll the details, X switches
 -- compact/expanded, Y opens the handbook.
@@ -15,7 +16,7 @@
 -- mirror. MonitorView:new(x, y, playerNum, source) with
 --   source = { subject = IsoPlayer (the diagram's body shape), read = function() return model, overall end }
 -- reads a finished model (built by the server with the doctor's knowledge) instead of building one, and the diagram's
--- right click does nothing (the doctor's own Health tab is not the patient's). The window owns the controller then.
+-- right click does nothing (the doctor's own Health panel is not the patient's). The window owns the controller then.
 
 require "ISUI/ISPanelJoypad"
 require "ISUI/ISButton"
@@ -59,13 +60,27 @@ local SCHEME = {
 local WALK = { "Head", "Neck", "Torso_Upper", "Torso_Lower", "Groin", "UpperArm_L", "UpperArm_R", "ForeArm_L",
     "ForeArm_R", "Hand_L", "Hand_R", "UpperLeg_L", "UpperLeg_R", "LowerLeg_L", "LowerLeg_R", "Foot_L", "Foot_R" }
 
--- The diagram: vanilla's ISBodyPartPanel, read-only; right click opens vanilla's Health tab.
+-- The diagram: vanilla's ISBodyPartPanel, read-only; right click on a part opens vanilla's treatment menu for it, and
+-- items dropped on a part treat it.
 ---@class ExtensiveHealthRedoneMonitorDiagram : ISBodyPartPanel
 local Diagram = ISBodyPartPanel:derive("ExtensiveHealthRedoneMonitorDiagram")
 
 function Diagram:onRightMouseUp(x, y)
     ISBodyPartPanel.onRightMouseUp(self, x, y)
-    self.functionTarget:openHealth()
+    local bp = self:getPartForCoordinate(x, y)
+    if bp then
+        self.functionTarget:treat(bp.bodyPartType, self:getAbsoluteX() + x, self:getAbsoluteY() + y)
+    end
+end
+
+function Diagram:onMouseUp(x, y)
+    ISBodyPartPanel.onMouseUp(self, x, y)
+    ---@diagnostic disable-next-line: undefined-field
+    local dragging = ISMouseDrag.dragging
+    local bp = dragging and self:getPartForCoordinate(x, y)
+    if bp then
+        self.functionTarget:treatWith(bp.bodyPartType, ISInventoryPane.getActualItems(dragging))
+    end
 end
 
 ---@class ExtensiveHealthRedoneMonitorView : ISPanelJoypad
@@ -180,6 +195,37 @@ function MonitorView:openHealth()
         if JoypadState.players[self.playerNum + 1] then
             setJoypadFocus(self.playerNum, window.panel:getActiveView())
         end
+    end
+end
+
+-- The character window's own vanilla Health panel and the patient's body part, for treatment from the diagram. Not
+-- from an exam.
+function MonitorView:healthPart(bodyPartType)
+    if self.source then
+        return nil
+    end
+    local window = getPlayerInfoPanel(self.playerNum)
+    local health = window and window.healthView
+    if not health then
+        return nil
+    end
+    return health, health:getPatient():getBodyDamage():getBodyPart(bodyPartType)
+end
+
+-- Vanilla's treatment menu for one body part at a screen position, as its Health tab's list opens it on right click
+-- (not while the game is paused unless in debug).
+function MonitorView:treat(bodyPartType, screenX, screenY)
+    local health, bodyPart = self:healthPart(bodyPartType)
+    if health and bodyPart and (UIManager.getSpeedControls():getCurrentGameSpeed() ~= 0 or getDebug()) then
+        health:doBodyPartContextMenu(bodyPart, screenX - health:getAbsoluteX(), screenY - health:getAbsoluteY())
+    end
+end
+
+-- Items dropped on one body part, as on vanilla's Health tab: the first treatment that takes them runs.
+function MonitorView:treatWith(bodyPartType, items)
+    local health, bodyPart = self:healthPart(bodyPartType)
+    if health and bodyPart then
+        health:dropItemsOnBodyPart(bodyPart, items)
     end
 end
 
