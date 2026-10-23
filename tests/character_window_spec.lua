@@ -98,9 +98,9 @@ insulate("character window", function()
     -- Vanilla's window and tab panel, toggling like ISCharacterInfoWindow.toggleView.
     _G.xpSystemText = { info = "Info", skills = "Skills", health = "Health" }
     local function newTabPanel()
-        local panel = { viewList = {} }
+        local panel = { viewList = {}, x = 0, width = 400 }
         function panel:addView(name, view)
-            self.viewList[#self.viewList + 1] = { name = name, view = view }
+            self.viewList[#self.viewList + 1] = { name = name, view = view, tabWidth = 60 }
             self.active = self.active or view
         end
         function panel:getView(name)
@@ -110,6 +110,14 @@ insulate("character window", function()
         end
         function panel:getActiveView() return self.active end
         function panel:activateView(name) self.active = self:getView(name) or self.active end
+        function panel:setWidth(w) self.width = w end
+        function panel:getWidth() return self.width end
+        function panel:getX() return self.x end
+        function panel:getWidthOfAllTabs()
+            local width = #self.viewList - 1
+            for _, v in ipairs(self.viewList) do width = width + v.tabWidth end
+            return width
+        end
         return panel
     end
     _G.ISCharacterInfoWindow = {}
@@ -192,6 +200,23 @@ insulate("character window", function()
         assert.equal(4, #window.panel.viewList)
         assert.is_nil(window.ehrImmuneView)
         game.sandbox.ImmunitySystemEnabled = nil
+    end)
+
+    it("never lets a narrow view shrink the window below its tabs (issue #2)", function()
+        build()
+        window.panel.parent = window
+        function window:setWidth(w) self.width = w end
+        -- A view sizing itself like vanilla's ISUIElement:setWidthAndParentWidth (Antibodies' Hygiene at 400).
+        local function viewWidth(w)
+            window.panel:setWidth(0 + w)
+            window:setWidth(window.panel:getX() + window.panel:getWidth())
+        end
+        local tabs = window.panel:getWidthOfAllTabs()
+        viewWidth(tabs - 100)
+        assert.equal(tabs, window.panel.width)
+        assert.equal(tabs, window.width)
+        viewWidth(tabs + 200)
+        assert.equal(tabs + 200, window.width)
     end)
 
     it("opens the EHR Monitor where vanilla opens Health, and closes it on the second press", function()
