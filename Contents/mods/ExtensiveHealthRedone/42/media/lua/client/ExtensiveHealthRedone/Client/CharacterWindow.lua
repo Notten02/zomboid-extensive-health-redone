@@ -40,10 +40,11 @@ end
 -- sizes its views for its own five tabs only. With our tabs and other mods' (Antibodies' Hygiene, made at the window's
 -- starting 400) a narrow view shrank the window below its tab strip and left the strip scrolled (issue #2). The tab
 -- panel, and so the window, is never narrower than all its tabs.
+-- +1 pixel to the calculation fixes the needlesly generated scroll arrow (issue #8)
 local function keepTabsInView(panel)
     local setWidth = panel.setWidth
     function panel:setWidth(w)
-        setWidth(self, math.max(w, self:getWidthOfAllTabs()))
+        setWidth(self, math.max(w, self:getWidthOfAllTabs()+1))
     end
 end
 
