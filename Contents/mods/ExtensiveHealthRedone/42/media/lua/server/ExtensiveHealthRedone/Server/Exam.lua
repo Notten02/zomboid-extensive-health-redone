@@ -18,8 +18,9 @@
 --
 -- The model is built here, not on the doctor's client, so nothing beyond it leaves the server: not the patient's
 -- knowledge, immunity, Knox cure internals, mind, effects or meta sections, and no disease name the doctor can't
--- tell. It is resent when the patient's shown sections change (Runtime.onFlush) and each game minute (vitals and body
--- parts move without a section change), at most once a real second per session.
+-- tell. It is resent when the patient's shown sections change (Runtime.onFlush), when what the body diagram shows of
+-- the patient's vanilla body changes (a bandage, a splint: checked every WATCH_SECONDS) and each game minute (vitals
+-- move without a section change), at most once a real second per session.
 
 if isClient() then
     return
@@ -31,6 +32,8 @@ local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"
 local Tables = require "ExtensiveHealthRedone/Core/Tables"
 local Watch = require "ExtensiveHealthRedone/Game/Watch"
 local BodyFacts = require "ExtensiveHealthRedone/Game/BodyFacts"
+local BodyParts = require "ExtensiveHealthRedone/Data/BodyParts"
+local BodyStatus = require "ExtensiveHealthRedone/UI/BodyStatus"
 local Monitor = require "ExtensiveHealthRedone/UI/Monitor"
 local defs = require "ExtensiveHealthRedone/Conditions/Registry"
 local Consent = require "ExtensiveHealthRedone/Server/Consent"
@@ -45,6 +48,7 @@ local Exam = {}
 Exam.RANGE = Consent.RANGE
 Exam.IDLE_SECONDS = 300     -- v0.9: 5 min, renewed while the panel is open
 Exam.REFRESH_SECONDS = 1    -- at most one model per session per real second
+Exam.WATCH_SECONDS = 0.25   -- how often the patients' bodies are compared with what their doctors last got
 
 -- The patient's sections the model reads. Knowledge is the doctor's (UI/Monitor gates names, stages and progress
 -- with state.knowledge and the First Aid level).
@@ -55,7 +59,8 @@ for _, name in ipairs(Exam.PATIENT_SECTIONS) do
 end
 
 -- sessions[patientKey][doctorKey] = { expires, sentAt (real seconds), due (a model waits for the throttle),
---                                     doctor, patient (the IsoPlayers it started with), ref (the patient's ref) }
+--                                     doctor, patient (the IsoPlayers it started with), ref (the patient's ref),
+--                                     body (bodySignature of the last model) }
 local sessions = {}
 -- Sessions with a model waiting for the throttle (checked on every tick while > 0).
 local dueCount = 0
@@ -107,6 +112,21 @@ function Exam.model(patient, patientState, doctor, doctorState)
     return model
 end
 
+-- What the body diagram shows of a patient's vanilla body, as one string: each part's status labels (UI/BodyStatus,
+-- without our wound infection, which changes a section). Health, pain and stiffness count only where they cross a
+-- band the diagram shows, so a slow bleed doesn't resend the model every second.
+local function bodySignature(patient)
+    local parts = BodyFacts.read(patient)
+    local out = {}
+    for _, name in ipairs(BodyParts.names) do
+        out[#out + 1] = name
+        for _, status in ipairs(BodyStatus.part(parts[name]).statuses) do
+            out[#out + 1] = status.label.key
+        end
+    end
+    return table.concat(out, ",")
+end
+
 local function send(patientKey, doctorKey, session)
     if session.due then
         session.due = false
@@ -118,6 +138,7 @@ local function send(patientKey, doctorKey, session)
         return
     end
     session.sentAt = Env.realSeconds()
+    session.body = bodySignature(session.patient)
     Transport.toClient(session.doctor, "examModel", {
         target = session.ref,
         patient = patientKey,
@@ -323,12 +344,34 @@ Runtime.scheduler:every("exam", 1, function()
     Exam.check(true)
 end, { coalesce = true })
 
+-- Vanilla treatment changes the patient's body without a section change, so it would wait for the next game minute
+-- (seconds of real time): a session whose patient's diagram no longer matches its last model gets a new one.
+local function watchBodies(now)
+    for patientKey, byDoctor in pairs(sessions) do
+        local signature
+        for doctorKey, session in pairs(byDoctor) do
+            if not session.due and endReason(patientKey, doctorKey, session, now) == nil then
+                signature = signature or bodySignature(session.patient)
+                if signature ~= session.body then
+                    refresh(patientKey, doctorKey, session)
+                end
+            end
+        end
+    end
+end
+
+local watchedAt = -1e9
+
 -- Models held back by the throttle go out as soon as it allows.
 Events.OnTick.Add(function()
+    local now = Env.realSeconds()
+    if now - watchedAt >= Exam.WATCH_SECONDS then
+        watchedAt = now
+        watchBodies(now)
+    end
     if dueCount <= 0 then
         return
     end
-    local now = Env.realSeconds()
     local ready = {}
     Exam.each(function(patientKey, doctorKey, session)
         if session.due and now - session.sentAt >= Exam.REFRESH_SECONDS then
