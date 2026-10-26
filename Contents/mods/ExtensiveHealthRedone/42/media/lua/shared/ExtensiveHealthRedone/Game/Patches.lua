@@ -26,7 +26,7 @@ end
 
 for _, def in ipairs(definitions) do
     if onThisSide(def.side) then
-        points:define(def.name, def.path)
+        points:define(def.name, def.path, def.named)
     else
         otherSide[def.name] = true
     end
