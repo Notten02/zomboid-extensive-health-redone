@@ -1,0 +1,7 @@
+name=EHR exam refresh delay E2E test (dev only)
+id=EHRExamDelayE2E
+description=Dev-only end-to-end test: how long a vanilla bandage on the patient takes to show in the doctor's EHR exam window (issue #12).
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness,\ExtensiveHealthRedone

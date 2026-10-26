@@ -436,6 +436,37 @@ insulate("examining another player", function()
         state(patient).blood.volume = 5000
     end)
 
+    it("refreshes when vanilla treatment changes the patient's body, without waiting for the game minute", function()
+        game.realMs = game.realMs + 1000
+        game.events.OnTick.trigger()                          -- the restored blood volume goes out
+        local count = #messages("examModel")
+        local arm = patient.body:part("ForeArm_L")
+        -- Health moving inside a band the diagram shows the same way sends nothing.
+        arm.health = 95
+        game.realMs = game.realMs + 1000
+        game.events.OnTick.trigger()
+        assert.equal(count, #messages("examModel"))
+        arm.flags.bandaged = true
+        game.realMs = game.realMs + 250
+        game.events.OnTick.trigger()
+        assert.equal(count + 1, #messages("examModel"))
+        assert.equal("bandage", last("examModel").model.parts.ForeArm_L.statuses[1].id)
+        -- Still at most once a real second.
+        arm.flags.bleeding = true
+        game.realMs = game.realMs + 250
+        game.events.OnTick.trigger()
+        assert.equal(count + 1, #messages("examModel"))
+        game.realMs = game.realMs + 750
+        game.events.OnTick.trigger()
+        assert.equal(count + 2, #messages("examModel"))
+        assert.equal("bleeding", last("examModel").model.parts.ForeArm_L.statuses[1].id)
+        arm.flags, arm.health = {}, 100
+        game.realMs = game.realMs + 1000
+        game.events.OnTick.trigger()
+        assert.equal(count + 3, #messages("examModel"))
+        assert.same({}, last("examModel").model.parts.ForeArm_L.statuses)
+    end)
+
     it("keeps the session alive with exam.keep and ends it when idle", function()
         local session = Exam.sessions["sp:1"]["sp:0"]
         local now = game.realMs / 1000
