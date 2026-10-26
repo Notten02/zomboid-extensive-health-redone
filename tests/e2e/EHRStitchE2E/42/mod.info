@@ -1,0 +1,7 @@
+name=EHR stitch E2E test (dev only)
+id=EHRStitchE2E
+description=Dev-only end-to-end test: stitching a wound and removing the stitch on a dedicated server (issue #10).
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness,\ExtensiveHealthRedone

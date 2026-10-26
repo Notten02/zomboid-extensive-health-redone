@@ -130,7 +130,72 @@ describe("PatchPoints", function()
         assert.has_error(function() points:on("missing", { name = "a" }) end)
         points:on("eat", { name = "a" })
         assert.has_error(function() points:on("eat", { name = "a" }) end)
+        assert.has_error(function() points:define("make", "ISStitch.new") end)
     end)
+
+    it("wraps a constructor through its named adapter, so the wrapper keeps vanilla's parameters", function()
+        local Owner = { new = function(_, a, b) return { a = a, b = b } end }
+        local points = PatchPoints.new()
+        local adapted
+        points:define("make", "Owner.new", function(call)
+            adapted = function(self, a, b) return call(self, a, b) end
+            return adapted
+        end)
+        local seen
+        points:on("make", { name = "watch", before = function(_, a) seen = a end })
+        points:on("make", { name = "swap", intercept = function(_, a) return a == "swap", "swapped" end })
+        points:install(function() return Owner end)
+        assert.equal(adapted, Owner.new)
+        assert.same({ a = 1, b = 2 }, Owner:new(1, 2))
+        assert.equal(1, seen)
+        assert.equal("swapped", Owner:new("swap"))
+    end)
+end)
+
+-- B42 sends an MP client's timed action to the server as the fields named by new()'s parameters (issue #10), so each
+-- constructor point's adapter must use vanilla's exact names. Checked against the Umbrella stubs when they are there.
+describe("constructor patch points", function()
+    local STUBS = ".cache/umbrella/library/lua/"
+
+    local function read(path)
+        local f = io.open(path, "r")
+        if not f then return nil end
+        local text = f:read("*a")
+        f:close()
+        return text
+    end
+
+    local function vanillaParams(class)
+        for _, side in ipairs({ "shared", "client", "server" }) do
+            local text = read(STUBS .. side .. "/TimedActions/" .. class .. ".lua")
+            local params = text and text:match("function " .. class .. ":new%s*%(([^)]*)%)")
+            if params then
+                return "self, " .. params
+            end
+        end
+        return nil
+    end
+
+    local source = read("Contents/mods/ExtensiveHealthRedone/42/media/lua/shared/ExtensiveHealthRedone/Data/PatchPoints.lua")
+    local definitions = require("ExtensiveHealthRedone/Data/PatchPoints")
+
+    for _, def in ipairs(definitions) do
+        local class = def.path:match("^([%w_]+)%.new$")
+        if class then
+            it(def.name .. " uses the parameter names of vanilla's " .. class .. ":new", function()
+                assert.is_function(def.named)
+                local entry = source:match('path = "' .. class .. '%.new".-named = function%(call%)(.-)end },')
+                local ours = entry and entry:match("return function%(([^)]*)%)")
+                assert.truthy(ours, "no named adapter found in Data/PatchPoints for " .. def.name)
+                local passed = entry:match("return call%(([^)]*)%)")
+                assert.equal(ours, passed, def.name .. " must pass its parameters on in order")
+                local vanilla = vanillaParams(class)
+                if vanilla then
+                    assert.equal(vanilla, ours)
+                end
+            end)
+        end
+    end
 end)
 
 describe("Log", function()

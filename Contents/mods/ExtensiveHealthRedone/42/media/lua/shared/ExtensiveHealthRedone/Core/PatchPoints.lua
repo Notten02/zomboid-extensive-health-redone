@@ -16,6 +16,11 @@
 -- original and the after listeners are then skipped. Used only for the few things Data/PatchPoints lists, each
 -- documented where registered. An intercept that throws is logged and treated as "not handled".
 --
+-- A timed action's new() needs named(call) in its definition: a function returning function(self, <vanilla's exact
+-- parameter names>) that passes them to call. B42 sends an MP client's action to the server as the fields named by
+-- new()'s parameters, read off the function itself, so a vararg wrapper sends nothing and the server rebuilds the
+-- action from nils (issue #10: every stitch stopped at once).
+--
 -- Listener order never depends on file load order. A listener that throws is logged and skipped; the vanilla method
 -- and the other listeners still run, because a bug in our code must not break a vanilla action.
 
@@ -28,8 +33,8 @@ function PatchPoints.new(log)
     return setmetatable({ points = {}, log = log or Log.silent }, PatchPoints)
 end
 
--- path: "Class.method" of a global table.
-function PatchPoints:define(name, path)
+-- path: "Class.method" of a global table. named: see the header; required for a "new" method.
+function PatchPoints:define(name, path, named)
     if self.points[name] then
         error("patch point " .. tostring(name) .. " is already defined", 2)
     end
@@ -37,7 +42,10 @@ function PatchPoints:define(name, path)
     if not owner then
         error("patch point path must look like Class.method: " .. tostring(path), 2)
     end
-    self.points[name] = { name = name, path = path, owner = owner, method = method, listeners = {} }
+    if method == "new" and type(named) ~= "function" then
+        error("patch point " .. tostring(name) .. " wraps a constructor and needs named parameters", 2)
+    end
+    self.points[name] = { name = name, path = path, owner = owner, method = method, named = named, listeners = {} }
 end
 
 local function byOrder(a, b)
@@ -93,7 +101,7 @@ local function wrap(self, point, original)
         end
         return { n = outcome.n - 2, unpack(outcome, 3, outcome.n) }
     end
-    return function(...)
+    local function wrapped(...)
         local listeners = point.listeners
         for i = 1, #listeners do
             local l = listeners[i]
@@ -115,6 +123,10 @@ local function wrap(self, point, original)
         end
         return unpack(results, 1, results.n)
     end
+    if point.named then
+        return point.named(wrapped)
+    end
+    return wrapped
 end
 
 -- Wraps every defined point whose target exists and isn't wrapped yet. Safe to call again later (for example once

@@ -2,6 +2,8 @@
 -- listeners to the name (see Game/Patches.lua). Adding a line here is the only way to patch vanilla Lua.
 -- side: "shared" (default), "client" (UI code; skipped on a dedicated server) or "server" (authority; skipped on MP
 -- clients). B42 timed actions run complete() on the authority, so effects hook complete().
+-- named: for a timed action's new(), a wrapper with vanilla's exact parameter names (Core/PatchPoints header). Copy
+-- them from vanilla's new(); tests/patch_points_spec checks them against the Umbrella stubs.
 --
 -- Outcome-changing intercepts are used for five things only: the stitch minigame, lockjaw refusing food, insomnia
 -- refusing sleep, the PrimaryHealthPanel option opening the EHR Monitor where vanilla opens its Health tab, and the
@@ -13,14 +15,24 @@ return {
     { name = "bandageComplete", path = "ISApplyBandage.complete", side = "server" },
     { name = "stitchComplete", path = "ISStitch.complete", side = "server" },
     -- Stitch minigame (Client/StitchMinigame): intercepts the vanilla stitch action to run the minigame first.
-    { name = "stitchNew", path = "ISStitch.new", side = "client" },
+    { name = "stitchNew", path = "ISStitch.new", side = "client",
+      named = function(call)
+          return function(self, character, otherPlayer, item, bodyPart, doIt)
+              return call(self, character, otherPlayer, item, bodyPart, doIt)
+          end
+      end },
     -- Eating: vanilla antibiotics on infected wounds (Server/Health); tetanus lockjaw refuses food (both sides).
     { name = "eatComplete", path = "ISEatFoodAction.complete", side = "server" },
     { name = "eatValid", path = "ISEatFoodAction.isValid", side = "client" },
     -- Food-borne diseases (Server/Food): eatComplete above, the partial bite of a cancelled meal, drinking from a
     -- container (taint read when the action is made) and from a world source.
     { name = "eatServerStop", path = "ISEatFoodAction.serverStop", side = "server" },
-    { name = "drinkFluidNew", path = "ISDrinkFluidAction.new", side = "server" },
+    { name = "drinkFluidNew", path = "ISDrinkFluidAction.new", side = "server",
+      named = function(call)
+          return function(self, character, item, percentage)
+              return call(self, character, item, percentage)
+          end
+      end },
     { name = "drinkFluidComplete", path = "ISDrinkFluidAction.complete", side = "server" },
     { name = "takeWaterComplete", path = "ISTakeWaterAction.complete", side = "server" },
     -- Pills: vanilla pills are medication (Server/Medication; painkillers also count toward addiction).
