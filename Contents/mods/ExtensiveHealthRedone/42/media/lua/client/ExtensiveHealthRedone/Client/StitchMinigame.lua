@@ -4,6 +4,9 @@
 -- vanilla stitch action then runs as usual, so other mods' stitching items still work.
 -- From v0.9 EHR_StitchMinigame.lua (docs/porting/phase3/stitch-minigame-and-b42-api.md, part A). Changes: the wobble
 -- runs on real time instead of frames, and moving or cancelling after starting counts as a dirty attempt (W34).
+-- Issue #10: retuned. v0.9's curve gave First Aid 0 about a 56 ms window to click a passing point (luck, not skill),
+-- clicks on the drawn target's edge missed, and it stopped improving at level 8. Now the curve runs to level 10, from
+-- about 150 ms at level 0 to over 2 s at level 10, and the hit area is the whole drawn target.
 -- Phase 9: the panel opens only once the server has opened a session (consent, a needle, a wound to stitch); for
 -- another player without consent the doctor is asked to request it first. The server, not this file, decides what a
 -- stitch does (Server/Health: SA-1 to SA-3).
@@ -51,7 +54,6 @@ end
 ---@field amplitude number
 ---@field speed number
 ---@field pointSize number
----@field activeSize number
 ---@field misses number
 ---@field index number
 ---@field flash number
@@ -84,13 +86,12 @@ function Panel:new(doctor, patient, item, bodyPart)
     o.backgroundColor = { r = 0.08, g = 0.05, b = 0.05, a = 0.95 }
     o.borderColor = { r = 0.6, g = 0.1, b = 0.1, a = 1 }
     local level = doctor:getPerkLevel(Perks.Doctor)
-    local f = math.min(8, math.max(0, level)) / 8
+    local f = math.min(10, math.max(0, level)) / 10
     o.maxMisses = Stitch.maxMisses(level)
-    o.tolerance = 7 + math.floor(f * 9 + 0.5)
-    o.amplitude = 34 - math.floor(f * 12 + 0.5)
-    o.speed = (0.150 - f * 0.080) * 60          -- radians per second (v0.9: per frame at about 60 fps)
+    o.tolerance = 11 + math.floor(f * 11 + 0.5)    -- hit radius in pixels; the active point is drawn this size
+    o.amplitude = 30 - math.floor(f * 16 + 0.5)
+    o.speed = 6.0 - f * 4.5                        -- radians per second
     o.pointSize = 4 + math.floor(f * 4 + 0.5)
-    o.activeSize = 6 + math.floor(f * 9 + 0.5)
     o.misses, o.index, o.flash = 0, 1, 0
     o.startMs = getTimestampMs()
     o.doctorX, o.doctorY = doctor:getX(), doctor:getY()
@@ -259,9 +260,9 @@ function Panel:render()
             end
             local r, g = 1, 0.9
             if self.flash < 0 then r, g = 1, 0.2 end
-            point(self, "PointActive", x, y, self.activeSize + 16, r, g, 0.3)
-            self:drawRectBorder(x - self.activeSize, y - self.activeSize, self.activeSize * 2,
-                self.activeSize * 2, 0.8, r, g, 0.3)
+            point(self, "PointActive", x, y, self.tolerance * 2, r, g, 0.3)
+            self:drawRectBorder(x - self.tolerance, y - self.tolerance, self.tolerance * 2,
+                self.tolerance * 2, 0.8, r, g, 0.3)
         else
             point(self, "PointIdle", x, y, self.pointSize + 10, 0.7, 0.7, 0.7)
         end
