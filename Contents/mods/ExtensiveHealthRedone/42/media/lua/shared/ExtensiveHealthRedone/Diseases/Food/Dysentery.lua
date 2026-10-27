@@ -36,6 +36,7 @@ local BLOOD_SYNC_ML = 10        -- sync the blood section when the loss since th
 local def = {
     enabledOption = "DysenteryEnabled", speedOption = "DiseaseSpeed",
     incubation = { 6, 12 }, duration = { 72, 120 }, baseSeverity = 0.6,
+    severityHidden = true,      -- no symptom scales with the severity, so the monitor shows no severity word
     effectsInStage1 = true,     -- v0.9: the stage-1 caps already apply during the incubation
     name = "UI_EHR_Disease_dysentery", knowledge = ID,
     lines = {

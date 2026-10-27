@@ -22,6 +22,7 @@
 --              onEnd(p, c, reason, defs): the one cleanup path for every way a condition ends ("recovered", "cured",
 --              "complication", "admin", "debug"), blockAfterCureHours
 --   Knowledge  knowledge = knowledge id, selfEvident (Conditions/Knowledge)
+--   Display    severityHidden = true: the monitor shows no severity word (its symptoms don't scale with severity)
 --   XP         xp = false: ending it gives no First Aid XP (p.xp("cure", id) otherwise)
 --
 -- Treatment: while p.treatment:curing(id), a condition holds its stage (the course cures it when it completes, in

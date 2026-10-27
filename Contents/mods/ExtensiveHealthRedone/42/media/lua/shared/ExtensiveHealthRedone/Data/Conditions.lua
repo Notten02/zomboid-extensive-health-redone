@@ -25,6 +25,7 @@ return {
     sepsis = {
         enabledOption = "SepsisEnabled", speedOption = "SepsisSpeed",
         incubation = { 6, 24 }, duration = { 48, 96 }, baseSeverity = 1.0,
+        severityHidden = true,      -- no symptom scales with the severity, so the monitor shows no severity word
         -- Untreated sepsis never ends on its own: stage 4 stays deadly. Treated, the course cures it (Phase 5).
         persistsAt = 4,
         effectsInStage1 = true,     -- guide: stage 1 is "feverish and weak"

@@ -115,12 +115,36 @@ describe("monitor: conditions", function()
         assert.equal("UI_EHR_Disease_gastroenteritis", r3.name.key)
         assert.equal("UI_EHR_StageUnknown", r3.detail.key)
         local r4 = row(build(s, { firstAid = 4 }), "gastroenteritis")
-        assert.equal("UI_EHR_StageNumber(2)", render(r4.detail))
+        assert.equal("UI_EHR_StageSeverityLevel(2,UI_EHR_SeverityLevel_Severe)", render(r4.detail))
         assert.is_nil(r4.progress)
         local r6 = row(build(s, { firstAid = 6 }), "gastroenteritis")
         -- Stage 2 half way: (1 + 0.5) / 4.
         assert.equal(0.375, r6.progress)
         assert.equal("UI_EHR_Status_Untreated", r6.status.key)
+    end)
+
+    it("names the severity as a word beside the stage, never as a number", function()
+        local s = state()
+        s.knowledge.diseases.gastroenteritis = true
+        start(s, "gastroenteritis", 2, 30)
+        local function level(severity)
+            s.conditions.active.gastroenteritis.severity = severity
+            return render(row(build(s, { firstAid = 4 }), "gastroenteritis").detail)
+        end
+        assert.equal("UI_EHR_StageSeverityLevel(2,UI_EHR_SeverityLevel_Mild)", level(0.45))
+        assert.equal("UI_EHR_StageSeverityLevel(2,UI_EHR_SeverityLevel_Moderate)", level(0.55))
+        assert.equal("UI_EHR_StageSeverityLevel(2,UI_EHR_SeverityLevel_Moderate)", level(0.84))
+        assert.equal("UI_EHR_StageSeverityLevel(2,UI_EHR_SeverityLevel_Severe)", level(0.85))
+    end)
+
+    it("shows only the stage for a condition whose symptoms don't scale with severity", function()
+        local s = state()
+        s.knowledge.diseases.sepsis = true
+        start(s, "sepsis", 2, 30)
+        assert.equal("UI_EHR_StageNumber(2)", render(row(build(s, { firstAid = 4 }), "sepsis").detail))
+        start(s, "hypothermia", 2, 30)
+        local r = row(build(s, { firstAid = 8 }), "hypothermia")
+        assert.equal("UI_EHR_StageNumber(2)", render(r.detail))
     end)
 
     it("says TREATING while a course cures it", function()

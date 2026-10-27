@@ -145,6 +145,7 @@ Delirium.def = {
     selfEvident = true,
     name = "UI_EHR_Disease_delirium",
     baseSeverity = 0.85,
+    severityHidden = true,      -- no symptom scales with the severity, so the monitor shows no severity word
     -- One stage, for good: it ends only through a cure.
     stages = { [1] = { 1, 1 } },
     persistsAt = 1,
