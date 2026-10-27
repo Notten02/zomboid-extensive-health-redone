@@ -135,7 +135,7 @@ describe("medicine recipe scripts", function()
             end
         end
         assert.is_true(categories.EHRMedicine)
-        for _, lang in ipairs({ "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "UA" }) do
+        for _, lang in ipairs({ "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "RU", "UA" }) do
             local text = LuaSource.read(LUA .. "shared/Translate/" .. lang .. "/IG_UI.json")
             for category in pairs(categories) do
                 assert.is_true(vanillaCategories[category] or text:find('"IGUI_CraftingCategories_' .. category .. '"%s*:') ~= nil,
@@ -373,7 +373,7 @@ describe("clean bandage pack", function()
     end)
 
     it("has a display name for every new recipe in every language", function()
-        for _, lang in ipairs({ "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "UA" }) do
+        for _, lang in ipairs({ "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "RU", "UA" }) do
             local text = LuaSource.read(LUA .. "shared/Translate/" .. lang .. "/Recipes.json")
             for name in pairs(mine) do
                 assert.truthy(text:find('"' .. name .. '"%s*:'), lang .. " has no name for " .. name)
