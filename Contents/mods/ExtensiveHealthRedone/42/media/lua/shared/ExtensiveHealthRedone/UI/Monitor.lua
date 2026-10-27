@@ -62,6 +62,27 @@ Monitor.EXPOSURE = {
         low = 5, medium = 50, high = 85, hiddenBy = { "common_cold", "pneumonia" } },
 }
 
+-- How hard a case hits, as a word beside the stage: severity (baseSeverity +- 0.15, Conditions/Engine) scales the
+-- symptoms. No number, so the reader gets a hint rather than the scale. Bands from the highest.
+Monitor.SEVERITY = {
+    { from = 0.85, key = "UI_EHR_SeverityLevel_Severe" },
+    { from = 0.55, key = "UI_EHR_SeverityLevel_Moderate" },
+    { from = 0, key = "UI_EHR_SeverityLevel_Mild" },
+}
+
+-- The severity word, or nil for a condition whose symptoms don't scale with it (no baseSeverity, or severityHidden).
+function Monitor.severityLevel(c, def)
+    local sev = tonumber(c.severity)
+    if not sev or def.baseSeverity == nil or def.severityHidden then
+        return nil
+    end
+    for _, band in ipairs(Monitor.SEVERITY) do
+        if sev >= band.from then
+            return band.key
+        end
+    end
+end
+
 local LEVEL_COLOR = { low = "yellow", medium = "orange", high = "red" }
 local LEVEL_KEY = { low = "UI_EHR_ExposureLevel_Low", medium = "UI_EHR_ExposureLevel_Medium",
     high = "UI_EHR_ExposureLevel_High" }
@@ -150,16 +171,20 @@ local function conditionRow(id, def, known)
     return row
 end
 
-local function stageDetail(row, id, c, known)
+local function stageDetail(row, id, c, known, def)
     if not known.stage then
         row.detail = Text.key("UI_EHR_StageUnknown")
         row.detailColor = "dim"
-    elseif id == "concussion" then
+        return
+    end
+    row.detailColor = "green"
+    local level = def and Monitor.severityLevel(c, def)
+    if id == "concussion" then
         row.detail = Text.key("UI_EHR_DiseaseDetail_StageTimeRest", c.stage)
-        row.detailColor = "green"
+    elseif level then
+        row.detail = Text.key("UI_EHR_StageSeverityLevel", c.stage, Text.key(level))
     else
         row.detail = Text.key("UI_EHR_StageNumber", c.stage)
-        row.detailColor = "green"
     end
 end
 
@@ -184,7 +209,7 @@ local function conditionRows(input, curing)
         if def then
             local known = Knowledge.of(input.state, def, input.firstAid)
             local row = conditionRow(id, def, known)
-            stageDetail(row, id, c, known)
+            stageDetail(row, id, c, known, def)
             if id == "delirium" and known.name then
                 row.description = Text.key("UI_EHR_DeliriumCourseRequired")
                 row.descriptionColor = "yellow"
