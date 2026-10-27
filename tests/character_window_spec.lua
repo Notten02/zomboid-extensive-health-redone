@@ -212,9 +212,11 @@ insulate("character window", function()
             window:setWidth(window.panel:getX() + window.panel:getWidth())
         end
         local tabs = window.panel:getWidthOfAllTabs()
+        -- One pixel wider than the tabs, or the strip shows a needless scroll arrow (issue #8).
+        local minWidth = tabs + 1
         viewWidth(tabs - 100)
-        assert.equal(tabs, window.panel.width)
-        assert.equal(tabs, window.width)
+        assert.equal(minWidth, window.panel.width)
+        assert.equal(minWidth, window.width)
         viewWidth(tabs + 200)
         assert.equal(tabs + 200, window.width)
     end)
