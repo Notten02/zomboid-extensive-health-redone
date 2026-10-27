@@ -90,6 +90,7 @@ end
 ---@field expanded boolean
 ---@field scrollY number
 ---@field contentH number
+---@field leftH number?    the left column's height as last drawn (the view grows to fit it)
 ---@field builtAt number
 ---@field selected string?
 ---@field model table      nil before the first snapshot (render checks)
@@ -544,13 +545,16 @@ end
 
 function MonitorView:draw()
     local w = math.max(self.expanded and (LEFT_W + RIGHT_W + PAD) or LEFT_W, Draw.tabsWidth(self))
+    -- At least HEIGHT, and tall enough for the left column as last drawn: its boxes grow with the font sizes and the
+    -- overview's lines, and a fixed height cut off the bottom of the body diagram (issue #14).
+    local h = math.max(HEIGHT, self.leftH or 0)
     self:setWidthAndParentWidth(w)
-    self:setHeightAndParentHeight(HEIGHT)
+    self:setHeightAndParentHeight(h)
     Draw.fitTabs(self)
     Draw.rect(self, 0, 0, self.width, self.height, C.background)
     if not self.model then
         self.diagram:setVisible(false)
-        Draw.text(self, getText("UI_EHR_Monitor_Waiting"), self.width / 2, HEIGHT / 2, "dim", UIFont.Medium, nil,
+        Draw.text(self, getText("UI_EHR_Monitor_Waiting"), self.width / 2, h / 2, "dim", UIFont.Medium, nil,
             "centre")
         return
     end
@@ -562,11 +566,12 @@ function MonitorView:draw()
     local rightW = w - LEFT_W - PAD
     y = self:drawBlood(PAD, y, leftW)
     y = self:drawOverview(PAD, y, leftW)
-    self:drawBody(PAD, y, leftW)
+    -- drawBody's bottom includes the 8 gap before a next box; the view ends PAD below the box instead.
+    self.leftH = self:drawBody(PAD, y, leftW) - 8 + PAD
     if self.expanded then
         local rx = LEFT_W
         local top = self.expandButton:getY() + self.expandButton:getHeight() + 8
-        local viewH = HEIGHT - top - PAD
+        local viewH = h - top - PAD
         self:setStencilRect(rx, top, rightW, viewH)
         self.contentH = self:drawDetails(rx, top - self.scrollY, rightW)
         self:clearStencilRect()
