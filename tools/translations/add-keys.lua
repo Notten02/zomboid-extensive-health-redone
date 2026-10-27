@@ -1,4 +1,4 @@
--- Adds new translation keys to one category file (default UI.json) in all 9 languages, keeping existing keys
+-- Adds new translation keys to one category file (default UI.json) in all 10 languages, keeping existing keys
 -- untouched. Run through tools/translations/add-keys.sh, which serialises concurrent runs with a lock.
 --
 --   lua5.1 tools/translations/add-keys.lua <keys.lua> [Category]
@@ -8,7 +8,7 @@
 -- as it is there (re-running is safe). Keys and their order are appended at the end of each file.
 
 local ROOT = "Contents/mods/ExtensiveHealthRedone/42/media/lua/shared/Translate/"
-local LANGS = { "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "UA" }
+local LANGS = { "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "RU", "UA" }
 
 local keysFile, category = arg[1], arg[2] or "UI"
 if not keysFile then

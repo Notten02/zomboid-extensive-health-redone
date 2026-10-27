@@ -7,7 +7,7 @@ local MOD = "Contents/mods/ExtensiveHealthRedone/"
 local MEDIA = MOD .. "42/media/"
 local COMMON = MOD .. "common/media/"
 local TRANSLATE = MEDIA .. "lua/shared/Translate/"
-local LANGS = { "EN", "CH", "CN", "ES", "FR", "IT", "JP", "PTBR", "UA" }
+local LANGS = { "EN", "CH", "CN", "ES", "FR", "IT", "JP", "PTBR", "RU", "UA" }
 local FILES = { "IG_UI", "ItemName", "Recipes", "Sandbox", "Tooltip", "UI" }
 
 local function read(path)

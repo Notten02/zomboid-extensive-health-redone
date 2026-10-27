@@ -43,8 +43,8 @@ describe("translations", function()
         end
     end)
 
-    it("have the ambient speech lines and the Mini Health companion texts in all nine languages", function()
-        local langs = { "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "UA" }
+    it("have the ambient speech lines and the Mini Health companion texts in all ten languages", function()
+        local langs = { "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "RU", "UA" }
         local wanted = {}
         for key in LuaSource.read(UI_JSON):gmatch('"(UI_EHR_Ambient_[%w_]+)"%s*:') do wanted[#wanted + 1] = key end
         for key in LuaSource.read(UI_JSON):gmatch('"(UI_EHR_Mini_[%w_]+)"%s*:') do wanted[#wanted + 1] = key end

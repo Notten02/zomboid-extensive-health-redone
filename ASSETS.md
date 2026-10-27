@@ -34,7 +34,7 @@ Both authors publicly opened their mods for others to continue. Their Workshop p
 | Item, recipe, sound, trait, profession and watch scripts | `42/media/scripts/` | 11 files |
 | Sandbox options | `42/media/sandbox-options.txt` | |
 | Trait and profession registrations | `42/media/registries.lua` | |
-| Translations (9 languages) | `42/media/lua/shared/Translate/` | 54 files |
+| Translations (10 languages) | `42/media/lua/shared/Translate/` | 60 files |
 
 ## Changes made on import
 

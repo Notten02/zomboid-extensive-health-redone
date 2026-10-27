@@ -17,7 +17,7 @@ local function build(slot, day, world, suffix)
 end
 
 local TRANSLATE = "Contents/mods/ExtensiveHealthRedone/42/media/lua/shared/Translate/"
-local LANGS = { "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "UA" }
+local LANGS = { "CH", "CN", "EN", "ES", "FR", "IT", "JP", "PTBR", "RU", "UA" }
 
 local function uiTexts(lang)
     local texts = {}
@@ -67,7 +67,7 @@ local LISTENER = { alive = true, awake = true, x = 100.5, y = 100.5, z = 0, outs
 describe("radio text", function()
     local keys = allKeys()
 
-    it("has every broadcast key in all 9 languages", function()
+    it("has every broadcast key in all 10 languages", function()
         for _, lang in ipairs(LANGS) do
             local texts = uiTexts(lang)
             for _, key in ipairs(keys) do
