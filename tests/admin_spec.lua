@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake vanilla chat is deliberately partial.
 ---@diagnostic disable: missing-fields
--- Phase 9 admin commands: the pure full heal and reset (Admin/FullHeal), name matching (Admin/Names), chat parsing
+-- The admin commands: the pure full heal and reset (Admin/FullHeal), name matching (Admin/Names), chat parsing
 -- (Admin/ChatCommands) and the inspect summary (Admin/Inspect), then the wiring in single-player mode against
 -- tests/support/fake_game.lua: the chat hook, admin.fullHeal/reset/inspect on another player, the permission and the
 -- debug menu's full heal.

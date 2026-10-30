@@ -1,4 +1,4 @@
--- The admin chat commands (decision W36 and Q6): which typed lines are ours and what they send. Pure; the chat hook
+-- The admin chat commands: which typed lines are ours and what they send. Pure; the chat hook
 -- is Client/AdminChat.
 --
 --   ChatCommands.parse("/ehrfullheal Bob Smith")  -> { command = "admin.fullHeal", word = "/ehrfullheal",
@@ -6,7 +6,7 @@
 --   ChatCommands.parse("/ehrfullheal")            -> the same without name (the hook prints the usage line)
 --   ChatCommands.parse("/ehrfullhealx Bob")       -> nil: not ours, vanilla handles the line
 --
--- The command word is matched without case and must be followed by whitespace or the end of the line (v0.9). The
+-- The command word is matched without case and must be followed by whitespace or the end of the line. The
 -- rest of the line, trimmed and with line breaks turned into spaces, is the name in its original case.
 
 local ChatCommands = {}

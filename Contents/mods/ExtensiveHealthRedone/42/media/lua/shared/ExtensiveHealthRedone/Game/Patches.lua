@@ -5,6 +5,9 @@
 --
 -- Targets are installed when they exist: at OnGameBoot (shared and client files are loaded), and again at
 -- OnGameStart and OnServerStarted for anything defined later. Each method is wrapped once.
+--
+-- Add-on mods add their own points with Patches.define (same fields as a Data/PatchPoints entry) and hook vanilla
+-- only through points, so every wrapped method is wrapped once however many mods listen.
 
 local PatchPoints = require "ExtensiveHealthRedone/Core/PatchPoints"
 local Env = require "ExtensiveHealthRedone/Game/Env"
@@ -34,6 +37,29 @@ end
 
 local Patches = {}
 
+local installedOnce = false
+local install
+
+-- def: { name, path = "Class.method", side = "shared" | "client" | "server", named = function(call) ... } as in
+-- Data/PatchPoints. Errors on a known name. A point defined after the first install is installed at once when its
+-- target exists (and at the next install event otherwise).
+function Patches.define(def)
+    if type(def) ~= "table" or type(def.name) ~= "string" then
+        error("patch points need a name", 2)
+    end
+    if otherSide[def.name] then
+        error("patch point " .. def.name .. " is already defined", 2)
+    end
+    if onThisSide(def.side) then
+        points:define(def.name, def.path, def.named)
+        if installedOnce then
+            install("define")
+        end
+    else
+        otherSide[def.name] = true
+    end
+end
+
 -- Listeners on a point that belongs to the other side are ignored, so shared feature code can register freely.
 function Patches.on(pointName, listener)
     if not otherSide[pointName] then
@@ -41,7 +67,8 @@ function Patches.on(pointName, listener)
     end
 end
 
-local function install(when)
+function install(when)
+    installedOnce = true
     local report = points:install(function(name)
         return _G[name]
     end)
@@ -50,7 +77,8 @@ local function install(when)
     end
     for _, name in ipairs(report.missing) do
         -- Expected at boot for targets in server files; after the game has started it means vanilla changed.
-        if when == "OnGameBoot" then
+        if when == "OnGameBoot" or when == "define" then
+
             log:debug("patch target for", name, "not loaded yet at", when)
         else
             log:warn("patch target for", name, "missing at", when)

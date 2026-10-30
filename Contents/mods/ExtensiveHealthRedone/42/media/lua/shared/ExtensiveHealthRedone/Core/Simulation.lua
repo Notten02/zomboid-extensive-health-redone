@@ -8,6 +8,9 @@
 --   p.stats             a StatAggregator; the only way to change vanilla stats
 --   p.body              a BodyAggregator; the only way to change body parts (health, healing, pain, infection)
 --   p.fx                a ClientEffects; continuous effects the owning client applies (speed, sprint, blur, sleep)
+--   p.mods              a Modifiers; multipliers on rates EHR computes (blood recovery, immune recovery)
+--   p.perks             a PerkAggregator; Strength and Fitness XP drains (Server/PerkWriter applies them)
+
 --   p.facts             plain facts read from the game this step (Server/Facts: stats, sleep, body part wounds)
 --   p.treatment         what medication does now: curing(id), relief(id, symptom), active(effect) (Core/Treatments)
 --   p.dirty(section)    mark a state section changed so it is synced

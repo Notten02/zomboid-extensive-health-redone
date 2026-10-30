@@ -1,11 +1,9 @@
 -- Trichinosis: from raw wild game or pork (Diseases/Food/Risk). Muscle aches, then peak muscle pain, fever, movement
--- and endurance penalties with lethal health loss at stage 3, then a weak recovery. From v0.9 D:193-222, :3200-3319;
--- timings follow the guide (W11: 24-48 h, 7-12 days).
--- Changes from v0.9: muscle pain goes on the limb and torso parts on the 0-100 pain scale (v0.9 wrote 0-1 values into
--- the 0-100 PAIN stat, so its pain never showed); stiffness is not ported (no aggregator for it yet); muscle relief no
--- longer strips other sources' pain from every limb.
+-- and endurance penalties with lethal health loss at stage 3, then a weak recovery. Incubation 24-48 h, then 7-12
+-- days. Muscle pain goes on the limb and torso parts on the 0-100 pain scale; muscle relief only eases this disease's
+-- pain, not other sources' pain on the limbs.
 --
--- Treatment (Phase 5): cure Antiparasitic Pills (long course), Albendazole Injection (fast).
+-- Treatment: cure Antiparasitic Pills (long course), Albendazole Injection (fast).
 -- Relief: Muscle Relaxants / Homemade (muscleSpasms .40, pain .30), Anti-Inflammatory (pain .55, fever .30),
 -- Antipyretic (fever).
 
@@ -17,8 +15,7 @@ local BodyParts = require "ExtensiveHealthRedone/Data/BodyParts"
 
 local ID = "trichinosis"
 
--- Per v0.9 engine tick. pain: AdditionalPain per muscle part at severity 1 (ours, see the header). speed: ours, for
--- the guide's movement penalty.
+-- Per engine check (Data TICK). pain: AdditionalPain per muscle part at severity 1. speed: the movement penalty.
 local ROWS = {
     [2] = { drain = 0.007, floor = 0.70, fatigue = 0.35, sickness = 0.35, pain = 18, fever = 38.0, feverStep = 0.028,
             cramp = 0.003, feverLine = 0.0015, thirst = 0.5, speed = 0.9 },
@@ -27,7 +24,7 @@ local ROWS = {
     [4] = { drain = 0.003, floor = 0.82, fatigue = 0.22, sickness = 0.16, pain = 8, fever = 37.4, feverStep = 0.020,
             cramp = 0.0005, feverLine = 0, thirst = 0.25 },
 }
-local COOLDOWN = 15             -- game minutes between cramps and between fever lines (v0.9 0.25 h)
+local COOLDOWN = 15             -- game minutes between cramps and between fever lines
 local CRAMP_PARTS = { "UpperLeg_L", "UpperLeg_R", "LowerLeg_L", "LowerLeg_R" }
 local FEVER_LINES = { "UI_EHR_Text_ImBurningUp", "UI_EHR_Text_FeelingWeak" }
 
@@ -94,7 +91,7 @@ function def.effects(p, c, dt, curing)
     if row.speed then
         p.fx:speed(ID, row.speed)
     end
-    -- v0.9: about 1.1 + 2.2 x severity every 0.25 h with no regeneration; a kill roll below 20 health.
+    -- About 1.1 + 2.2 x severity every 0.25 h with no regeneration; a kill roll below 20 health.
     if c.stage == 3 and not curing then
         Common.drain(p, ID, c, dt, 1.1 + 2.2 * sev, 15, 20, 0.02 * sev)
     end

@@ -1,5 +1,5 @@
 -- The weather group's state and the readings the diseases share: the cold and heat meters, the air the heat meter
--- uses, "cooled" for heat stroke (W32), and the cold bath. Everything lives in state.exposure:
+-- uses, "cooled" for heat stroke, and the cold bath. Everything lives in state.exposure:
 --   exposure.cold / exposure.heat     display percentages (cold: share of "ready"; heat: share of a full meter, max 125)
 --   exposure.data.weather = { timers = { cough, coldRoll, strokeRoll }, coldH, soakedH, heatH (meters in hours),
 --                             heatFalling (game minutes the heat meter has been falling), bath = { left, elapsed } }
@@ -36,7 +36,7 @@ function Meters.heatAir(p)
     return env.vehicleC or env.airC
 end
 
--- W32: cooled = the air is below the heat threshold, or the character is in shade below 35 deg C.
+-- cooled = the air is below the heat threshold, or the character is in shade below 35 deg C.
 function Meters.cooled(p)
     local air = Meters.heatAir(p)
     return air < Meters.threshold(p) or (p.facts.env.shade and air < Data.heat.SHADE_MAX_C)

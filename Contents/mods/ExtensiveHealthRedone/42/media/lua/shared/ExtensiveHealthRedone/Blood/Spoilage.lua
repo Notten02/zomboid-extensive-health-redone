@@ -1,5 +1,5 @@
 -- Blood bag spoilage: a bag turns stale after STALE_HOURS and rotten after ROTTEN_HOURS of warm time. Time spent
--- frozen doesn't count. Stored in the bag's modData under SPOILAGE_KEY in v0.9's format, so bags already in saves
+-- frozen doesn't count. Stored in the bag's modData under SPOILAGE_KEY in the original mod's format, so bags in saves
 -- keep their state:
 --   { createdHour, lastCheckHour, warmElapsed (hours), stale, rotten, isFrozen }
 --

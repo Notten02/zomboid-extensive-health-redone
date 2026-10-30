@@ -2,9 +2,8 @@
 # Copies the working copy into ~/Zomboid/Workshop so the game loads it as a local mod. Run it again after every change
 # (the game reads the files at startup, and Lua again on a reload).
 #
-# A copy, not a symlink: through a symlink the game builds doubled paths and fails to read our scripts (found in
-# Phase 3), and the mod list does not show it. Only Contents/ is copied: the repo's docs, tests, tools and competability/
-# notes stay out.
+# A copy, not a symlink: through a symlink the game builds doubled paths and fails to read our scripts, and the mod
+# list does not show it. Only Contents/ is copied: the repo's docs, tests, tools and competability/ notes stay out.
 set -euo pipefail
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 TARGET="${ZOMBOID_DIR:-$HOME/Zomboid}/Workshop/ExtensiveHealthRedone"

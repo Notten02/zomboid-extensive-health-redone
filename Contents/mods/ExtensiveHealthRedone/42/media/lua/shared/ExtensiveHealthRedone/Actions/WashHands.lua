@@ -1,4 +1,4 @@
--- The "Wash Hands" timed action (decision SA-6) at a water source (Client/WashHands has the menu).
+-- The "Wash Hands" timed action at a water source (Client/WashHands has the menu).
 --
 --   EHRWashHandsAction:new(character, sink)
 --

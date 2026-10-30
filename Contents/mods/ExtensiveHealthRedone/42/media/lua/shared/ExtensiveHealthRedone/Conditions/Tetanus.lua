@@ -1,10 +1,8 @@
 -- Tetanus: from contaminated deep wounds (Wounds/Tetanus). Stage 1, the incubation, is hidden. Stage 2: lockjaw (no
 -- eating), neck stiffness and pain, endurance drain and health loss down to 30. Stage 3: full-body spasms, fever,
 -- falls and lethal health loss. Stage 4: recovery. Muscle relaxants allow eating and cut spasms and falls; a curative
--- course stops the damage and holds the stage.
--- Effects from v0.9 (docs/porting/phase3/wound-infection-sepsis-tetanus.md, part 4); timings follow the guide (W11).
--- Not ported: v0.9's general PAIN stat writes (B42 derives pain from the body parts) and muscle stiffness; spasm pain
--- goes on the body parts instead. "Breathing difficulty" was never implemented in v0.9.
+-- course stops the damage and holds the stage. Spasm pain goes on the body parts (B42 derives the general pain stat
+-- from them).
 
 local Data = require "ExtensiveHealthRedone/Data/BodyParts"
 local Symptoms = require "ExtensiveHealthRedone/Conditions/Symptoms"
@@ -84,7 +82,7 @@ function Tetanus.effects(p, c, dt, curing)
         p.stats:lowerF("ENDURANCE", "tetanus", 0.70, 0.0035 * sev * spasm * k)
         p.stats:raiseF("FATIGUE", "tetanus", 0.22 * sev * spasm, 0.0018 * sev * k)
         if not curing then
-            -- v0.9: 0.25 + 0.45 x severity every 0.7 game hours, never below 30 health.
+            -- 0.25 + 0.45 x severity every 0.7 game hours, never below 30 health.
             p.body:damage("tetanus", (0.25 + 0.45 * sev) / 42 * dt, 30)
             p.body:healFactorAll(Symptoms.ALL_PARTS, "tetanus", 0)
         end
@@ -103,7 +101,7 @@ function Tetanus.effects(p, c, dt, curing)
         target, step = Symptoms.fever(target, step, t:relief("tetanus", "fever"))
         Symptoms.applyFever(p, "tetanus", target, step)
         if not curing then
-            -- v0.9: 1.0 + 1.8 x severity every 0.35 game hours, no floor.
+            -- 1.0 + 1.8 x severity every 0.35 game hours, no floor.
             p.body:damage("tetanus", (1.0 + 1.8 * sev) / 21 * dt, 0)
             p.body:healFactorAll(Symptoms.ALL_PARTS, "tetanus", 0)
         end

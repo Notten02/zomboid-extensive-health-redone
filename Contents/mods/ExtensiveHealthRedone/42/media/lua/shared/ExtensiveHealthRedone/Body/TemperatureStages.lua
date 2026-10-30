@@ -1,10 +1,9 @@
 -- Pre-disease effects (order 795, after Body/Temperature so it knows about a fever): four cold and four hot stages
--- from body temperature, before hypothermia (35 deg C) or heat illness set in (v0.9 EHR_BodyTemperature.lua:86-119,
--- :1273-1345, :2513-2612; docs/porting/phase6/body-temperature.md section 5).
+-- from body temperature, before hypothermia (35 deg C) or heat illness set in.
 --
 -- A stage moves at most one step per update, with 0.3 deg C of hysteresis. While a stage lasts the character says one
--- of its two lines every 30 game minutes (not asleep). Effects (maintainer, Phase 6: the two most noticeable of v0.9's
--- never-applied numbers): very cold slows movement 5/15/25 % at stages 2-4, very hot drains thirst x1.25/1.5/2.
+-- of its two lines every 30 game minutes (not asleep). Effects: very cold slows movement 5/15/25 % at stages 2-4, very
+-- hot drains thirst x1.25/1.5/2.
 -- A fever alone is illness, not heat: while one is held, the hot stages fall back as at normal temperature.
 -- Off with PreDiseaseEffectsEnabled=false or BodyTemperatureEnabled=false.
 --

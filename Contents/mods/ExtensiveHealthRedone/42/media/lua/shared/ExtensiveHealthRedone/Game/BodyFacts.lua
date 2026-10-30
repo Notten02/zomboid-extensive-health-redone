@@ -10,7 +10,7 @@ local BodyParts = require "ExtensiveHealthRedone/Data/BodyParts"
 
 local BodyFacts = {}
 
--- Vanilla counts a wound infection level below this as none (the same threshold as v0.9's diagram).
+-- Vanilla counts a wound infection level below this as none.
 BodyFacts.INFECTED_LEVEL = 0.05
 
 function BodyFacts.part(part)

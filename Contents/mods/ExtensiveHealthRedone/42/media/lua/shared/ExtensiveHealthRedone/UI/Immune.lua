@@ -1,6 +1,5 @@
 -- The Immune System tab's view model, from the mirrored state.immunity and the sandbox options. Pure.
--- Spec: docs/porting/phase7/immune-tab-and-journal.md Part A (v0.9 EHR_HealthPanelUI.lua:5434-5655), with its
--- suggested defaults: "awaiting data" until the first update, pressure rows for immunosuppression and the Phalanx
+-- It shows "awaiting data" until the first update, pressure rows for immunosuppression and the Phalanx
 -- debuff, as many pressure rows as fit (the view decides), and "Monitoring only" whenever no chance is changed.
 --
 --   Immune.build(state.immunity, sandbox) -> model, or nil while there is nothing to show yet
@@ -28,10 +27,10 @@ local TREND_KEYS = {
     disabled = "UI_EHR_Immunity_Disabled",
 }
 
--- A factor below this counts as a pressure (v0.9).
+-- A factor below this counts as a pressure.
 Immune.WEAK_FACTOR = 50
 
--- Band colour of a 0-100 value (the band edges, v0.9 getImmunityColor).
+-- Band colour of a 0-100 value.
 function Immune.color(value)
     value = tonumber(value) or 0
     if value >= 80 then
@@ -46,7 +45,7 @@ function Immune.color(value)
     return "red"
 end
 
--- The tab exists only while the system is on (checklist section 5).
+-- The tab exists only while the system is on.
 function Immune.visible(sandbox)
     return sandbox("ImmunitySystemEnabled", true) ~= false
 end

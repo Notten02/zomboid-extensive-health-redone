@@ -1,10 +1,8 @@
 -- Wound infection, per body part. A vanilla-infected open wound starts an incubation (12 h / WoundInfectionSpeed);
 -- the immune system gets one roll to contain it; otherwise the part goes through stages 1-3 (12/24/48 h), and when
--- stage 3 runs out untreated the infection reaches the blood: sepsis. Disinfecting during the incubation prevents it.
--- From v0.9 EHR_WoundInfection_V2.lua (docs/porting/phase3/wound-infection-sepsis-tetanus.md, part 1). Changes:
---   * disinfecting an active infection no longer restarts its stage (v0.9 let you stall it forever)
---   * antiseptic cream prevents new infections while active, instead of deferring them
---   * the healing penalty per stage exists (W21)
+-- stage 3 runs out untreated the infection reaches the blood: sepsis. Disinfecting during the incubation prevents it;
+-- disinfecting an active infection doesn't restart its stage, so it can't be stalled forever. Antiseptic cream
+-- prevents new infections while active, and each stage slows the part's healing.
 -- State per part, state.wounds.parts[part]:
 --   { phase = "incubating", left = minutes, immune = score at detection, rolled = bool }
 --   { phase = "infected", stage = 1..3, left = minutes in the stage }
@@ -56,7 +54,7 @@ local function becomeInfected(p, parts, name)
     p.dirty("wounds")
 end
 
--- The end of stage 3, untreated: sepsis. The part stays at stage 3 and its timer restarts (v0.9).
+-- The end of stage 3, untreated: sepsis. The part stays at stage 3 and its timer restarts.
 local function handOff(p, e, defs)
     e.left = stageMinutes(p, 3)
     if Engine.contract(p, defs, "sepsis", { source = "woundInfection" }) then
@@ -182,7 +180,7 @@ function Infection.disinfected(p, name)
 end
 
 -- A dose of vanilla antibiotics: every infected part drops one stage; below stage 1 it is cured. Incubations are
--- untouched (v0.9). Returns the number of parts improved.
+-- untouched. Returns the number of parts improved.
 function Infection.antibiotics(p)
     local parts = p.state.wounds.parts
     local improved = 0
@@ -202,7 +200,7 @@ function Infection.antibiotics(p)
     return improved
 end
 
--- Removes every wound infection (a completed course in Phase 5, admin heal, debug).
+-- Removes every wound infection (a completed course, admin heal, debug).
 function Infection.cureAll(p)
     local parts = p.state.wounds.parts
     for _, name in ipairs(BodyParts.names) do

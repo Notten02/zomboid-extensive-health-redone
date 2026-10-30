@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Starts game client N for the Phase 9 load test against tools/mp-server.sh, in the background, with its own cache dir
-# (<root>/client<N>) and its own deployed copy of the mod (docs/porting/phase9/load-test-runbook.md).
+# Starts game client N for a load test against tools/mp-server.sh, in the background, with its own cache dir
+# (<root>/client<N>) and its own deployed copy of the mod.
 #
 #   tools/mp-client.sh 1          client 1 (log in as admin), then tools/mp-client.sh 2, 3 for the other players
 #
@@ -8,14 +8,14 @@
 #   EHR_MPTEST_DIR     root of the test cache dirs          default: <repo>/.cache/mptest (same as mp-server.sh)
 #   EHR_CLIENT_MODE    launcher | java                      default: launcher
 #       launcher: ProjectZomboid64 -nosteam, as projectzomboid.sh starts the game. It reads ProjectZomboid64.json,
-#                 which on the maintainer's machine also loads the ProjectRemnants Java agent (NPCFW.jar).
-#       java:     the JVM directly with the stock arguments (those of ProjectZomboid64.json.npcfw-backup) and
+#                 which may also load a Java agent an install added there (e.g. ProjectRemnants' NPCFW.jar).
+#       java:     the JVM directly with the stock arguments (those of an unmodified ProjectZomboid64.json) and
 #                 -Dzomboid.steam=0, without any Java agent: cleaner numbers, changes nothing in the game folder.
 #   EHR_CLIENT_XMX     client heap for java mode            default: 3072m
 #   EHR_CLIENT_DEBUG   1 passes -debug (Lua console, F11)   default: 1
-#   PZ_GAME_DIR        the game's projectzomboid folder     default: the maintainer's Steam library
+#   PZ_GAME_DIR        the game's projectzomboid folder     default: under /mnt/games/Steam (see GAME below)
 #
-# UNVERIFIED (nothing here has been run yet):
+# Untested assumptions:
 #   - launcher mode: that -nosteam on the command line overrides the JSON's -Dzomboid.steam=1 (if it doesn't, the
 #     connection to the non-Steam server fails at once; use java mode);
 #   - java mode as a whole: the main class and arguments are copied from ProjectZomboid64.json, the library setup

@@ -2,12 +2,12 @@
 --
 -- Immunity (permanent or immunobooster): every step a Knox-infected immune player is cured again: the infected flags
 -- and timers through the body writer, ZOMBIE_INFECTION and ZOMBIE_FEVER through the stat writer. Bites still wound.
--- This is how v0.9 did it too: the bite's Knox roll happens in Java with no Lua event to stop it.
+-- The bite's Knox roll happens in Java with no Lua event to stop it, so it is undone afterwards.
 --
 -- knox_infection mirrors vanilla's infection for the monitor and the dialogue: it is never contracted by a roll of
 -- ours, can't be switched off (master = false), is named only with the Kentucky Herald (Conditions/Knowledge), and
--- its stage follows infection progress (bounds 0.2/0.5/0.8). Whether the UI shows the stage is W16 (Phase 7);
--- c.data.progress is kept for it. Vanilla does every effect of the infection itself.
+-- its stage follows infection progress (bounds 0.2/0.5/0.8); c.data.progress is kept for the UI. Vanilla does every
+-- effect of the infection itself.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Knox/Data"
 local Knox = require "ExtensiveHealthRedone/Diseases/Knox/Knox"
@@ -42,7 +42,7 @@ Infection.condition = {
             [3] = { "UI_EHR_Knox_Random3a", "UI_EHR_Knox_Random3b", "UI_EHR_Knox_Random3c", "UI_EHR_Knox_Random3d" },
             [4] = { "UI_EHR_Knox_Random4a", "UI_EHR_Knox_Random4b", "UI_EHR_Knox_Random4c" },
         },
-        every = 270,        -- v0.9: a random line every 3-6 game hours
+        every = 270,        -- a random line every 3-6 game hours
     },
 }
 
@@ -122,7 +122,7 @@ end
 
 -- The Patient Zero trait (chosen at character creation) makes the character permanently immune. While
 -- PatientZeroTraitDisabled is on, a trait that got past the creation screen anyway (a modified client, an admin) gives
--- nothing (v0.9 EHR_Professions.lua:276-286); immunity a character already has is never taken away (2026-10-07).
+-- nothing; immunity a character already has is never taken away.
 local function traitImmunity(p, knox, k)
     if k.hasTrait and not knox.geneTherapyImmune and p.sandbox("PatientZeroTraitDisabled", false) ~= true then
         knox.geneTherapyImmune = true

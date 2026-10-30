@@ -1,9 +1,9 @@
 -- Symptom helpers shared by corpse illness, aspergillosis, scabies and concussion: rolled symptoms with cooldowns,
 -- dizziness episodes (vision blur), coughs, collapses and the "health cap" these diseases use.
 --
--- v0.9 rolled symptoms once per disease tick (60 frames, about 0.8 game minutes) with a cooldown after a success
--- (EHR_Disease.lua trySymptom :3044-3049). Here a chance "per v0.9 tick" becomes the chance over dt game minutes
--- (Conditions/Symptoms.TICK ticks per minute), and cooldowns are remaining minutes in c.data.cd.
+-- Symptom chances are per disease tick of the original mod (60 frames, about 0.8 game minutes), with a cooldown after
+-- a success. Here a chance per tick becomes the chance over dt game minutes (Conditions/Symptoms.TICK ticks per
+-- minute), and cooldowns are remaining minutes in c.data.cd.
 
 local Symptoms = require "ExtensiveHealthRedone/Conditions/Symptoms"
 local Speech = require "ExtensiveHealthRedone/Core/Speech"
@@ -15,8 +15,8 @@ local Episodes = {}
 Episodes.DIZZY_LINES = {
     "UI_EHR_Text_DizzyWorldsSpinning", "UI_EHR_Corpse_Stumbles", "UI_EHR_Corpse_SwaysCantFocus",
 }
-Episodes.DIZZY_BLUR = 0.55              -- ours: v0.9's ToxinVision episode strength (0.52-0.62)
-Episodes.DIZZY_MINUTES = { 5, 10 }      -- v0.9 ToxinVision symptom episodes last 5-10 game minutes
+Episodes.DIZZY_BLUR = 0.55              -- blur strength of a dizzy spell
+Episodes.DIZZY_MINUTES = { 5, 10 }      -- game minutes a dizzy spell lasts
 
 -- Counts the condition's cooldowns and episode timers down. Call once at the start of effects().
 function Episodes.tick(c, dt)
@@ -28,7 +28,7 @@ function Episodes.tick(c, dt)
     end
 end
 
--- A symptom that fires with `chance` per v0.9 tick, at most once per cooldownH game hours.
+-- A symptom that fires with `chance` per disease tick, at most once per cooldownH game hours.
 function Episodes.try(p, c, key, chance, cooldownH, dt)
     c.data.cd = c.data.cd or {}
     if c.data.cd[key] or not Chance.roll(p.rng, Chance.over(chance, Symptoms.TICK, dt)) then
@@ -68,7 +68,7 @@ function Episodes.blur(p, c, source, dt)
 end
 
 -- A cough: a line, the voice sound and world noise (Server/Noise; a held tissue muffles it). Sounds from all these
--- diseases share one gap, like v0.9's EHR_LastCoughSoundHour.
+-- diseases share one gap (Diseases/Shared/Cough).
 function Episodes.cough(p, severe)
     if not Cough.claim(p) then
         return
@@ -77,7 +77,7 @@ function Episodes.cough(p, severe)
     p.noise(severe and "coughSevere" or "cough")
 end
 
--- A collapse (v0.9 TriggerCollapse): the character drops, exhausted and panicking.
+-- A collapse: the character drops, exhausted and panicking.
 function Episodes.collapse(p, source)
     Speech.stage(p, "UI_EHR_Text_Collapses")
     p.stats:addF("FATIGUE", source, 0.3)
@@ -85,7 +85,7 @@ function Episodes.collapse(p, source)
     p.client("fall", { reason = source })
 end
 
--- The health cap these diseases use (v0.9 *HealthCap): health may not regenerate above the cap; the cap follows
+-- The health cap these diseases use: health may not regenerate above the cap; the cap follows
 -- health down but never below the floor; damage of hpPerMinute is dealt only while health is above the floor.
 -- raiseTo: lifts the cap (an improving concussion lets health recover to the new floor). Without a floor the cap
 -- has no lower limit (lethal stages).

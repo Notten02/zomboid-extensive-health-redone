@@ -23,7 +23,7 @@ local Food = {}
 
 -- Hands -------------------------------------------------------------------------------------------------------------
 
--- Visible blood and dirt, averaged over both hands (W26).
+-- Visible blood and dirt, averaged over both hands.
 function Food.hands(player)
     local visual = player:getHumanVisual()
     local blood = (visual:getBlood(BloodBodyPartType.Hand_L) + visual:getBlood(BloodBodyPartType.Hand_R)) / 2
@@ -78,10 +78,62 @@ function Food.describe(item)
         hideUncooked = item:hasTag(ItemTag.HIDE_UNCOOKED),
         poisonPower = item:getPoisonPower() or 0,
         toxinType = toxinType,
+        heat = tonumber(item:getHeat()) or 1,
+        frozen = item:isFrozen(),
     }
 end
 
--- One bite: toxins, then the food-borne risks. portion: the share of the item eaten (0-1).
+-- Add-on bite listeners (Food.onBite), in registration order.
+local biteListeners = {}
+
+-- Lets an add-on mod react to what is eaten with EHR's own portion and in the same step as the food-borne risks.
+-- listener:
+--   name                       unique
+--   describe(item, action)     read before vanilla eats the item; returns what bite needs (or nil to skip the item)
+--   bite(p, data, portion)     inside Runtime.applyNow (a player context, Core/Simulation); portion is the share of
+--                              the item's base hunger eaten (vanilla's percentage, times the progress of a cancelled
+--                              meal), not of what is left of it
+-- A failing listener is logged and skipped.
+function Food.onBite(listener)
+    if type(listener) ~= "table" or type(listener.name) ~= "string" or type(listener.describe) ~= "function"
+        or type(listener.bite) ~= "function" then
+        error("bite listeners need name, describe(item, action) and bite(p, data, portion)", 2)
+    end
+    for _, existing in ipairs(biteListeners) do
+        if existing.name == listener.name then
+            error("bite listener " .. listener.name .. " is already registered", 2)
+        end
+    end
+    biteListeners[#biteListeners + 1] = listener
+end
+
+-- Each listener's description of the item, by name (read before the item is eaten).
+local function describeForListeners(item, action)
+    local out = {}
+    for _, l in ipairs(biteListeners) do
+        local ok, data = pcall(l.describe, item, action)
+        if not ok then
+            log:error("bite listener", l.name, "describe failed:", data)
+        else
+            out[l.name] = data
+        end
+    end
+    return out
+end
+
+local function biteListenersRun(p, addons, portion)
+    for _, l in ipairs(biteListeners) do
+        local data = addons and addons[l.name]
+        if data ~= nil then
+            local ok, err = pcall(l.bite, p, data, portion)
+            if not ok then
+                log:error("bite listener", l.name, "failed:", err)
+            end
+        end
+    end
+end
+
+-- One bite: toxins, then the food-borne risks, then the add-on listeners. portion: the share of the item eaten (0-1).
 function Food.bite(player, food, portion)
     local key = Runtime.attach(player)
     if not key or not food or portion <= 0 then
@@ -90,10 +142,12 @@ function Food.bite(player, food, portion)
     local hands = Food.hands(player)
     local result = Runtime.applyNow(key, function(p)
         Risk.applyToxin(p, defs, food.poisonPower, food.toxinType, portion)
-        return Risk.applyBite(p, defs, Risk.ofBite(p, food, hands, portion))
+        local caught = Risk.applyBite(p, defs, Risk.ofBite(p, food, hands, portion))
+        biteListenersRun(p, food.addons, portion)
+        return caught
     end)
     if result and #result > 0 then
-        log:info(key, "ate", food.fullType, "x", portion, "->", table.concat(result, ", "))
+        log:debug(key, "ate", food.fullType, "x", portion, "->", table.concat(result, ", "))
     end
 end
 
@@ -101,6 +155,9 @@ Patches.on("eatComplete", {
     name = "foodDisease",
     before = function(action)
         action.ehrFood = Food.describe(action.item)
+        if action.ehrFood then
+            action.ehrFood.addons = describeForListeners(action.item, action)
+        end
     end,
     after = function(results, action)
         if results[1] ~= false then
@@ -131,8 +188,12 @@ Patches.on("eatServerStop", {
         local portion = Food.stopPortion(action)
         if portion then
             action.ehrFood = Food.describe(action.item)
+            if action.ehrFood then
+                action.ehrFood.addons = describeForListeners(action.item, action)
+            end
             action.ehrPortion = portion
         end
+
     end,
     after = function(_, action)
         if action.ehrPortion then
@@ -248,7 +309,7 @@ end
 
 Food.WASH_RANGE = 2.5
 
--- Only Actions/WashHands' EHRWashHandsAction runs it, when its time is up (`action = true`, SA-6).
+-- Only Actions/WashHands' EHRWashHandsAction runs it, when its time is up (`action = true`).
 Runtime.registry:register("food.washHands", {
     args = {
         x = { type = "number", integer = true },
@@ -266,7 +327,7 @@ Runtime.registry:register("food.washHands", {
         local sink = Food.waterSourceAt(square)
         local dx, dy = player:getX() - (args.x + 0.5), player:getY() - (args.y + 0.5)
         if not sink or math.floor(player:getZ()) ~= args.z or math.sqrt(dx * dx + dy * dy) > Food.WASH_RANGE then
-            log:info(ctx.actor.key, "wash hands refused: no water source in reach")
+            log:debug(ctx.actor.key, "wash hands refused: no water source in reach")
             return
         end
         local soap = soapOf(player)

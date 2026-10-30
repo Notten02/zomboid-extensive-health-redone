@@ -1,4 +1,4 @@
--- Player modData of characters from the original mod, in its real formats (docs/porting/old-moddata-keys.md).
+-- Player modData of characters from the original mod, in its real formats.
 -- Each function returns a fresh copy.
 
 local Fixtures = {}

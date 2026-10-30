@@ -1,4 +1,4 @@
--- The Knox item timed action (decision SA-6): gene therapy, the antibody test, the immunobooster and Phalanx, each
+-- The Knox item timed action: gene therapy, the antibody test, the immunobooster and Phalanx, each
 -- used on yourself.
 --
 --   EHRKnoxAction:new(character, item)

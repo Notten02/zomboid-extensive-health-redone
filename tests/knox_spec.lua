@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake vanilla actions and items are deliberately partial.
 ---@diagnostic disable: missing-fields
--- Knox (Phase 4 step 7): the item rules, immunity enforcement, the knox_infection display condition, the Kentucky
+-- Knox: the item rules, immunity enforcement, the knox_infection display condition, the Kentucky
 -- Herald and the Patient Zero trait. Pure rules on a test context, then the server wiring against the fake game.
 local Knox = require("ExtensiveHealthRedone/Diseases/Knox/Knox")
 local KnoxItems = require("ExtensiveHealthRedone/Diseases/Knox/Items")

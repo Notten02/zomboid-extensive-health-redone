@@ -1,10 +1,8 @@
 -- What the two wild-search panels (Client/HerbalSearch, Client/HiveSearch) share: the short search action that
 -- walks up, takes a moment and then asks the server to start (the server answers with a session, and only then does
 -- a panel open), texture lookup, the joypad focus hand-over, and position checks. The server decides everything
--- (Server/WildSearch); these files only draw and send intents.
--- From v0.9 c/EHR_HerbalSearch.lua:274-304 and c/EHR_HiveWebSearch.lua:166-200 (docs/porting/phase8/
--- herbal-and-hive-minigames.md sections 1 and 5). Change: the server is asked after the action, not before, so the
--- 42 / 48 s timer starts when the panel opens.
+-- (Server/WildSearch); these files only draw and send intents. The server is asked after the action, not before, so
+-- the 42 / 48 s timer starts when the panel opens.
 
 require "TimedActions/ISBaseTimedAction"
 
@@ -12,7 +10,7 @@ local Client = require "ExtensiveHealthRedone/Client/Client"
 
 local WildSearch = {}
 
-WildSearch.ACTION_RANGE = 3.8       -- tiles; v0.9's herbal action limit
+WildSearch.ACTION_RANGE = 3.8       -- tiles
 
 local textures = {}
 
@@ -33,7 +31,7 @@ function WildSearch.distance(player, x, y, z)
     return math.sqrt(dx * dx + dy * dy)
 end
 
--- The player moved more than limit tiles from (x, y) on either axis (v0.9's check).
+-- The player moved more than limit tiles from (x, y) on either axis.
 function WildSearch.moved(player, x, y, limit)
     return math.abs(player:getX() - x) > limit or math.abs(player:getY() - y) > limit
 end

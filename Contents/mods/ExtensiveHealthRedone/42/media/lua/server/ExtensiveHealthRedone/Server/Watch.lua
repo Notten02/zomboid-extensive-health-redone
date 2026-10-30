@@ -3,7 +3,7 @@
 -- state. An MP client loads this file too and stops at the first line.
 --
 -- Drain: every DRAIN_MINUTES of game time (the runtime's scheduler, so it follows game time at any FPS and pauses for
--- offline players, W39). A watch that runs out has its alarm switched off.
+-- offline players). A watch that runs out has its alarm switched off.
 -- Sync (MP only; single player shares the item objects): our own small "watchBattery" message, sent when a watch's
 -- whole percent or powered state changes, after a swap, and when the client asks on joining. The client writes it
 -- into its copy of the item's modData.
@@ -74,7 +74,7 @@ Runtime.registry:register("watch.insertBattery", {
         watch = { type = "item", types = WatchBattery.TYPES },
         battery = { type = "item", types = { [WatchBattery.BATTERY] = true } },
     },
-    action = true,     -- Actions/WatchBattery's EHRWatchBatteryAction (SA-6), like watch.removeBattery
+    action = true,     -- Actions/WatchBattery's EHRWatchBatteryAction, like watch.removeBattery
     rate = { count = 4, seconds = 10 },
     handler = function(ctx, args)
         local watch, battery = args.watch.item, args.battery.item
@@ -107,8 +107,7 @@ Runtime.registry:register("watch.removeBattery", {
         local charge = WatchBattery.remove(state)
         Watch.save(watch, state)
         Watch.silence(watch)
-        -- The battery comes out with the charge it had (v0.9 set it with the deprecated setUsedDelta, which may have
-        -- returned a full battery: bug C1).
+        -- The battery comes out with the charge it had.
         local battery = Items.add(player, WatchBattery.BATTERY)
         if battery then
             battery:setCurrentUsesFloat(charge)

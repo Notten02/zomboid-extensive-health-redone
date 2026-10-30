@@ -12,7 +12,7 @@ local Rules = require "ExtensiveHealthRedone/Crafting/Rules"
 
 local log = Env.logger("Recipes")
 
--- The one global the recipe scripts name. 42.21's RecipeCodeOnTest is a Java class, so v0.9's key on it is not used.
+-- The one global the recipe scripts name (42.21's RecipeCodeOnTest is a Java class, so nothing is added to it).
 EHRRecipeCode = EHRRecipeCode or {}
 
 -- OnTest of the 11 herb recipes: listed herbs and berries must be fresh. Called often (every UI refresh): keep it cheap.

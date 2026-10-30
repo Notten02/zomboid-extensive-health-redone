@@ -1,10 +1,10 @@
--- Tetanus triggers (W12: all four). Each roll is x TetanusChanceMultiplier; the first success starts tetanus
+-- Tetanus triggers. Each roll is x TetanusChanceMultiplier; the first success starts tetanus
 -- (Conditions/Tetanus) with a hidden incubation.
 --   glass:  a deep wound with lodged glass rolls at once, then every 12 h while the glass stays, 40 % rising by 15 %
---           per 12 h to 70 % (v0.9)
---   crash:  a deep wound that appears while in a vehicle (ours: 40 %)
---   walk:   glass that appears in a foot outside a vehicle, i.e. walking on broken glass (ours: 20 %)
---   dirty:  a deep wound without glass, left unbandaged or under a dirty bandage, rolls every 12 h of that (ours: 15 %)
+--           per 12 h to 70 %
+--   crash:  a deep wound that appears while in a vehicle (40 %)
+--   walk:   glass that appears in a foot outside a vehicle, i.e. walking on broken glass (20 %)
+--   dirty:  a deep wound without glass, left unbandaged or under a dirty bandage, rolls every 12 h of that (15 %)
 -- state.wounds.tetanus: { glass = { [part] = { elapsed, rolls } }, dirty = { [part] = elapsed },
 --                         seen = { [part] = { deep = bool, glass = bool } } }
 

@@ -1,7 +1,6 @@
 -- Blood types, compatibility and what a transfusion or blood draw does to the patient.
--- From v0.9 EHR_Transfusion.lua and EHR_ServerCommands.lua (docs/porting/phase3/transfusion-ahtr-supplies.md).
--- Fixed: reactions use each stat's own scale (v0.9 clamped pain, panic and food sickness to 1); a bag given at full
--- blood is refused instead of wasted; saline only counts the volume it added.
+-- Reactions use each stat's own scale; a bag given at full blood is refused instead of wasted; saline only counts the
+-- volume it added.
 
 local Data = require "ExtensiveHealthRedone/Data/Blood"
 local Supplies = require "ExtensiveHealthRedone/Data/MedicalSupplies"

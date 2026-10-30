@@ -1,11 +1,12 @@
--- Character creation: EHR Doctor and EHR Surgeon start in their own outfits (Data/Professions.OUTFITS; maintainer
--- decisions 2026-10-14 and 2026-10-20: a lab coat for both, scrubs for the surgeon). Cosmetic only.
+-- Character creation: EHR Doctor and EHR Surgeon start in their own outfits (Data/Professions.OUTFITS: a lab coat for
+-- both, scrubs for the surgeon). Cosmetic only.
 --
 -- Vanilla dresses a profession from ClothingSelectionDefinitions[desc:getCharacterProfession():getName()]
 -- (CharacterCreationMain.lua:1344, :1861; the table is defined in shared/Definitions). What getName() returns for a
 -- modded profession is not documented (another B42 mod keys "rlp:labintern" as "labintern"), so each outfit is put
 -- under every name it could be: our id, getName(), toString(), and the registered id as written and lower-cased.
--- An outfit another mod already set for one of these names is kept. Applied at load and again at OnGameBoot, in case vanilla's definitions load after us.
+-- An outfit another mod already set for one of these names is kept. Applied at load and again at OnGameBoot, in case
+-- vanilla's definitions load after us.
 
 local Data = require "ExtensiveHealthRedone/Data/Professions"
 

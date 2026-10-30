@@ -2,15 +2,12 @@
 -- tab first opens this panel: click 12 moving stitch points in order. First Aid gives more allowed misses, bigger
 -- targets and less wobble. The result (misses) goes to the server, which rolls the outcome; on success the real
 -- vanilla stitch action then runs as usual, so other mods' stitching items still work.
--- From v0.9 EHR_StitchMinigame.lua (docs/porting/phase3/stitch-minigame-and-b42-api.md, part A). Changes: the wobble
--- runs on real time instead of frames, and moving or cancelling after starting counts as a dirty attempt (W34).
--- Issue #10: retuned. v0.9's curve gave First Aid 0 about a 56 ms window to click a passing point (luck, not skill),
--- clicks on the drawn target's edge missed, and it stopped improving at level 8. Now the curve runs to level 10, from
--- about 150 ms at level 0 to over 2 s at level 10, and the hit area is the whole drawn target.
--- Phase 9: the panel opens only once the server has opened a session (consent, a needle, a wound to stitch); for
--- another player without consent the doctor is asked to request it first. The server, not this file, decides what a
--- stitch does (Server/Health: SA-1 to SA-3).
--- Not yet: joypad support (v0.9 had none either).
+-- The wobble runs on real time instead of frames, and moving or cancelling after starting counts as a dirty attempt.
+-- The window to click a passing point grows with First Aid up to level 10, from about 150 ms at level 0 to over 2 s at
+-- level 10, so it takes skill rather than luck; the hit area is the whole drawn target.
+-- The panel opens only once the server has opened a session (consent, a needle, a wound to stitch); for another
+-- player without consent the doctor is asked to request it first. The server, not this file, decides what a stitch
+-- does (Server/Health). No joypad support.
 
 require "ISUI/ISPanel"
 require "ISUI/ISButton"

@@ -1,6 +1,10 @@
 -- A minimal stand-in for the Project Zomboid globals our adapter code uses, so the server and client wiring can run
 -- offline in single-player mode. It is not a game simulation: only the calls the adapters make exist, and anything
 -- else fails loudly. Install it inside an insulate() block; busted restores _G and package.loaded afterwards.
+--
+-- Add-on mods reuse it from their own repository: FakeGame.install({ root = "../extensive-health-redone/" }) finds
+-- EHR's server and client code from there, and game.sandboxFor, game.addEvent and game.addPerk add the add-on's own
+-- sandbox namespace, events and perks.
 
 -- The fake vanilla action tables are deliberately partial.
 ---@diagnostic disable: missing-fields
@@ -81,7 +85,19 @@ local function newPart(index)
     function part:setScratched(v) self.flags.scratch = v end
     function part:getScratchTime() return self.scratchTime or 0 end
     function part:setScratchTime(v) self.scratchTime = v end
-    function part:getFractureTime() return self.flags.fracture and 1 or 0 end
+    -- Healing timers: part.times.cut and so on; a fracture flag without a timer reads 1.
+    part.times = {}
+    function part:getCutTime() return self.times.cut or 0 end
+    function part:setCutTime(v) self.times.cut = v end
+    function part:getDeepWoundTime() return self.times.deep or 0 end
+    function part:setDeepWoundTime(v) self.times.deep = v end
+    function part:getBurnTime() return self.times.burn or 0 end
+    function part:setBurnTime(v) self.times.burn = v end
+    function part:getFractureTime() return self.times.fracture or (self.flags.fracture and 1 or 0) end
+    function part:setFractureTime(v) self.times.fracture = v end
+    function part:setCut(v) self.flags.cut = v end
+    function part:generateDeepWound() self.flags.deep = true; self.times.deep = 20 end
+
     -- An admin's full restore (Server/BodyWriter): health, wounds and pain back to normal; stiffness 0-100.
     function part:RestoreToFullHealth()
         self.health, self.additionalPain, self.flags = 100, 0, {}
@@ -122,7 +138,7 @@ local function newBody()
     function body:setColdStrength(v) self.cold.strength = v end
     function body:setHasACold(v) self.cold.has = v end
     function body:setCatchACold(v) self.cold.catch = v end
-    -- Vanilla's pill effect (Phase 9 giving pills): records the item; the Java one also uses a pill (inferred), the
+    -- Vanilla's pill effect (giving pills): records the item; the Java one also uses a pill (inferred), the
     -- fake leaves that to Server/Medication's fallback.
     body.pillsTaken = {}
     function body:JustTookPill(item) self.pillsTaken[#self.pillsTaken + 1] = item end
@@ -164,7 +180,7 @@ local function newInventory(game)
         -- Drainable charge 0-1 (.usesFloat, default full): the watch battery (Server/Watch).
         function item:getCurrentUsesFloat() return self.usesFloat or 1 end
         function item:setCurrentUsesFloat(v) self.usesFloat = v end
-        -- Phase 9 (Client/Give, Server/Medication.give): uses left, the name, vanilla antibiotics' power (.infectionPower).
+        -- Client/Give, Server/Medication.give: uses left, the name, vanilla antibiotics' power (.infectionPower).
         function item:getCurrentUses() return self.uses or 1 end
         function item:getDisplayName() return self.displayName or self.fullType end
         function item:getReduceInfectionPower() return self.infectionPower or 0 end
@@ -284,10 +300,27 @@ local function newPlayer(game, index, opts)
     function player:getY() return self.y end
     function player:getZ() return self.z end
     function player:getVehicle() return self.vehicle end
-    function player:getPerkLevel() return self.firstAid end
+    -- Skills other than First Aid: player.levels[perk name] and player.perkXp[perk name] (addXp adds to it).
+    player.levels = opts.levels or {}
+    player.perkXp = opts.perkXp or {}
+    function player:getPerkLevel(perk)
+        if perk and self.levels[perk.name] ~= nil then
+            return self.levels[perk.name]
+        end
+        return self.firstAid
+    end
+    function player:getXp()
+        return { getXP = function(_, perk) return player.perkXp[perk.name] or 0 end }
+    end
+    function player:getPerkInfo(perk)
+        local level = player.levels[perk.name]
+        return level and { getLevel = function() return player.levels[perk.name] end } or nil
+    end
+    function player:LoseLevel(perk) self.levels[perk.name] = math.max(0, (self.levels[perk.name] or 0) - 1) end
+
     function player:getBodyDamage() return self.body end
     function player:Kill() self.dead = true end
-    -- Phase 9 shared timed actions and vanilla antibiotics given to another player.
+    -- Shared timed actions and vanilla antibiotics given to another player.
     function player:isTimedActionInstant() return false end
     function player:getReduceInfectionPower() return self.reduceInfectionPower or 0 end
     function player:setReduceInfectionPower(v) self.reduceInfectionPower = v end
@@ -365,11 +398,15 @@ local function newPlayer(game, index, opts)
 end
 
 -- Installs the fake globals and puts the client and server folders on the module path.
+-- opts.root: the EHR repository root, relative to the working directory or absolute, ending in "/" (default: the
+-- working directory, EHR's own tests).
 -- Returns the game handle: advance(minutes), tick(), addPlayer(opts), sandbox table, events, players.
-function FakeGame.install()
+function FakeGame.install(opts)
+    opts = opts or {}
     local game = { minutes = 6000, realMs = 1000000, players = {}, printed = {}, nextItemId = 1000 }
+    local lua = (opts.root or "") .. LUA
 
-    package.path = LUA .. "server/?.lua;" .. LUA .. "client/?.lua;" .. package.path
+    package.path = lua .. "server/?.lua;" .. lua .. "client/?.lua;" .. package.path
 
     _G.isClient = function() return false end
     _G.isServer = function() return false end
@@ -458,20 +495,33 @@ function FakeGame.install()
         getMaximumValue = function() return 100 end,
     })
     _G.Capability = enum({ "CanMedicalCheat", "UseHealthCheat" })
-    _G.Perks = { Doctor = { name = "Doctor" }, PlantScavenging = { name = "PlantScavenging" } }
+    _G.Perks = { Doctor = { name = "Doctor" }, PlantScavenging = { name = "PlantScavenging" },
+        Strength = { name = "Strength" }, Fitness = { name = "Fitness" } }
+    -- More perks for an add-on's tests.
+    function game.addPerk(name)
+        _G.Perks[name] = _G.Perks[name] or { name = name }
+        return _G.Perks[name]
+    end
     -- XP awards: game.xp[username] = First Aid total; game.perkXp[perk name][username] = total for any perk
     game.xp = {}
     game.perkXp = {}
     _G.addXp = function(player, perk, amount)
         local name = player:getUsername()
-        assert(perk == _G.Perks.Doctor or perk == _G.Perks.PlantScavenging, "XP for an unexpected perk")
+        assert(perk ~= nil and _G.Perks[perk.name] == perk, "XP for an unexpected perk")
         local byPerk = game.perkXp[perk.name] or {}
         game.perkXp[perk.name] = byPerk
         byPerk[name] = (byPerk[name] or 0) + amount
         if perk == _G.Perks.Doctor then
             game.xp[name] = (game.xp[name] or 0) + amount
         end
+        player.perkXp[perk.name] = (player.perkXp[perk.name] or 0) + amount
     end
+    -- Levels: 100 XP each (player.levels[perk name], default 0); Server/PerkWriter's level loss.
+    _G.PerkFactory = {
+        getPerk = function(perk)
+            return { getTotalXpForLevel = function(_, level) return level * 100 end, name = perk.name }
+        end,
+    }
     _G.BodyPartType = { ToString = function(t) return t.name end }
     _G.instanceof = function(obj, class)
         if class == "DrainableComboItem" then return obj.uses ~= nil end
@@ -520,9 +570,14 @@ function FakeGame.install()
         isValid = function() return true end,
     }
     _G.Events = {}
+    -- An event the listed ones lack, for an add-on's code.
+    function game.addEvent(name)
+        _G.Events[name] = _G.Events[name] or newEvent()
+        return _G.Events[name]
+    end
     for _, name in ipairs({ "OnGameBoot", "OnGameStart", "OnServerStarted", "OnTick", "EveryOneMinute",
         "OnClientCommand", "OnServerCommand", "OnCreatePlayer", "OnKeyPressed",
-        -- Phase 8: loot, the radio, the scalpel, wild searches
+        -- Loot, the radio, the scalpel, wild searches
         "OnPreDistributionMerge", "OnFillContainer", "OnZombieDead", "OnInitGlobalModData", "OnReceiveGlobalModData",
         "OnLoadRadioScripts", "OnEquipPrimary", "OnEquipSecondary", "OnWeaponSwing", "OnCharacterDeath",
         "OnPlayerDeath", "OnFillWorldObjectContextMenu", "OnFillInventoryObjectContextMenu" }) do
@@ -531,6 +586,12 @@ function FakeGame.install()
 
     game.sandbox = _G.SandboxVars.ExtensiveHealthRework
     game.events = _G.Events
+    -- Another mod's sandbox options: game.sandboxFor("MyAddon").ScurvyEnabled = false.
+    function game.sandboxFor(namespace)
+        _G.SandboxVars[namespace] = _G.SandboxVars[namespace] or {}
+        return _G.SandboxVars[namespace]
+    end
+
 
     function game.addPlayer(opts)
         local index = #game.players

@@ -267,7 +267,7 @@ describe("Mind", function()
             assert.equal(100, p.state.mind.painkiller.risk)
         end)
 
-        it("ignores other items, herbal homemade painkillers (W18) and a duplicate report of the same dose", function()
+        it("ignores other items, herbal homemade painkillers and a duplicate report of the same dose", function()
             local p = Sim.context()
             assert.is_false(Addiction.recordDose(p, defs, "Base.PillsVitamins"))
             assert.is_false(Addiction.recordDose(p, defs, "ExtensiveHealth.HomemadePainkillers"))

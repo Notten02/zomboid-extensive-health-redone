@@ -5,7 +5,7 @@
 --     reason in red, a dose that would be wasted stays available with the reason in orange.
 --   vanilla pills and eaten medication (Data.vanillaRoute): no option of ours on yourself. Vanilla's own option gets
 --     the warning in orange instead, because vanilla's action consumes the item anyway and the server wastes the
---     dose. The vanilla pills and antibiotics (Data.giveVanilla) get "Give to <player>" too (Phase 9).
+--     dose. The vanilla pills and antibiotics (Data.giveVanilla) get "Give to <player>" too.
 -- Our homemade pills carry base:consumable, so vanilla adds "Take pills" for them too; that duplicate is removed.
 -- The menu only shows what the mirror says; the shared timed action (Actions/Medication) applies the dose on the
 -- authority when its time is up, and the server checks everything again (Server/Medication).

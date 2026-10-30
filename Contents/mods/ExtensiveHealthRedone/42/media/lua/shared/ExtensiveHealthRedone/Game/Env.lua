@@ -24,11 +24,24 @@ function Env.realSeconds()
     return getTimestampMs() / 1000
 end
 
--- Our sandbox options keep the original's namespace so old server configs carry over.
+-- Our sandbox options keep the original's namespace so old server configs carry over. A name with a dot reads another
+-- mod's namespace ("MyAddon.ScurvyEnabled" is SandboxVars.MyAddon.ScurvyEnabled), so definitions EHR reads options
+-- for (conditions, noises, medication) can point at an add-on's own options.
 function Env.sandbox(name, default)
-    local options = SandboxVars and SandboxVars.ExtensiveHealthRework
-    local value = options and options[name]
+    local namespace, option = "ExtensiveHealthRework", name
+    if type(name) == "string" then
+        local ns, rest = name:match("^([^%.]+)%.(.+)$")
+        if ns then
+            namespace, option = ns, rest
+        end
+    end
+    local options = SandboxVars and SandboxVars[namespace]
+    local value
+    if type(options) == "table" then
+        value = options[option]
+    end
     if value == nil then
+
         return default
     end
     return value
@@ -52,14 +65,17 @@ Env.rng = {
 local loggers = {}
 local level = "info"
 
-function Env.logger(tag)
-    local log = loggers[tag]
+-- prefix: optional mod name for an add-on's lines, e.g. "[MyAddon] " (Core/Log); its loggers follow DebugMode too.
+function Env.logger(tag, prefix)
+    local id = prefix and (prefix .. tag) or tag
+    local log = loggers[id]
     if not log then
-        log = Log.new(tag, print, level)
-        loggers[tag] = log
+        log = Log.new(tag, print, level, prefix)
+        loggers[id] = log
     end
     return log
 end
+
 
 -- Call once sandbox options are loaded (game start). Loggers created later start at the same level.
 function Env.applyLogLevel()

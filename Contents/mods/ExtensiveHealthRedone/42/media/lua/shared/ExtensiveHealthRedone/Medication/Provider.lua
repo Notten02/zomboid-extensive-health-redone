@@ -5,14 +5,16 @@
 --   relief(id, symptom)   0-1 relief of a symptom of the condition from the active doses
 --   active(flag)          a dose with that flag is active (sleepAid, analgesic, betaBlocker, ...)
 --
--- Relief (v0.9, kept by the maintainer in Phase 5): each active dose that treats the condition gives its tier relief
+-- Relief: each active dose that treats the condition gives its tier relief
 -- (15/40/60/80 %) and its specific relief for the symptom. Several drugs never add up: the best tier and the best
 -- specific value count, combined as 1 - (1 - tier) x (1 - specific). Conditions that ask "general" for the tier
--- themselves (Data.GENERAL_KEY) get the two separately. Wound infection and sepsis get no tier relief (v0.9). While
--- activated charcoal is active, antibiotic relief is halved (its interaction).
+-- themselves (Data.GENERAL_KEY) get the two separately. Wound infection and sepsis get no tier relief. A drug
+-- interaction can weaken a category's relief while both of its drugs are active (Interactions.weakened): activated
+-- charcoal halves antibiotic relief.
 
 local Data = require "ExtensiveHealthRedone/Medication/Data"
 local Doses = require "ExtensiveHealthRedone/Medication/Doses"
+local Interactions = require "ExtensiveHealthRedone/Medication/Interactions"
 
 local Provider = {}
 Provider.__index = Provider
@@ -45,6 +47,7 @@ function Provider:index()
     if not self.list then
         self.list, self.flags, self.categories = Provider.activeDoses(self.state)
         self.curingSet = self.state.meds and Doses.curing(self.state) or {}
+        self.weaken = Interactions.weakened(self.categories)
     end
 end
 
@@ -61,11 +64,10 @@ end
 function Provider:relief(id, symptom)
     self:index()
     local tier, specific = 0, 0
-    local weaken = self.categories.charcoal
     for _, med in ipairs(self.list) do
         local own = med.reliefFor and med.reliefFor[id]
         if med.targetSet[id] or own then
-            local scale = (weaken and med.category == "antibiotic") and 0.5 or 1
+            local scale = (med.category and self.weaken[med.category]) or 1
             if med.targetSet[id] and not Data.NO_TIER[id] then
                 tier = math.max(tier, Data.TIER_RELIEF[med.tier] * scale)
             end

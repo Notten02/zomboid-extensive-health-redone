@@ -1,7 +1,6 @@
--- Early-dose overdose (v0.9 M:2593-2845; docs/porting/phase5/medication-database.md section 5). A dose of a
--- prescription course drug on the overdose list, taken before its interval, overdoses: the earlier, the worse.
--- Another early dose while an overdose runs makes it worse, and the third early dose inside one overdose kills (kept
--- lethal: maintainer, Phase 5).
+-- Early-dose overdose. A dose of a prescription course drug on the overdose list, taken before its interval,
+-- overdoses: the earlier, the worse. Another early dose while an overdose runs makes it worse, and the third early
+-- dose inside one overdose kills.
 --
 -- State: state.meds.overdose = { level = 1-3, left = minutes, early = early doses so far } or false.
 
@@ -21,7 +20,7 @@ function Overdose.level(earlyShare)
     return 1
 end
 
--- Numbers per level (v0.9's formulas).
+-- Numbers per level.
 function Overdose.numbers(level)
     local sickness = math.min(0.60, 0.42 + 0.04 * level)
     return {

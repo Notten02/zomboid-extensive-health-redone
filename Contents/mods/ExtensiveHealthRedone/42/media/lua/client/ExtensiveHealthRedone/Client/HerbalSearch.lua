@@ -4,10 +4,9 @@
 -- while avoiding thorns. The server holds the board: each pick is sent and the server reveals that one sign (so a
 -- modified client can't see the thorns), keeps the counts, hurts the hand on a thorn and rolls the find at the end
 -- (Server/WildSearch). This panel draws and sends intents only.
--- From v0.9 c/EHR_HerbalSearch.lua (docs/porting/phase8/herbal-and-hive-minigames.md sections 1-2, 13.2, 13.8).
--- Changes: every sign is drawn the same size (H7); quality is shown from the server's counts without latching (H8);
--- cancelling after a pick spends the spot (H9); the menu answers the controller's test pass (H19); a controller
--- moves a cursor over the 4 x 4 grid with the D-pad, A picks and B cancels.
+-- Every sign is drawn the same size; quality is shown from the server's counts without latching; cancelling after a
+-- pick spends the spot; the menu answers the controller's test pass; a controller moves a cursor over the 4 x 4 grid
+-- with the D-pad, A picks and B cancels.
 
 require "ISUI/ISPanel"
 require "ISUI/ISButton"
@@ -374,7 +373,7 @@ Client.on("herbClosed", function(args)
     end
 end)
 
--- The find. Spoken by the client: a server-side Say doesn't reach the player in MP (v0.9 H10).
+-- The find. Spoken by the client: a server-side Say doesn't reach the player in MP.
 Client.on("herbResult", function(args)
     local panel = current(args)
     if panel then

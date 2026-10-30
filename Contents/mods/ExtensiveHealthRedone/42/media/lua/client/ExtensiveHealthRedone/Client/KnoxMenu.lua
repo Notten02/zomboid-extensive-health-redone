@@ -8,6 +8,8 @@ require "ISUI/ISModalDialog"
 
 local Env = require "ExtensiveHealthRedone/Game/Env"
 local Client = require "ExtensiveHealthRedone/Client/Client"
+local Effects = require "ExtensiveHealthRedone/Client/Effects"
+
 local Data = require "ExtensiveHealthRedone/Diseases/Knox/Data"
 local Knox = require "ExtensiveHealthRedone/Diseases/Knox/Knox"
 local KnoxItems = require "ExtensiveHealthRedone/Diseases/Knox/Items"
@@ -235,14 +237,7 @@ end)
 
 -- Immunobooster tremor: a stagger that doesn't knock the character down.
 Client.on("knoxTremor", function(args)
-    local player = Client.localPlayer(args.owner)
-    if not player or player:isDead() or player:isAsleep() or player:getVehicle() ~= nil or player:isOnFloor()
-        or player:isSitOnGround() or player:isClimbing() then
-        return
-    end
-    player:setBumpType("stagger")
-    player:setVariable("BumpDone", false)
-    player:setVariable("BumpFall", false)
+    Effects.stagger(Client.localPlayer(args.owner))
 end)
 
 return KnoxMenu

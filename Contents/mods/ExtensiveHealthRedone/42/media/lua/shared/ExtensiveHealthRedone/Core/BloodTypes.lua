@@ -1,4 +1,4 @@
--- Rolling and checking blood types. Compatibility rules arrive with transfusion (Phase 3).
+-- Rolling and checking blood types. Compatibility between types is Blood/Transfusion's.
 
 local data = require "ExtensiveHealthRedone/Data/BloodTypes"
 
@@ -13,7 +13,7 @@ function BloodTypes.isValid(value)
     return type(value) == "string" and valid[value] == true
 end
 
--- rng.int(lo, hi) inclusive. A new character always rolls (decision W40).
+-- rng.int(lo, hi) inclusive. A new character always rolls.
 function BloodTypes.roll(rng)
     local total = 0
     for _, w in ipairs(data.weights) do

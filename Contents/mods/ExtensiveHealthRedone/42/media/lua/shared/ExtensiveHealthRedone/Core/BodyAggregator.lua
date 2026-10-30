@@ -10,6 +10,9 @@
 --   body:partDamage("Head", "spoiledBlood", 12)       -- damage to one part
 --   body:infect("Hand_L", "stitch") / body:disinfect("Hand_L", "woundInfection")   -- vanilla infected-wound flag
 --   body:scratch("ForeArm_L", "scabies")              -- a new scratch wound, never Knox-infected
+--   body:reopen("ForeArm_L", "myaddon:scurvy", "cut") -- an old wound opens again: "scratch", "cut" or "deep"
+--   body:woundSpeed("Hand_L", "myaddon:scurvy", 0.5)  -- scratches, cuts, deep wounds and burns close at half speed
+--   body:fractureSpeed("ForeArm_L", "myaddon:vitD", 0.7)   -- a fracture knits at 70 % speed
 --   body:kill("blood", "exsanguination")
 --   body:cureKnox("knoxImmunity") / body:cureKnox("phalanx", 0.25)   -- clear vanilla's Knox infection, or rewind it
 --   body:cold("common_cold", 35)                      -- vanilla's cold (moodle, strength); the strongest wish wins
@@ -102,6 +105,44 @@ function BodyAggregator:scratch(part, source)
     self.scratches = self.scratches or {}
     if self.scratches[part] == nil then
         self.scratches[part] = source
+    end
+end
+
+BodyAggregator.REOPEN_RANK = { scratch = 1, cut = 2, deep = 3 }
+
+-- A wound opening on the part again, never carrying Knox: "scratch", "cut" or "deep". The worst kind wished for a part
+-- wins. The body writer keeps the Knox guard of scratches. self.reopened is [part] = { kind, source }.
+function BodyAggregator:reopen(part, source, kind)
+    needSource(source)
+    local rank = BodyAggregator.REOPEN_RANK[kind]
+    if not rank then
+        error("reopen kinds are scratch, cut and deep: " .. tostring(kind), 2)
+    end
+    self.reopened = self.reopened or {}
+    local current = self.reopened[part]
+    if current == nil or rank > BodyAggregator.REOPEN_RANK[current.kind] then
+        self.reopened[part] = { kind = kind, source = source }
+    end
+end
+
+-- Share (0-1) of vanilla's wound healing (the scratch, cut, deep wound and burn timers counting down) this part keeps.
+-- The lowest factor wins; 1 or none means untouched.
+function BodyAggregator:woundSpeed(part, source, factor)
+    needSource(source)
+    self.woundSpeeds = self.woundSpeeds or {}
+    local current = self.woundSpeeds[part]
+    if current == nil or factor < current then
+        self.woundSpeeds[part] = factor
+    end
+end
+
+-- The same for the fracture timer.
+function BodyAggregator:fractureSpeed(part, source, factor)
+    needSource(source)
+    self.fractureSpeeds = self.fractureSpeeds or {}
+    local current = self.fractureSpeeds[part]
+    if current == nil or factor < current then
+        self.fractureSpeeds[part] = factor
     end
 end
 
@@ -198,7 +239,22 @@ function BodyAggregator.resolveHeal(factor, current, lock)
     return allowed, allowed
 end
 
+-- A healing timer slowed to factor of vanilla's pace. current: the timer now; last: what we left it at last step (nil
+-- when not slowed yet). Returns the value to write (nil = leave it) and the new last (nil = not slowed any more).
+-- A timer that went up since (a new wound, a reset) is accepted as it is; one that went down keeps factor of the drop.
+function BodyAggregator.resolveTimer(factor, current, last)
+    if factor == nil or factor >= 1 or current <= 0 then
+        return nil, nil
+    end
+    if last == nil or current >= last then
+        return nil, current
+    end
+    local allowed = last - (last - current) * factor
+    return allowed, allowed
+end
+
 -- Vanilla's cold. want: our wished strength (nil = no wish this step); applied: what we set before (nil = nothing);
+
 -- current: vanilla's strength now. Returns the strength to write (nil = leave vanilla alone) and the new applied
 -- value. When we stop asking, our cold is cleared once; vanilla's own colds are otherwise left alone.
 function BodyAggregator.resolveCold(want, applied, current)

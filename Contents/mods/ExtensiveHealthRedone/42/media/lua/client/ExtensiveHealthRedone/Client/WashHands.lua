@@ -1,6 +1,6 @@
 -- "Wash Hands" on a water source (sink, rain collector, river, ...): washes visible blood and dirt off the hands and
 -- arms with less water than vanilla's "Wash yourself"; soap makes it quicker and lifts the mood. Clean hands lower the
--- gastroenteritis risk (W26). The shared timed action (Actions/WashHands) has the server check the water source, the
+-- gastroenteritis risk. The shared timed action (Actions/WashHands) has the server check the water source, the
 -- soil and the soap again and do the washing (Server/Food) when its time is up. Rules: Diseases/Food/Washing.
 
 require "ISUI/ISWorldObjectContextMenu"

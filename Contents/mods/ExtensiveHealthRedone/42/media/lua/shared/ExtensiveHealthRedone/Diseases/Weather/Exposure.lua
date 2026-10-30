@@ -1,8 +1,7 @@
 -- The cold and heat exposure meters and the triggers they drive: common cold, hypothermia, heat exhaustion and heat
--- stroke. Two simulation systems, before the condition engine. From v0.9 EHR_EnvironmentalDiseases.lua:1196-1550,
--- :1642-1731 (docs/porting/phase4/environmental.md, sections 1.1-1.2 and 4.1-4.2). Differences from v0.9:
---   * W13: the cold-and-wet route starts at 5 deg C (v0.9: 0).
---   * The meters are saved (v0.9 lost them on every reload).
+-- stroke. Two simulation systems, before the condition engine.
+--   * The cold-and-wet route starts at 5 deg C.
+--   * The meters are saved, so a reload keeps them.
 --   * A cold roll blocked by another illness doesn't use up the hourly roll.
 --   * The cold bath also cools the heat meter, and drives the bath cure (Server/Weather starts and keeps it alive).
 
@@ -52,7 +51,7 @@ local function nearHeat(p)
     return p.facts.weather ~= nil and p.facts.weather.nearHeat == true
 end
 
--- An active Warming Pack counts as a heat source against the cold, but not against being soaked (maintainer, Phase 6).
+-- An active Warming Pack counts as a heat source against the cold, but not against being soaked.
 local function warmingPack(p)
     return Temperature.enabled(p) and Temperature.warmingActive(p.state)
 end

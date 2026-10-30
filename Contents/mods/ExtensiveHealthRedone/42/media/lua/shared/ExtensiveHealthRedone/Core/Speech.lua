@@ -18,7 +18,7 @@ function Speech.stage(p, key)
     end
 end
 
--- A random line, "1 in oneIn" per v0.9 update, n updates per game minute.
+-- A random line, "1 in oneIn" per update of the original mod, n updates per game minute.
 function Speech.maybe(p, key, oneIn, n, dt)
     local mult = Speech.multiplier(p)
     if mult <= 0 then

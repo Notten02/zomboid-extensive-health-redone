@@ -1,4 +1,4 @@
--- Debug: a kit of items for testing the Phase 7 UI (tooltips, the Medical Monitor Watch, the Monitor's medication
+-- Debug: a kit of items for testing the UI (tooltips, the Medical Monitor Watch, the Monitor's medication
 -- rows), given by the debug window's "Test items" button. Like every debug command it needs sandbox DebugMode and the
 -- medicalAdmin permission, checked here again.
 -- An MP client loads this file too and stops at the first line.

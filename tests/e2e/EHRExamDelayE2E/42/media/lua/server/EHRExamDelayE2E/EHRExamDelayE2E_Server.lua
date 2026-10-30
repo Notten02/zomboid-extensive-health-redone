@@ -100,7 +100,7 @@ for cycle = 1, CYCLES do
         local a = ctx.answers[key]
         if not a then return "wait" end
         if not a.model then
-            -- Not yet: ask again (a model could take a game minute and more before the fix).
+            -- Not there yet: ask again.
             ctx.answers[key] = nil
             ctx.state.tries = (ctx.state.tries or 0) + 1
             if ctx.state.tries < 5 then

@@ -1,5 +1,5 @@
 -- Whether the Zombie Virus Vaccine mod (B42 port by rEXX, Workshop 3615135168) is enabled in this game. Never errors.
--- Server/ZVirusVaccine does the work; docs/porting/phase10/zombie-virus-vaccine.md has the audit and the decisions.
+-- Server/ZVirusVaccine does the work.
 
 local ZVirusVaccine = {}
 

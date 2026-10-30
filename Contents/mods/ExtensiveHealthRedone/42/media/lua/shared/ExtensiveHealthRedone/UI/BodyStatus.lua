@@ -1,7 +1,6 @@
 -- What the EHR Monitor's body diagram shows per body part: every status, highest priority first, the colour value
--- for the diagram (0 healthy ... 1 red), and the W21 "what's needed" hint for wound infection.
--- From v0.9 EHR_HealthPanelUI.lua:4443-4615 (docs/porting/phase7/monitor-panel.md 2.3), translated (most labels were
--- hard-coded English), with garlic poultices shown too.
+-- for the diagram (0 healthy ... 1 red), and the "what's needed" hint for wound infection. Garlic poultices are shown
+-- too.
 --
 -- Input per part: plain facts read from vanilla's BodyPart by the client (Client/MonitorView):
 --   { bleeding, infected (vanilla), fracture, bullet, glass, burn, burnWash, bandaged, bandageDirty, deep, bitten, cut,
@@ -27,7 +26,7 @@ BodyStatus.LEGEND = {
 
 local S = "UI_EHR_BodyStatus_"
 
--- Ordered by priority (v0.9's numbers). test(part, wound, hints) -> the label key (or nil) and a colour.
+-- Ordered by priority. test(part, wound, hints) -> the label key (or nil) and a colour.
 ---@type { id: string, prio: integer, color: string?, test: fun(f: table, w: table?, hints: boolean?): string|false|nil, string? }[]
 local RULES = {
     { id = "bleeding", prio = 110, color = "red", test = function(f) return f.bleeding and "UI_EHR_BodyLegend_Bleeding" end },
@@ -92,7 +91,7 @@ local RULES = {
 -- A wound with nothing else matched.
 local INJURY = { id = "injury", prio = 46, color = "orange", label = S .. "Injury" }
 
--- The W21 hint for our wound infection (maintainer, Phase 7).
+-- The "what's needed" hint for our wound infection.
 function BodyStatus.hint(wound)
     if not wound then
         return nil

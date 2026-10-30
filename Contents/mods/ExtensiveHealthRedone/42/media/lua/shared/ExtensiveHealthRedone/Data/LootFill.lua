@@ -1,17 +1,14 @@
 -- Spawn-time loot data: what happens to items as a container fills (package fill, Knox facility items) and what a
--- dead zombie may carry. Pure data for Loot/Fill; Server/Loot applies it on OnFillContainer and OnZombieDead
--- (docs/porting/phase8/loot-distribution.md sections 4-6).
+-- dead zombie may carry. Pure data for Loot/Fill; Server/Loot applies it on OnFillContainer and OnZombieDead.
 --
--- Changes from v0.9 (EHR_MedicationSpawns.lua, EHR_KnoxDistribution.lua, EHR_ZombieLoot.lua):
---   * Location comes from exact room names and container types, not substrings: v0.9's "medic" matched every
---     bathroom "medicine" cabinet and "desk"/"shelf" made offices household (bug L7).
---   * Only our own multi-dose medicine is touched; vanilla pills are left alone (Q10). Knox items spawn full (L9).
---   * Kits, bags and the Medicine Storage Box filled inside a container get the fill too (Q8, L8).
---   * Knox: the 42.21 facility basements are z -13 to -17 (v0.9 expected -1 / -2, so its basement-1 list never ran
---     and Gene Therapy rolled in every basement container). Containers roll once, never again on loot respawn
---     (Q11, L10). Container types match exactly (v0.9's "bin" also matched "cabinet").
---   * Zombie loot is a weighted pick (Q9), not uniform over 83 items (L11): no box, Warming Pack, combat stimulants,
---     Knox, crafted or deleted items; the watch only rarely and Left only.
+--   * Location comes from exact room names and container types, not substrings (a "medic" substring would match
+--     every bathroom "medicine" cabinet).
+--   * Only our own multi-dose medicine is touched; vanilla pills are left alone. Knox items spawn full.
+--   * Kits, bags and the Medicine Storage Box filled inside a container get the fill too.
+--   * Knox: the 42.21 facility basements are z -13 to -17. Containers roll once, never again on loot respawn.
+--     Container types match exactly ("bin" doesn't match "cabinet").
+--   * Zombie loot is a weighted pick: no box, Warming Pack, combat stimulants, Knox, crafted or deleted items; the
+--     watch only rarely and Left only.
 
 local M = "ExtensiveHealth."
 
@@ -43,7 +40,7 @@ local fillItems = set(prefixed({
 }))
 
 -- MedicationPackageFill 1-4: the chance a pharmacy package is full (with AllowFullPharmacyPackages), and per
--- location the fraction of doses left, { low, high } (v0.9 MS:21-70).
+-- location the fraction of doses left, { low, high }.
 local profiles = {
     [1] = { pharmacyFull = 0.08, ranges = {
         pharmacy = { 0.25, 0.65 }, medical = { 0.15, 0.45 }, ambulance = { 0.10, 0.40 },
@@ -92,10 +89,10 @@ return {
     rooms = rooms,
     householdContainers = householdContainers,
     subContainers = subContainers,
-    -- Zombie loot items get the household range (Q9).
+    -- Zombie loot items get the household range.
     zombieLocation = "household",
 
-    -- Knox facility (the Military Research Facility). Bounds from v0.9; depth bands from the 42.21 map (spec 6).
+    -- Knox facility (the Military Research Facility). Depth bands from the 42.21 map.
     knox = {
         minX = 5480, maxX = 5660, minY = 12390, maxY = 12560,
         -- z -13 to -15: barracks, storage, offices. z -16 and below: the laboratory levels.
@@ -116,7 +113,7 @@ return {
             "militarycrate", "medicalcabinet", "militarylocker", "cardboardbox", "bin", "wardrobe", "dresser" }),
     },
 
-    -- Zombie loot weights (ours, from the spec's Q9 default): OTC and dressings 4, prescription drugs and medical
+    -- Zombie loot weights: OTC and dressings 4, prescription drugs and medical
     -- supplies 2, clinical 0.5, blood bags at loot rarity x 0.25, literature 1, the watch 0.25.
     zombie = {
         tiers = {

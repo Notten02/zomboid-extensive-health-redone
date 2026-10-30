@@ -1,9 +1,9 @@
--- Wires medication (Phase 5) to the authority: the medication.take command for our own inventory option (on
+-- Wires medication to the authority: the medication.take command for our own inventory option (on
 -- yourself, or on another player with consent), medication.give for the vanilla pills and antibiotics given to
--- another player (Phase 9), the vanilla pill, eat and drink hooks, and debug commands. Every way of taking a dose
+-- another player, the vanilla pill, eat and drink hooks, and debug commands. Every way of taking a dose
 -- ends in the same rules (Medication/Doses); this file only finds items and supplies, uses them up as the outcome
 -- says, and awards First Aid XP to whoever gave the dose.
--- Both commands are the authority half of Actions/Medication's EHRMedicationAction (`action = true`, SA-6), and a
+-- Both commands are the authority half of Actions/Medication's EHRMedicationAction (`action = true`), and a
 -- dose for another player needs their consent for that one item (Server/Consent), used up by the attempt.
 -- An MP client loads this file too and stops at the first line.
 
@@ -97,7 +97,7 @@ Runtime.registry:register("medication.take", {
             Items.useOne(kit)
         end
         award(giver, outcome)
-        log:info(ctx.actor.key, "gave", med.id, "to", patient.key, "->", outcome.result, outcome.reason or "")
+        log:debug(ctx.actor.key, "gave", med.id, "to", patient.key, "->", outcome.result, outcome.reason or "")
     end,
 })
 
@@ -109,7 +109,7 @@ Runtime.registry:register("medication.take", {
 -- ISEatFoodAction gives through IsoGameCharacter:Eat for the antibiotics.
 
 -- Vanilla's pill effect on the patient from the doctor's item. JustTookPill uses one pill itself (vanilla's action
--- consumes nothing else; inferred, Java); if a build ever stops doing that, one is used here instead.
+-- consumes nothing else); if a build ever stops doing that, one is used here instead.
 local function vanillaPill(patient, item)
     local before = item:getCurrentUses()
     patient:getBodyDamage():JustTookPill(item)
@@ -159,7 +159,7 @@ Runtime.registry:register("medication.give", {
             vanillaAntibiotics(patient.player, item)
         end
         award(giver, outcome)
-        log:info(ctx.actor.key, "gave", med.id, "to", patient.key, "->", outcome.result, outcome.reason or "")
+        log:debug(ctx.actor.key, "gave", med.id, "to", patient.key, "->", outcome.result, outcome.reason or "")
     end,
 })
 
@@ -246,10 +246,9 @@ Patches.on("takeWaterComplete", {
 
 -- Debug ----------------------------------------------------------------------------------------------------------------
 
-local MED_IDS = {}
-for id in pairs(Data.byId) do
-    MED_IDS[id] = true
-end
+-- Looked up when a command arrives, so medications add-ons register later count too.
+local MED_IDS = setmetatable({}, { __index = function(_, id) return Data.byId[id] ~= nil end })
+
 
 Runtime.registry:register("debug.medication", {
     args = {

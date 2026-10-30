@@ -2,8 +2,8 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake vanilla actions and items are deliberately partial.
 ---@diagnostic disable: missing-fields
--- Zombie Virus Vaccine beside us (Phase 10, docs/porting/phase10/zombie-virus-vaccine.md): the pure rules first, then the
--- server wiring against the fake game with stand-ins for the two vaccine modules it wraps.
+-- Zombie Virus Vaccine beside us: the pure rules first, then the server wiring against the fake game with stand-ins for
+-- the two vaccine modules it wraps.
 local Knox = require("ExtensiveHealthRedone/Diseases/Knox/Knox")
 local Transfusion = require("ExtensiveHealthRedone/Blood/Transfusion")
 local BloodData = require("ExtensiveHealthRedone/Data/Blood")
@@ -61,7 +61,8 @@ describe("Knox knowledge from a blood test", function()
     end)
 end)
 
--- Stand-ins for the vaccine mod's two server modules (HealthSystem/LabCollectBloodLogic_Server and BloodTestLogic_Server).
+-- Stand-ins for the vaccine mod's two server modules (HealthSystem/LabCollectBloodLogic_Server and
+-- BloodTestLogic_Server).
 local function installFakeVaccine()
     local calls = { collect = 0, test = 0 }
     local collect = {

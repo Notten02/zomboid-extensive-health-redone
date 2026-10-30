@@ -4,7 +4,7 @@
 -- The importer against REAL data: the EHR_* player modData of eight saves made with the original mod (August 2026),
 -- decoded by tools/decode-ehr-moddata.py into tests/fixtures/real_saves/save_<n>.lua. The synthetic fixtures in
 -- tests/fixtures/legacy_ehr.lua test the formats we inferred from the original's source; these test what the
--- original actually wrote. Offline validation only: the migration has not been run in the game.
+-- original actually wrote.
 --
 -- EXPECTED holds the values read from each fixture by hand, so the spec fails if the importer drops or corrupts
 -- them, and also if a fixture is regenerated with different data.

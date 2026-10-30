@@ -74,14 +74,4 @@ function StatWriter.holdTemperature(key, player, floor, ceiling)
     end
 end
 
--- Writes one stat directly, bypassing the aggregator. Debug only (Server/TemperatureProbe tests how vanilla treats
--- our writes); feature code always goes through apply().
-function StatWriter.debugSet(player, name, value)
-    local stat = CharacterStat[name]
-    player:getStats():set(stat, value)
-    if isServer() then
-        sendPlayerStat(player, stat)
-    end
-end
-
 return StatWriter

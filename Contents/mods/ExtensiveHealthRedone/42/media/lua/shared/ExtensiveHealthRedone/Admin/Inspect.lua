@@ -1,4 +1,4 @@
--- /ehrinspect Name: a short, read-only summary of a player's health state as chat lines for the admin (decision Q6).
+-- /ehrinspect Name: a short, read-only summary of a player's health state as chat lines for the admin.
 -- Pure: lines are UI/Text values (keys and arguments), translated on the admin's client. Server/Admin writes the full
 -- state (Core/Dump) to the server log alongside.
 

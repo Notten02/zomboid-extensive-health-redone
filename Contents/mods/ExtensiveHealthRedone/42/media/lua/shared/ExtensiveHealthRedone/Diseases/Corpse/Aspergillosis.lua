@@ -1,11 +1,9 @@
 -- Cadaveric aspergillosis: a fungal lung infection from spores of decomposing corpses in damp or cold air
 -- (Diseases/Corpse/Exposure). Stage 1 is the incubation; stage 2 cough, feverish feeling and stamina loss; stage 3
 -- severe breathing trouble, a 39.4 C fever, no sprinting, slower walking, and untreated a health drain with no floor
--- (lethal, as in v0.9); stage 4 recovery. A curative course softens everything and stops the drain.
--- Effects from v0.9 EHR_Disease.lua:3541-3661 (docs/porting/phase4/corpse-scabies-concussion.md, section 2.6). The
--- stage-3 no-sprint and 0.75 speed come from v0.9's definition, which never applied them (the guide lists them).
+-- (lethal); stage 4 recovery. A curative course softens everything and stops the drain.
 --
--- Treatment (Phase 5): cure - Antifungal Tablets, IV Amphotericin B. Relief - cough syrups and Cough Suppressant
+-- Treatment: cure - Antifungal Tablets, IV Amphotericin B. Relief - cough syrups and Cough Suppressant
 -- ("coughing"), Bronchodilator ("breathingDifficulty"), Antipyretic ("fever"); also read: "weakness".
 
 local Speech = require "ExtensiveHealthRedone/Core/Speech"
@@ -24,7 +22,7 @@ local ROWS = {
             fever = 37.6, feverStep = 0.030, mult = 0.25, cough = 0.0018 },
 }
 
--- Stage-3 drain: 0.55 + 1.30 x severity HP every 0.45 game hours, no floor (v0.9).
+-- Stage-3 drain: 0.55 + 1.30 x severity HP every 0.45 game hours, no floor.
 local DRAIN = { base = 0.55, perSeverity = 1.30, everyMinutes = 27 }
 
 local BREATH_LINES = { "UI_EHR_Asperg_LungsTight", "UI_EHR_Asperg_HurtsToBreathe", "UI_EHR_Asperg_NoFullBreath" }

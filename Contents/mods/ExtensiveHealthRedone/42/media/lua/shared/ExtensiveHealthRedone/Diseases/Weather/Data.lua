@@ -1,20 +1,19 @@
 -- Numbers for the environmental diseases: common cold, pneumonia, hypothermia, heat exhaustion, heat stroke, and the
--- cold and heat exposure meters. From v0.9 EHR_EnvironmentalDiseases.lua and EHR_DiseaseDefinitions.lua
--- (docs/porting/phase4/environmental.md); "ours" marks numbers the original didn't have.
+-- cold and heat exposure meters.
 --
--- Time base: v0.9 ran these effects once per environmental update, every 90 ticks = 3 real seconds = 1.2 game minutes
--- with the default 1-hour day. A v0.9 "per update" amount is therefore PER_MINUTE times that per game minute, and a
--- "per update" chance uses Chance.over(p, PER_MINUTE, dt).
+-- Time base: "per update" numbers are per environmental update of the original mod, every 90 ticks = 3 real seconds
+-- = 1.2 game minutes with the default 1-hour day. A "per update" amount is therefore PER_MINUTE times that per game
+-- minute, and a "per update" chance uses Chance.over(p, PER_MINUTE, dt).
 
 local Data = {}
 
 Data.PER_MINUTE = 1 / 1.2
 
--- Cold exposure (meters in hours of exposure). W13: the cold-and-wet route starts at 5 deg C (v0.9: 0).
+-- Cold exposure (meters in hours of exposure). The cold-and-wet route starts at 5 deg C.
 Data.cold = {
     FREEZING_C = 5,
     WET = 0.30, SOAKED = 0.70, HEAVILY_SOAKED = 0.90,
-    -- isWarm: indoors with body above 36.2 deg C, or body above 36.84 deg C (v0.9's normalised 0.40 and 0.48)
+    -- isWarm: indoors with body above 36.2 deg C, or body above 36.84 deg C
     WARM_INDOORS_BODY_C = 36.2, WARM_BODY_C = 36.84,
     GAIN = 1.5, GAIN_SOAKED = 2.25, DECAY = 1, DECAY_WARM = 2, DECAY_BATHING = 3,
     READY_FREEZING_H = 2.0, READY_SOAKED_H = 1.0,
@@ -34,13 +33,13 @@ Data.heat = {
     STROKE_RISK = 0.85, STROKE_ROLL_EVERY = 5, STROKE_BASE = 0.35, STROKE_SPAN = 0.65, STROKE_MAX = 0.95,
     STROKE_THIRSTY = 1.15, STROKE_VERY_THIRSTY = 1.35, STROKE_EXERTING = 1.15,
     DISPLAY_MAX = 1.25,
-    -- W9 heat exhaustion stages (ours): stage 1/2/3 from these meter shares; stage 4 while the meter falls for
+    -- Heat exhaustion stages: stage 1/2/3 from these meter shares; stage 4 while the meter falls for
     -- FALLING_MINUTES; recovered below END.
     EXHAUSTION = { [1] = 0.35, [2] = 0.60, [3] = 0.85 }, EXHAUSTION_END = 0.10, FALLING_MINUTES = 5,
 }
 
 -- Common cold: per stage. sneezeH = game hours between sneezes; fatigue raised toward a cap by step per update;
--- fever target / step per update; vanilla cold strength; sickness shown (v0.9 VanillaSicknessLevels, 0-1).
+-- fever target / step per update; vanilla cold strength; sickness shown (0-1).
 Data.commonCold = {
     [1] = { cold = 0, sneezeH = 3, sickness = 0.10 },
     [2] = { cold = 35, sneezeH = 1, fatigue = 0.10, fatigueStep = 0.001, fever = 37.6, feverStep = 0.018,
@@ -52,7 +51,7 @@ Data.commonCold = {
 }
 
 -- Pneumonia: per stage. coughH = game hours between coughs; chest pain on Torso_Upper; endurance cap; health drain
--- (HP per game hour) and floor; fatigue toward a cap (v0.9 was uncapped; the caps are ours).
+-- (HP per game hour) and floor; fatigue toward a cap.
 Data.pneumonia = {
     [1] = { coughH = 2.0, severe = false, chestPain = 6, fever = 38.0, feverStep = 0.030,
             fatigue = 0.30, fatigueStep = 0.001, sickness = 0.10 },
@@ -66,7 +65,7 @@ Data.pneumonia = {
 }
 
 -- Hypothermia: per stage (stages come from body temperature, see the sandbox HypothermiaStage*Temp options).
--- Chances are per v0.9 update. Fatigue caps are ours (v0.9 uncapped).
+-- Chances are per update.
 Data.hypothermia = {
     [1] = { speed = 0.90, endurance = 0.86, fatigue = 0.40, fatigueStep = 0.00035 },
     [2] = { speed = 0.76, noSprint = true, endurance = 0.70, fatigue = 0.55, fatigueStep = 0.00075, drain = 2,
@@ -81,7 +80,7 @@ Data.hypothermia = {
     PLAUSIBLE_MIN_C = 20,            -- body temperatures below this are a sensor glitch, never hypothermia
 }
 
--- Heat exhaustion (W9; all ours): per stage.
+-- Heat exhaustion: per stage.
 Data.heatExhaustion = {
     [1] = { thirst = 0.0015 },
     [2] = { thirst = 0.0025, cramps = 12, speed = 0.9 },
@@ -90,7 +89,7 @@ Data.heatExhaustion = {
     CRAMP_PARTS = { "UpperLeg_L", "UpperLeg_R", "LowerLeg_L", "LowerLeg_R" },
 }
 
--- Heat stroke: per stage. W11: the drain starts at stage 2 (v0.9: 2 HP/h at stage 1). thirst per update; chances
+-- Heat stroke: per stage. The drain starts at stage 2. thirst per update; chances
 -- per update except collapse (per 5 game minutes).
 Data.heatStroke = {
     [1] = { fever = 40.5, feverStep = 0.110, thirst = 0.004, speed = 0.65, dizziness = 0.08, confusion = 0.08,
@@ -102,7 +101,7 @@ Data.heatStroke = {
     [4] = { fever = 40.5, feverStep = 0.100, drain = 24, thirst = 0.008, speed = 0.50, dizziness = 0.12,
             confusion = 0.12, collapse = 0.50 },
     COLLAPSE_EVERY = 5,              -- game minutes
-    COLLAPSE_COOLDOWN = 45,          -- game minutes after a collapse (ours: v0.9 had none, see the Phase 4 result)
+    COLLAPSE_COOLDOWN = 45,          -- game minutes after a collapse
     COOLING_FEVER = 37.2, COOLING_STEP = 0.22,
     AMBIENT_COOL_C = 10, AMBIENT_CURE_MINUTES = 180, AMBIENT_DECAY = 0.5,
     BATH_MINUTES = 180, BATH_HEARTBEAT_MINUTES = 15, BATH_WATER = 8,
@@ -110,7 +109,7 @@ Data.heatStroke = {
 
 -- Shared symptom episodes.
 Data.episodes = {
-    BLUR = 0.5, BLUR_MINUTES = { 5, 10 },           -- dizziness blur (v0.9 ToxinVision symptom episode)
+    BLUR = 0.5, BLUR_MINUTES = { 5, 10 },           -- dizziness blur
     DIZZY_PANIC = 0.2, CONFUSION_PANIC = 0.15,      -- fractions of the panic range
 }
 

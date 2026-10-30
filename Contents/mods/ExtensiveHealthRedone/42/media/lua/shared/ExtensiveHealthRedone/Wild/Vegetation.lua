@@ -2,13 +2,11 @@
 --   Plant search: an outdoor square (no room) with a bush, whose hash passes the zone density. A bush is a tile whose
 --   CustomName is "Bush", or with the canBeCut flag (vanilla's "Remove Bush" cursor), or an f_bushes_ sprite: in 42.21
 --   most wild bushes carry only the name (45 + 52 "Bush" tiles in newtiledefinitions and the erosion tiles, canBeCut
---   on 32), so canBeCut alone missed most of them (found in game 2026-10-20). Hedges and ornamental bushes don't count. So only some bushes are search patches, the same ones for every
---   player and every visit.
+--   on 32), so canBeCut alone would miss most of them. Hedges and ornamental bushes don't count. Only some bushes are
+--   search patches, the same ones for every player and every visit.
 --   Hive search: an outdoor square with a tree (square:getTree()).
--- From v0.9 c/EHR_HerbalSearch.lua:185-272 and c/EHR_HiveWebSearch.lua:107-166 (docs/porting/phase8/
--- herbal-and-hive-minigames.md sections 1, 5, 13.7). Changes: bushes instead of any grass floor (H13); the density is
--- checked on the server too (H14); the zone class comes from every zone at the point with vanilla's own type names
--- (H15).
+-- The density is checked on the server too; the zone class comes from every zone at the point, with vanilla's own
+-- type names.
 --
 -- Pure apart from calling methods on the square handed in: the game globals it needs come in an api table built by
 -- the caller, { canBeCut = IsoFlagType.canBeCut, zonesAt = getZones }, so tests can pass fakes.
@@ -17,7 +15,7 @@ local Data = require "ExtensiveHealthRedone/Data/WildSearch"
 
 local Vegetation = {}
 
--- v0.9's per-square hash, 0-9999.
+-- A fixed per-square hash, 0-9999.
 function Vegetation.hash(x, y, z)
     local h = (x * 73856093 + y * 19349663 + z * 83492791) % 10000
     if h < 0 then

@@ -1,20 +1,21 @@
--- How each disease is shown: its icon (common/media/textures, file names kept from v0.9, typos included), the
--- handbook category, whether it can kill, and the name and hint an unidentified case shows. Shared by the EHR Monitor
--- (UI/Monitor) and the handbook (UI/Handbook). Ids are condition ids; wound_infection is the per-part infection
--- (state.wounds), which has no condition definition.
--- Sources: docs/porting/phase7/monitor-panel.md 2.4 and 3.2, immune-tab-and-journal.md 2.5.
+-- How each disease is shown: its icon (common/media/textures, file names kept from the original mod, typos
+-- included), the handbook category, whether it can kill, and the name and hint an unidentified case shows. Shared by
+-- the EHR Monitor (UI/Monitor) and the handbook (UI/Handbook). Ids are condition ids; wound_infection is the per-part
+-- infection (state.wounds), which has no condition definition.
 --
 --   icon      texture name without ".png"
 --   category  UI_EHR_Codex_Category_<category>
---   lethal    "LETHAL RISK" in the handbook: v0.9's list, plus Knox (its lookup missed it, bug B4)
+--   lethal    "LETHAL RISK" in the handbook
 --   unknown   suffix of UI_EHR_Unknown_<unknown> and UI_EHR_Unknown_<unknown>_Desc, shown before the disease is
---             identified (v0.9's hard-coded English, now keys)
+--             identified
+--   unknownName, unknownDesc   full keys instead of `unknown` (add-on conditions, Conditions/Registration)
+--   lockedDesc  the key of a locked handbook entry's text, instead of the flyer text (add-on conditions)
 
 local DiseaseInfo = {}
 
 DiseaseInfo.UNKNOWN_ICON = "EHR_Disease_Unknown"
 
--- The handbook's order (v0.9 CatalogOrder without tuberculosis, W1).
+-- The handbook's order.
 DiseaseInfo.ORDER = {
     "food_poisoning", "gastroenteritis", "trichinosis", "toxin_poisoning", "dysentery", "common_cold", "pneumonia",
     "hypothermia", "heat_exhaustion", "heat_stroke", "corpse_sickness", "cadaveric_aspergillosis", "wound_infection",
@@ -59,7 +60,11 @@ DiseaseInfo.WOUND_INFECTION = { knowledge = "wound_infection", name = "UI_EHR_Wo
 -- The unknown name and hint keys for a condition id. The fallback is the generic "Unknown Illness".
 function DiseaseInfo.unknownKeys(id)
     local info = DiseaseInfo.BY_ID[id]
+    if info and info.unknownName then
+        return info.unknownName, info.unknownDesc or (info.unknownName .. "_Desc")
+    end
     if info and info.unknown then
+
         return "UI_EHR_Unknown_" .. info.unknown, "UI_EHR_Unknown_" .. info.unknown .. "_Desc"
     end
     return "UI_EHR_DiseaseUnknown", "UI_EHR_DiseaseUnknownDesc"

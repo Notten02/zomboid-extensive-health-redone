@@ -1,9 +1,9 @@
 -- What using a Knox item does, decided and applied on the authority (Server/Knox runs these in Runtime.applyNow and
 -- consumes the item as told). Every function returns { consume = 0 | 1, outcome = string, ... }; refusals consume
--- nothing. From v0.9 EHR_KnoxCure.lua (docs/porting/phase4/mental-knox-sounds.md, 4.4-4.7), with:
---   * W33: gene therapy costs 10% health, Phalanx nausea/fever/48 h immune debuff, immunobooster tremors;
---   * Phalanx resets to a share of the stat's real range (v0.9 wrote 0-1 values into a 0-100 stat), rewinds the
---     infection timers too, and a too-early dose costs one dose, not two;
+-- nothing. The rules:
+--   * gene therapy costs 10% health, Phalanx brings nausea, fever and a 48 h immune debuff, the immunobooster tremors;
+--   * Phalanx resets to a share of the stat's real range, rewinds the infection timers too, and a too-early dose costs
+--     one dose, not two;
 --   * PatientZeroTraitDisabled only stops gene therapy granting immunity and the trait; it voids nothing.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Knox/Data"

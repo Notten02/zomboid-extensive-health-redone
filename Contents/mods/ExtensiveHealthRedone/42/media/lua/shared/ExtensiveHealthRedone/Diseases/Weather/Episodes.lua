@@ -1,6 +1,6 @@
 -- Symptom episodes the environmental diseases share: coughs and sneezes (with world noise), dizziness (vision blur),
 -- confusion, and collapse into a forced sleep. Speech cooldowns and episode timers live in the condition's data, as
--- remaining game minutes. From v0.9 EHR_EnvironmentalDiseases.lua:3461-3695, :3776-3982.
+-- remaining game minutes.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Weather/Data"
 local Meters = require "ExtensiveHealthRedone/Diseases/Weather/Meters"
@@ -53,7 +53,7 @@ function Episodes.cough(p, severe)
     return true
 end
 
--- A sneeze. v0.9 sneezed in its sleep too; we don't.
+-- A sneeze (never in its sleep).
 function Episodes.sneeze(p)
     if p.facts.asleep then
         return false
@@ -64,7 +64,7 @@ function Episodes.sneeze(p)
 end
 
 -- Runs a "one every intervalH game hours" symptom (cough, sneeze) from a countdown in c.data[name]. relief 0-1
--- stretches the interval (v0.9: interval / max(0.1, 1 - relief)); at 95% relief or more the symptom stops.
+-- stretches the interval (interval / max(0.1, 1 - relief)); at 95% relief or more the symptom stops.
 function Episodes.every(p, c, name, intervalH, relief, dt, fn)
     local mult = 1 - (relief or 0)
     if mult <= 0.05 then

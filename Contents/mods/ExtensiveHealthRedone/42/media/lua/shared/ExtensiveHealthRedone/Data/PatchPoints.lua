@@ -1,5 +1,7 @@
 -- Every vanilla Lua method we wrap, by point name. Core/PatchPoints wraps each exactly once; features attach
--- listeners to the name (see Game/Patches.lua). Adding a line here is the only way to patch vanilla Lua.
+-- listeners to the name (see Game/Patches.lua). Adding a line here is the only way EHR patches vanilla Lua; add-on
+-- mods add theirs with Patches.define.
+
 -- side: "shared" (default), "client" (UI code; skipped on a dedicated server) or "server" (authority; skipped on MP
 -- clients). B42 timed actions run complete() on the authority, so effects hook complete().
 -- named: for a timed action's new(), a wrapper with vanilla's exact parameter names (Core/PatchPoints header). Copy
@@ -34,6 +36,11 @@ return {
           end
       end },
     { name = "drinkFluidComplete", path = "ISDrinkFluidAction.complete", side = "server" },
+    -- Every sip of a drink: vanilla drinks a fluid bit by bit in updateEat (from update(), the server's anim event and
+    -- complete()), and a drink stopped part way never reaches complete(). No EHR listener; for add-ons that count what
+    -- is drunk. action.consumedRatio (share of the container drunk so far) before and after the call gives the sip.
+    { name = "drinkFluidUpdateEat", path = "ISDrinkFluidAction.updateEat", side = "server" },
+
     { name = "takeWaterComplete", path = "ISTakeWaterAction.complete", side = "server" },
     -- Pills: vanilla pills are medication (Server/Medication; painkillers also count toward addiction).
     { name = "takePillComplete", path = "ISTakePillAction.complete", side = "server" },

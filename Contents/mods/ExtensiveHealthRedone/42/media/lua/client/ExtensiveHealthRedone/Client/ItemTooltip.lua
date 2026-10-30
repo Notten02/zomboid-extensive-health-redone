@@ -1,6 +1,5 @@
--- Our lines under the vanilla tooltip of EHR items (docs/porting/phase7/tooltips-moodles-watch.md, Part A, option B).
--- Vanilla keeps drawing its whole tooltip (condition, weight, uses and freshness bars, other mods' lines), so nothing
--- is lost the way v0.9's replacement tooltip lost it.
+-- Our lines under the vanilla tooltip of EHR items. Vanilla keeps drawing its whole tooltip (condition, weight, uses
+-- and freshness bars, other mods' lines), so nothing is lost the way a replacement tooltip would lose it.
 --
 -- How: the tooltipInvRender patch point (ISToolTipInv.render). Before vanilla's render, the panel's item is swapped
 -- for a stand-in whose DoTooltip calls the real item's DoTooltip and then appends our lines through the tooltip's

@@ -1,10 +1,9 @@
 -- Corpse exposure illness: from breathing corpse air (Diseases/Corpse/Exposure). Stage 1 is the incubation; stage 2
 -- nausea and weakness; stage 3 cough, headache, dizziness, slower walking and collapse risk; stage 4 recovery. It never
--- kills. W15: once the incubation is over, fresh air (the corpse meter back at 0) makes the rest pass twice as fast.
+-- kills. Once the incubation is over, fresh air (the corpse meter back at 0) makes the rest pass twice as fast.
 -- Recovery or a cure gives 2 h of immunity (the meter stays at 0).
--- Effects from v0.9 EHR_Disease.lua:3452-3539 (docs/porting/phase4/corpse-scabies-concussion.md, section 1.11).
 --
--- Treatment (Phase 5): cure - Respiratory Support Kit, Corticosteroid Injection. Relief - Anti-Nausea ("nausea"),
+-- Treatment: cure - Respiratory Support Kit, Corticosteroid Injection. Relief - Anti-Nausea ("nausea"),
 -- Bronchodilator ("breathingDifficulty"); also read: "dizziness", "weakness".
 
 local Speech = require "ExtensiveHealthRedone/Core/Speech"
@@ -13,8 +12,8 @@ local Symptoms = require "ExtensiveHealthRedone/Conditions/Symptoms"
 
 local ID = "corpse_sickness"
 
--- Per v0.9 disease tick unless noted. head = headache pain on the head (ours: v0.9 nudged the general PAIN stat,
--- which B42 derives from body parts).
+-- Per disease tick (Corpse/Episodes) unless noted. head = headache pain on the head (B42 derives the general pain
+-- stat from the body parts).
 local ROWS = {
     [2] = { sickness = 0.36, discomfort = 0.32, drain = 0.006, floor = 0.58, mult = 0.45, dizzy = 0.007,
             cough = 0.0025, eyes = 0.006, head = 10 },
@@ -29,7 +28,7 @@ local EYE_LINES = { "UI_EHR_Corpse_EyesBurning", "UI_EHR_Corpse_EyesSting", "UI_
 local def = {
     enabledOption = "CorpseSicknessEnabled", speedOption = "DiseaseSpeed",
     incubation = { 6, 18 }, duration = { 24, 72 }, baseSeverity = 0.6,
-    blockAfterCureHours = 2,        -- v0.9 GrantImmunity: 2 h without corpse exposure after it ends
+    blockAfterCureHours = 2,        -- 2 h without corpse exposure after it ends
     effectsInStage1 = true,         -- for the stage-1 lines; stage 1 has no symptoms
     knowledge = "corpse_sickness",
     name = "UI_EHR_Disease_corpse_sickness",
@@ -44,11 +43,11 @@ local def = {
             [3] = { "UI_EHR_Text_Coughs", "UI_EHR_Text_HeadIsPounding", "UI_EHR_Text_INeedToGetAwayFromTheseBodies" },
             [4] = { "UI_EHR_Text_BreathingEasierNow", "UI_EHR_Text_NeverStayingNearCorpsesAgain" },
         },
-        every = 168,                -- v0.9: 1 in 7 every 1800 frames (about 24 game minutes)
+        every = 168,                -- 1 in 7 every 1800 frames (about 24 game minutes)
     },
 }
 
--- W15: fresh air after the incubation doubles the pace of the rest of the illness.
+-- Fresh air after the incubation doubles the pace of the rest of the illness.
 function def.rate(p, c)
     if c.stage > 1 and p.state.exposure.corpse <= 0 then
         return 2

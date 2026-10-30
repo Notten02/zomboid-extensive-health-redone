@@ -19,7 +19,7 @@
 -- A timed action's new() needs named(call) in its definition: a function returning function(self, <vanilla's exact
 -- parameter names>) that passes them to call. B42 sends an MP client's action to the server as the fields named by
 -- new()'s parameters, read off the function itself, so a vararg wrapper sends nothing and the server rebuilds the
--- action from nils (issue #10: every stitch stopped at once).
+-- action from nils (every stitch would stop at once).
 --
 -- Listener order never depends on file load order. A listener that throws is logged and skipped; the vanilla method
 -- and the other listeners still run, because a bug in our code must not break a vanilla action.

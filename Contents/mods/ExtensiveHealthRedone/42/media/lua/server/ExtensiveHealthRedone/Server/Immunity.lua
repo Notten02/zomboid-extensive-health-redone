@@ -14,8 +14,8 @@ local log = Env.logger("Immunity")
 local ServerImmunity = {}
 
 -- Dirt and blood (0-1 each) averaged over every BloodBodyPartType. Per part the worst of the skin and every worn
--- garment covering it counts: the guide names "clothing and body" dirtiness and bloodiness (W17), and B42 puts most
--- blood and dirt on the outermost garment, not the skin. v0.9 read the skin only.
+-- garment covering it counts: the guide names "clothing and body" dirtiness and bloodiness, and B42 puts most
+-- blood and dirt on the outermost garment, not the skin.
 function ServerImmunity.soil(player)
     local count = BloodBodyPartType.MAX:index()
     if count <= 0 then

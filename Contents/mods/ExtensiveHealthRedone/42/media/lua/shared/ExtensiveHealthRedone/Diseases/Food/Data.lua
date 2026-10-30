@@ -1,15 +1,16 @@
--- Numbers for the food-borne diseases and dysentery, from v0.9 (docs/porting/phase4/engine-and-foodborne.md) with the
--- maintainer decisions: W11 guide timings, W26 visible hand soil only, W30 relief never lifts the dysentery caps.
+-- Numbers for the food-borne diseases and dysentery. Only visible hand soil counts, and relief never lifts the
+-- dysentery caps.
 --
--- Time base: v0.9's disease engine ran every 0.8 game minutes (TICK = 1.25 per game minute); its environmental loop,
--- which ran dysentery, every 1.2 game minutes (DYS_TICK = 50/60 per game minute).
+-- Time base: per-check numbers are per check of the original mod's disease engine, which ran every 0.8 game minutes
+-- (TICK = 1.25 per game minute), and for dysentery of its environmental loop, every 1.2 game minutes (DYS_TICK = 50/60
+-- per game minute).
 
 local Data = {}
 
 Data.TICK = 1.25
 Data.DYS_TICK = 50 / 60
 
--- Food risk accumulation (v0.9 D:846-855): repeated risky bites stack, decaying per game hour; at GUARANTEED a bite
+-- Food risk accumulation: repeated risky bites stack, decaying per game hour; at GUARANTEED a bite
 -- contracts for sure (immunity still applies), and a failed roll keeps the total.
 Data.RISK = {
     DECAY_PER_HOUR = 0.20,
@@ -18,7 +19,7 @@ Data.RISK = {
     -- Queasy before any disease exists: SICKNESS (0-1) toward min(PENDING_MAX, risk * PENDING_SCALE).
     PENDING_SCALE = 0.45,
     PENDING_MAX = 0.24,
-    PENDING_STEP = 0.01,        -- per game minute (ours)
+    PENDING_STEP = 0.01,        -- per game minute
 }
 
 -- Base chances per bite, before x portion x the disease's chance multiplier.
@@ -27,11 +28,11 @@ Data.FOOD = {
     BURNED = 0.05,
     STALE = 0.10,
     UNCOOKED = 0.35,            -- DangerousUncooked eaten raw, or an uncooked prepared dish
-    TRICHINOSIS = 0.70,         -- raw wild game or pork (v0.9: every tier 0.70)
+    TRICHINOSIS = 0.70,         -- raw wild game or pork
 }
 
 -- Trichinosis sources (guide: rat, mouse, rabbit and other small game, boar, bear, fox, raccoon, wolf, raw pork).
--- Full types instead of v0.9's substring matching, which hit "Water Ration" and missed rabbit and squirrel.
+-- Full types, not substring matching, which would hit "Water Ration" and miss rabbit and squirrel.
 Data.TRICHINOSIS_TYPES = {
     ["Base.DeadRat"] = true, ["Base.DeadRatSkinned"] = true, ["Base.DeadRatBaby"] = true,
     ["Base.DeadRatBabySkinned"] = true, ["Base.RatKing"] = true,
@@ -47,19 +48,19 @@ Data.TRICHINOSIS_ANIMALS = { "boar", "bear", "fox", "raccoon", "wolf" }
 Data.PRESERVED_WORDS = { "jerky", "dried", "dehydrated", "smoked", "salted", "cured", "corned", "canned", "tinned",
     "pepperoni", "salami", "rinds", "spam" }
 
--- Cookable dishes that are risky when eaten before cooking (v0.9 "prepared" patterns, trimmed to dishes).
+-- Cookable dishes that are risky when eaten before cooking.
 Data.PREPARED_WORDS = { "recipe", "waterpot", "waterpan", "potof", "potforged", "fryingpan", "saucepan", "pizza",
     "fries", "tatodots", "tvdinner", "soup", "stew", "pasta", "rice", "omelette", "pie", "dumpling" }
 
--- Hand soil (W26: visible blood and dirt on the hands, HumanVisual 0-1 averaged over both hands).
+-- Hand soil (visible blood and dirt on the hands, HumanVisual 0-1 averaged over both hands).
 Data.HANDS = {
     BLOOD = 0.15,
     DIRT = 0.08,
     MIN = 0.05,                 -- below this, clean enough
-    MAX = 0.33,                 -- v0.9's validation cap
+    MAX = 0.33,                 -- the highest chance hand soil gives
 }
 
--- Dysentery risk per drink, by water source (v0.9 ENV:73-76). Boiled and tap water are safe.
+-- Dysentery risk per drink, by water source. Boiled and tap water are safe.
 Data.WATER = {
     toilet = 0.50,
     tainted = 0.25,
@@ -75,8 +76,8 @@ Data.BLUR_LINES = { "UI_EHR_Text_MyVisionIsBlurring", "UI_EHR_Text_EverythingIsS
     "UI_EHR_Text_ICantFocusMyEyes", "UI_EHR_Text_TheRoomWontStayStill", "UI_EHR_Text_MyEyesFeelClouded" }
 Data.RECOVERED_LINE = "UI_EHR_Disease_RecoveredLine"
 
--- Mean game minutes between random lines at DialogueFrequency Normal: v0.9 checked every 24 game minutes with a 1 in
--- 7 chance (stages 2-4).
+-- Mean game minutes between random lines at DialogueFrequency Normal: a 1 in 7 chance every 24 game minutes
+-- (stages 2-4).
 Data.LINE_EVERY = 168
 
 return Data

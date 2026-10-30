@@ -1,7 +1,6 @@
 -- Conditional healing: body parts only heal while the character is fed, hydrated, rested and calm (and optionally
 -- not in pain), each condition switchable in the sandbox. While a condition fails, every part's HP is capped through
--- the body writer (decided 2026-10-06); wounds still close on vanilla's schedule, as in v0.9.
--- Thresholds from v0.9 EHR_Blood.lua CanHeal (docs/porting/phase3/blood.md, part 7).
+-- the body writer; wounds still close on vanilla's schedule.
 
 local Data = require "ExtensiveHealthRedone/Data/Blood"
 local BodyParts = require "ExtensiveHealthRedone/Data/BodyParts"

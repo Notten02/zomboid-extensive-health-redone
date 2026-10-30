@@ -1,6 +1,6 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- The staged-condition engine and the four Phase 3 conditions (cellulitis, sepsis, tetanus, AHTR).
+-- The staged-condition engine and four of its conditions (cellulitis, sepsis, tetanus, AHTR).
 local Engine = require("ExtensiveHealthRedone/Conditions/Engine")
 local defs = require("ExtensiveHealthRedone/Conditions/Registry")
 local Sim = require("support/sim")
@@ -163,7 +163,7 @@ describe("Conditions", function()
         end)
     end)
 
-    describe("ambient lines (W35)", function()
+    describe("ambient lines", function()
         for id, stages in pairs({ ahtr = { 1, 2, 3, 4 }, cellulitis = { 2, 3, 4 }, sepsis = { 1, 2, 3, 4 },
             tetanus = { 2, 3, 4 } }) do
             it(id .. " speaks a line of its own pool in every stage that has one", function()

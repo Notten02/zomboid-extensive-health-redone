@@ -1,8 +1,8 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter, missing-fields, inject-field, need-check-nil, duplicate-set-field
--- Examining another player (Phase 9) in single-player mode with two split-screen players, against
+-- Examining another player in single-player mode with two split-screen players, against
 -- tests/support/fake_game.lua: "Examine Health" after vanilla's Medical Check, consent, the server-built model with
--- the doctor's knowledge (W37: nothing else is sent), the refresh and its throttle, the close rules, exam.keep, the
+-- the doctor's knowledge (nothing else is sent), the refresh and its throttle, the close rules, exam.keep, the
 -- exam window drawing the server's model through MonitorView, and the Administer list through Client/Give.
 -- Drawing needs the game; this checks the wiring and what travels.
 
@@ -174,7 +174,7 @@ insulate("examining another player", function()
         return player
     end
 
-    -- Client/Give is written in parallel; its contract: options(doctor, patient) and start(doctor, patient, item).
+    -- Client/Give's contract: options(doctor, patient) and start(doctor, patient, item).
     local given = {}
     package.preload["ExtensiveHealthRedone/Client/Give"] = function()
         return {

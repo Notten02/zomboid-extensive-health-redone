@@ -1,5 +1,4 @@
 -- Cellulitis: a skin infection from a rough stitch. Stage 4 turns into sepsis unless a curative course is running.
--- Effects from v0.9 EHR_DiseaseApplyCellulitisEffects (docs/porting/phase3/wound-infection-sepsis-tetanus.md, part 2).
 
 local Engine = require "ExtensiveHealthRedone/Conditions/Engine"
 local Symptoms = require "ExtensiveHealthRedone/Conditions/Symptoms"
@@ -19,7 +18,7 @@ local LINES = {
 }
 
 -- Untreated stage 4: hand off to sepsis. Cellulitis ends only when sepsis actually starts; while sepsis is already
--- running or blocked after a cure, it stays and tries again (v0.9 deleted it even when sepsis didn't start).
+-- running or blocked after a cure, it stays and tries again.
 local function handOff(p, c, defs)
     if Engine.contract(p, defs, "sepsis", { source = c.source }) then
         Engine.finish(p, defs, "cellulitis", "complication")

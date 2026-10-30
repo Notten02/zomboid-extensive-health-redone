@@ -2,8 +2,8 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake vanilla actions and items are deliberately partial.
 ---@diagnostic disable: missing-fields
--- Disease flyers, the Wild Plants guide and the recipe guides (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md
--- section 1): the item table, the pure learning rules on a test context, then the server wiring against the fake game.
+-- Disease flyers, the Wild Plants guide and the recipe guides: the item table, the pure learning rules on a test
+-- context, then the server wiring against the fake game.
 local FlyerData = require("ExtensiveHealthRedone/Data/Flyers")
 local Learn = require("ExtensiveHealthRedone/Knowledge/Learn")
 local Knowledge = require("ExtensiveHealthRedone/Conditions/Knowledge")
@@ -64,7 +64,7 @@ describe("flyer items", function()
         assert.equal(19, #scripted)
     end)
 
-    it("never teach Knox, tuberculosis or influenza (W1-W3)", function()
+    it("never teach Knox, tuberculosis or influenza", function()
         for name, id in pairs(FlyerData.DISEASES) do
             assert.is_true(id ~= Knowledge.KNOX, name)
             assert.is_nil(id:find("tuberculosis") or id:find("flu"), name)

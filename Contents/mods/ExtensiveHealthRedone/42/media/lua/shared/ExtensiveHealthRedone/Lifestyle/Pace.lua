@@ -1,4 +1,4 @@
--- How Lifestyle: Hobbies speeds up or slows down getting over an illness (Phase 10, from v0.9 EHR_LifestyleCompat).
+-- How Lifestyle: Hobbies speeds up or slows down getting over an illness.
 -- Pure: a plain reading of the player's Lifestyle data goes in, a multiplier on the elapsed time of the illness comes
 -- out. The Lifestyle reader (Server/Lifestyle) builds the reading and Conditions/Engine applies the multiplier.
 --
@@ -11,11 +11,9 @@
 --   yoga      0-10           Lifestyle's hidden Yoga skill level
 -- l.pace (set by Pace.read) is the total multiplier; Pace.forCondition adds the per-illness adjustments.
 --
--- Bonuses and penalties add up, as in v0.9: very clean +25 %, clean +15 %, dirty -10 %, filthy -25 %, a shower +5 %
--- (fading over the two hours after it), comfortable seat +10 %, any other sitting +5 %, +1 % per Yoga level. The pace
--- never drops below 50 %. Changes from v0.9: the penalties apply (v0.9 only ever used the bonuses, though its own
--- description and the parity checklist say a dirty character recovers slower), and "comfortable" reads Lifestyle's real
--- keys (v0.9 looked for names Lifestyle doesn't use, so only the plain sit on the ground ever counted).
+-- Bonuses and penalties add up: very clean +25 %, clean +15 %, dirty -10 %, filthy -25 %, a shower +5 % (fading over
+-- the two hours after it), comfortable seat +10 %, any other sitting +5 %, +1 % per Yoga level. The pace never drops
+-- below 50 %. "Comfortable" reads Lifestyle's own seat keys.
 -- No hysteresis on the hygiene tiers: nothing shows the tier, so flicker at a threshold costs nothing.
 
 local Pace = {}
@@ -105,7 +103,7 @@ function Pace.read(raw)
     return l
 end
 
--- The multiplier on elapsed time for one condition (v0.9's per-illness adjustments): a dirty wound-prone body does
+-- The multiplier on elapsed time for one condition (per-illness adjustments): a dirty wound-prone body does
 -- worse with cellulitis and a recent bath helps; sitting still helps the lungs a little less. l may be nil.
 function Pace.forCondition(l, id)
     if not l or Pace.EXCLUDED[id] then

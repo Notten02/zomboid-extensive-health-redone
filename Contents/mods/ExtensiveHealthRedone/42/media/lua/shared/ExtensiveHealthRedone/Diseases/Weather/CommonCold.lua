@@ -1,9 +1,8 @@
 -- Common cold: caught from cold-and-wet exposure (Diseases/Weather/Exposure). Sneezing, the vanilla cold moodle, a
 -- fatigue cap and fever; stage 4 is a real recovery stage, and entering it untreated rolls 35% (immunity-modified)
--- for pneumonia, which replaces the cold (W13). From v0.9 EHR_EnvironmentalDiseases.lua:1869-1971, :3214-3289 and
--- EHR_DiseaseDefinitions.lua:36-129 (docs/porting/phase4/environmental.md, section 1).
+-- for pneumonia, which replaces the cold.
 --
--- Treatment (Phase 5, through p.treatment): cure courses Cold & Flu Tablets (28 h, 8 doses), Antiviral Capsules
+-- Treatment (through p.treatment): cure courses Cold & Flu Tablets (28 h, 8 doses), Antiviral Capsules
 -- (48 h), Herbal Tea (8 doses); relief: cough medicine ("coughing", also slows sneezing), Antipyretic ("fever"),
 -- "fatigue". A curing course holds the stage and skips the pneumonia roll.
 
@@ -40,7 +39,7 @@ local CommonCold = {
             [4] = { "UI_EHR_Text_StartingToFeelBetter", "UI_EHR_Text_SniffAlmostOverIt",
                 "UI_EHR_Text_ShouldBeBackToNormalSoon" },
         },
-        every = 168,    -- v0.9: a 1-in-7 check every 24 game minutes
+        every = 168,    -- a 1-in-7 check every 24 game minutes
     },
 }
 

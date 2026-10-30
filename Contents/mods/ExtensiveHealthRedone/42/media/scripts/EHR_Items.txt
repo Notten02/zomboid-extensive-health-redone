@@ -1056,9 +1056,4 @@ module ExtensiveHealth
         Tooltip = Tooltip_EHR_Spiderweb,
         WorldStaticModel = Thread,
     }
-
-    /** =========================================
-        KNOX INFECTION TREATMENT
-        Moved to EHR_KnoxItems.txt
-    ========================================= **/
 }

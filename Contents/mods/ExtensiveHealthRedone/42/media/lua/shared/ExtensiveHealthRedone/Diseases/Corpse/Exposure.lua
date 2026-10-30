@@ -2,9 +2,8 @@
 -- server's corpse reader (Server/Corpse) puts what is around the player into p.facts.corpses:
 --   { fresh, decomposing, rotten = corpse counts sharing the player's air, env = 1 outdoors / 1.5 indoors / 2 small
 --     room, protection = 0-1 (worn mask), sealed = in a closed vehicle }
--- From v0.9 EHR_CorpseSickness.lua (docs/porting/phase4/corpse-scabies-concussion.md, sections 1-2), with W15: both
--- meters build independently (v0.9 routed damp-weather corpse air to the spore meter only), the corpse meter keeps
--- building while the player is ill (so fresh air can shorten the illness), and the display bands are 30/60/100.
+-- Both meters build independently, the corpse meter keeps building while the player is ill (so fresh air can shorten
+-- the illness), and the display bands are 30/60/100.
 
 local Engine = require "ExtensiveHealthRedone/Conditions/Engine"
 local Risk = require "ExtensiveHealthRedone/Conditions/Risk"
@@ -25,7 +24,7 @@ Exposure.CORPSE = {
     SMELL_AFTER = 15,           -- after this many minutes in the area,
     SMELL_EVERY = 30,           -- at most this often (minutes)
     NAUSEA_MAX = 0.6,           -- sickness raised toward exposure/100 x this before the illness starts
-    BANDS = { low = 30, medium = 60, high = 100 },          -- W15
+    BANDS = { low = 30, medium = 60, high = 100 },
 }
 
 Exposure.SPORES = {
@@ -45,7 +44,7 @@ Exposure.SMELL_LINES = {
     "UI_EHR_Text_ICanSmellDecomposition", "UI_EHR_Text_ThatsTheSmellOfDecay",
 }
 
--- "none", "low", "medium" or "high" for the monitor (Phase 7).
+-- "none", "low", "medium" or "high" for the monitor.
 function Exposure.band(value)
     local b = Exposure.CORPSE.BANDS
     if value >= b.high then
@@ -130,7 +129,7 @@ local function corpseMeter(p, defs, dt, seen)
     end
 end
 
--- Weather multiplier for spores: 0 when neither damp nor cold (v0.9 GetFungalEnvironment).
+-- Weather multiplier for spores: 0 when neither damp nor cold.
 function Exposure.fungal(env)
     local S = Exposure.SPORES
     local damp = env.wetness >= S.DAMP_WETNESS or (env.raining and not env.indoors)

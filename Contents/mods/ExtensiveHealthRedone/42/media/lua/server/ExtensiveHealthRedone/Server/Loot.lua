@@ -1,4 +1,4 @@
--- World loot on the authority (docs/porting/phase8/loot-distribution.md): our entries in the vanilla distribution
+-- World loot on the authority: our entries in the vanilla distribution
 -- tables, the package fill and Knox facility items as containers fill, and zombie loot. The data is in Data/Loot and
 -- Data/LootFill, the rules in Loot/Build, Loot/Apply and Loot/Fill; this file only touches the game.
 --
@@ -6,7 +6,7 @@
 -- container's items (ISInventoryPage requestServerItemsForContainer), so an MP client loads this file too and stops
 -- at the first line. Its own distribution tables are never used to roll loot.
 --
--- Timing and sandbox options (spec 3.2, 11.4):
+-- Timing and sandbox options:
 --   * Entries are written at OnPreDistributionMerge, before ItemPickerJava.Parse snapshots the tables. In single
 --     player the save's sandbox file may not be loaded yet at that point (Continue/Load), so we load it first, the
 --     way vanilla's MainScreen does (getSandboxOptions():loadCurrentGameBinFile()). A dedicated server has its
@@ -44,7 +44,7 @@ local function tables()
     }
 end
 
--- Single player: load the save's sandbox file before reading options (spec 3.3 option 1). An uncertain engine path,
+-- Single player: load the save's sandbox file before reading options. An uncertain engine path,
 -- so a failure is logged and the fallback at OnInitGlobalModData still corrects the options.
 local function preloadSandbox()
     if isServer() then
@@ -148,7 +148,7 @@ local function fillItem(item, location, profile, allowFull)
     end
 end
 
--- The container's items, and one level into kits, bags and the Medicine Storage Box filled with it (Q8).
+-- The container's items, and one level into kits, bags and the Medicine Storage Box filled with it.
 local function fillContainer(container, location, profile, allowFull, depth)
     local items = container:getItems()
     for i = 0, items:size() - 1 do
@@ -201,7 +201,7 @@ local function onFillContainer(roomType, containerType, container)
     end
     local profile, allowFull = fillSettings()
     fillContainer(container, Fill.location(FillData, roomType, containerType), profile, allowFull, 1)
-    -- After the fill, so Knox items stay full (L9).
+    -- After the fill, so Knox items stay full.
     knoxItems(container, containerType)
 end
 
@@ -209,8 +209,7 @@ end
 
 local zombiePool = Build.zombiePool(FillData.zombie, Data)
 
--- At death the zombie's clothing and attached items exist but its loot is not rolled yet (Umbrella). v0.9 added here
--- too; whether the item survives into the corpse in MP is checked in game.
+-- At death the zombie's clothing and attached items exist but its loot is not rolled yet (Umbrella).
 local function onZombieDead(zombie)
     if Env.sandbox("ZombieLootEnabled", true) == false then
         return

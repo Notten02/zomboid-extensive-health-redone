@@ -5,8 +5,8 @@
 -- Interception: vanilla's ISChat.onCommandEntered sends any line starting with "/" that isn't a chat stream to the
 -- server as a Java command (SendCommandToServer), so the line is caught first through the chatCommandEntered patch
 -- point, an intercept (Data/PatchPoints). It is wrapped at OnGameBoot; the chat window copies the function into its
--- text box when it is built at OnGameStart, so the box gets the wrapper. v0.9 also rebound the text box; that is kept
--- as a fallback for a box that still holds vanilla's original function (rebindTextBox below).
+-- text box when it is built at OnGameStart, so the box gets the wrapper. The text box is also rebound, as a fallback
+-- for a box that still holds vanilla's original function (rebindTextBox below).
 -- A caught line gets the housekeeping vanilla gives a "/" command: unfocus (which clears the box), the up-arrow
 -- history, doKeyPress(false) and the text box timer. Nothing goes to SendCommandToServer.
 --

@@ -1,9 +1,9 @@
--- Heat exhaustion (W9): the guide's 4 stages, driven by the heat exposure meter (a driven condition, no timers).
+-- Heat exhaustion: 4 stages, driven by the heat exposure meter (a driven condition, no timers).
 -- Stage 1 hot and thirsty, stage 2 leg cramps and a slowdown, stage 3 dizziness, nausea and no sprint (heat stroke
 -- rolls run alongside, Diseases/Weather/Exposure), stage 4 recovery while the meter falls; it ends when the meter is
--- below 10%. v0.9 had only the meter; the stage thresholds and effects are ours (Data.heat, Data.heatExhaustion).
+-- below 10% (thresholds and effects in Data.heat, Data.heatExhaustion).
 --
--- Treatment (Phase 5, through p.treatment): relief only: water, Electrolyte Powder and Oral Rehydration Kit
+-- Treatment (through p.treatment): relief only: water, Electrolyte Powder and Oral Rehydration Kit
 -- ("dehydration"). Cooling down is the cure.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Weather/Data"

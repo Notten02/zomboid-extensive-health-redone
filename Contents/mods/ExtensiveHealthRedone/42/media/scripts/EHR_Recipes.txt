@@ -389,7 +389,7 @@ module ExtensiveHealth
     /* Clean bandage pack (ExtensiveHealth.SterilizedBandages, 5 uses = 5 bandages), modelled on vanilla's cigarette
        pack recipes. Not learned. The engine runs them on the authority and syncs the items; Lua only sets the counts
        the script can't express (Game/RecipeCode.lua). Applying a bandage straight from the pack stays
-       unsupported (W24): take one out (double-click the pack) and use the vanilla Health tab. */
+       unsupported: take one out (double-click the pack) and use the vanilla Health tab. */
     craftRecipe EHRTakeBandageFromPack
     {
         timedAction = UnPackBox_Small,

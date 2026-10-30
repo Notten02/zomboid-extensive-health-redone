@@ -54,7 +54,7 @@ local function byName(a, b)
     return a.item < b.item
 end
 
--- Heaviest first, so the most important trauma gear wins a bag's limited capacity (v0.9 left it to pairs order, L17).
+-- Heaviest first, so the most important trauma gear wins a bag's limited capacity.
 local function byWeight(a, b)
     if a.chance ~= b.chance then
         return a.chance > b.chance
@@ -120,7 +120,7 @@ local function flatScaled(module, weights, mult)
     return flat
 end
 
--- The Medicine Storage Box's own distribution table, scaled by the medication multiplier (Q6).
+-- The Medicine Storage Box's own distribution table, scaled by the medication multiplier.
 function Build.box(data, options)
     local box = data.box
     return {

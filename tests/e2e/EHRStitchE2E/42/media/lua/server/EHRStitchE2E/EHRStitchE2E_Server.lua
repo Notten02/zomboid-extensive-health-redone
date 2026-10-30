@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global
 -- E2E (dev only, issue #10): on a dedicated server a player stitches a deep wound through the minigame, then removes
--- the stitch. Before the fix both actions stopped at once: the server rebuilt ISStitch without its arguments.
+-- the stitch. Both actions must run to the end; a server that rebuilds ISStitch without its arguments stops them at
+-- once.
 if not isServer() then return end
 require "PZE2E/PZE2E"
 

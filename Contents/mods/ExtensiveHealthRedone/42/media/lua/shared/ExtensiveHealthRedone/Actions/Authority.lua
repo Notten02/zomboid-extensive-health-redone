@@ -1,4 +1,4 @@
--- The bridge from our shared timed actions to the authority (decision SA-6, Phase 9).
+-- The bridge from our shared timed actions to the authority.
 --
 -- B42 runs a timed action on both sides: the client animates it and calls perform(); the authority (single player, or
 -- the dedicated server, which rebuilds the action from its constructor arguments) calls complete() when the time is

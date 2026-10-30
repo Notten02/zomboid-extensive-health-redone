@@ -1,4 +1,4 @@
--- The Medical Monitor Watch battery timed action (decision SA-6): insert a battery, or take the watch's battery out
+-- The Medical Monitor Watch battery timed action: insert a battery, or take the watch's battery out
 -- (Client/Watch has the menu).
 --
 --   EHRWatchBatteryAction:new(character, watch, battery, label)   battery nil: remove; label: the progress text

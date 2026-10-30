@@ -1,7 +1,6 @@
 -- Washing hands at a water source: which parts get cleaned, how much water and time it takes. Pure; the client
 -- (Client/WashHands) uses it for the menu and the action length, the server (Server/Food) to validate and apply.
--- From v0.9 EHR_WashHands.lua (docs/porting/phase4/engine-and-foodborne.md, part 3.2). Clean hands lower the
--- gastroenteritis risk because the risk reads the visible soil (W26).
+-- Clean hands lower the gastroenteritis risk because the risk reads the visible soil.
 
 local Washing = {}
 

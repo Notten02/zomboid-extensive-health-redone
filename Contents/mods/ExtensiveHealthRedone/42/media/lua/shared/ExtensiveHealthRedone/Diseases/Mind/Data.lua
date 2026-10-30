@@ -1,7 +1,6 @@
--- Numbers for the mental conditions (delirium, insomnia, painkiller addiction) and pain sounds. From v0.9
--- (docs/porting/phase4/mental-knox-sounds.md) unless marked "ours". Stat targets are fractions of each stat's range
--- (the original's 0-1 numbers; its UNHAPPINESS x100 matches the 0-100 range). Time is game minutes; v0.9 per-tick
--- steps (every 60 ticks, about 2 real s) are multiplied by Symptoms.TICK per game minute.
+-- Numbers for the mental conditions (delirium, insomnia, painkiller addiction) and pain sounds. Stat targets are
+-- fractions of each stat's range. Time is game minutes; per-tick steps (a tick of the original mod: every 60 game
+-- ticks, about 2 real s) are multiplied by Symptoms.TICK per game minute.
 
 local Data = {}
 
@@ -56,7 +55,7 @@ Data.insomnia = {
     TRIGGER_MINUTES = 12 * 60,
     STIMULANT_CHANCE = 0.10,        -- on a stimulant crash
     STIMULANT_COOLDOWN = 12 * 60,
-    -- Stage effects: targets (fractions) and steps per v0.9 tick; head pain on the Head part.
+    -- Stage effects: targets (fractions) and steps per tick; head pain on the Head part.
     STAGES = {
         [1] = { fatigue = 0.82, stress = 0.22, unhappiness = 0.10, headPain = 8 },
         [2] = { fatigue = 0.90, stress = 0.34, unhappiness = 0.18, headPain = 18 },
@@ -66,23 +65,23 @@ Data.insomnia = {
     STRESS_STEP = 0.00055,
     UNHAPPINESS_STEP = 0.00035,
     SLEEP_AID = { stress = 0.10, unhappiness = 0.08, headPain = 8 },
-    -- Recovery (maintainer decision, Phase 4; ours): a good night is 6+ h asleep (at stage 2 only with a sleep aid);
+    -- Recovery: a good night is 6+ h asleep (at stage 2 only with a sleep aid);
     -- with tea before sleeping it counts double. GOOD_NIGHTS in a row drop one stage (2 -> 1, 1 -> cured). More than
     -- STREAK_GAP minutes without a good night breaks the streak.
     GOOD_SLEEP = 6 * 60,
     GOOD_NIGHTS = 3,
     TEA_NIGHTS = 2,
     STREAK_GAP = 30 * 60,
-    -- Random lines: v0.9 rolled 1 in 24/12/8 about every 24 game minutes.
+    -- Random lines: 1 in 24/12/8 about every 24 game minutes.
     LINE_EVERY = { [1] = 576, [2] = 288, [3] = 192 },
 }
 
 Data.addiction = {
-    -- Items whose doses count toward dependency. W18 (decided): homemade painkillers are herbal (black sage,
-    -- chamomile, lemongrass) and don't count; v0.9 counted them. Phase 5 adds the EHR pharmacy painkillers.
+    -- Items whose doses count toward dependency. Homemade painkillers are herbal (black sage, chamomile, lemongrass)
+    -- and don't count. The medication rules add the EHR pharmacy painkillers (Medication/Data addiction).
     PAINKILLERS = { ["Base.Pills"] = true },
     WINDOW = 24 * 60,               -- rolling window of counted doses
-    DUPLICATE = 1.2,                -- minutes: a second report within this is the same dose (v0.9: 0.02 h)
+    DUPLICATE = 1.2,                -- minutes: a second report within this is the same dose
     -- Risk per dose by doses in the window, this one included: 1-4 -> 1, 5 -> 8, 6 -> 12, 7+ -> 20.
     DOSE_RISK = { 1, 1, 1, 1, 8, 12 },
     EXCESS_RISK = 20,
@@ -92,7 +91,7 @@ Data.addiction = {
     DECAY_AFTER = 24 * 60,          -- decay only after a full day without a dose
     DECAY_PER_MINUTE = 50 / (24 * 60),
     ACTIVE_MINUTES = 3 * 60,        -- a painkiller dose suppresses withdrawal (and pain sounds) for 3 h
-    BASE_SEVERITY = 0.8,            -- ours: v0.9's definition had none recorded in the spec
+    BASE_SEVERITY = 0.8,
     STAGES = {
         [1] = { stress = 0.25, unhappiness = 0.25, thirst = 0.18 },
         [2] = { stress = 0.60, unhappiness = 0.60, thirst = 0.28 },
@@ -105,16 +104,15 @@ Data.addiction = {
     LINE_EVERY = { [1] = 672, [2] = 384, [3] = 240 },
 }
 
--- Pain sounds (W5: implemented; v0.9's module was never called). Ours: thresholds on the real pain scale, the chance
--- per game minute, and the "sudden pain" trigger.
+-- Pain sounds: thresholds on the real pain scale, the chance per game minute, and the "sudden pain" trigger.
 Data.pain = {
     LEVELS = { 0.15, 0.40, 0.70 },  -- share of the pain range for levels 1, 2, 3
     RADIUS_SCALE = { 0.5, 0.75, 1.0 },
-    VOLUME_SHARE = 0.6,             -- world noise volume = radius x this (v0.9 used 1, which barely registers)
+    VOLUME_SHARE = 0.6,             -- world noise volume = radius x this (1 barely registers)
     CHANCE = { 1 / 120, 1 / 40, 1 / 15 },   -- per game minute, off cooldown
     JUMP = 0.15,                    -- pain rising by this share in one step: a new injury, cried out 2 times in 3
     JUMP_CHANCE = 2 / 3,
-    GAME_MINUTES_PER_REAL_SECOND = 0.4,     -- Phase 3 time base (default 1-hour day)
+    GAME_MINUTES_PER_REAL_SECOND = 0.4,     -- with the default 1-hour day
 }
 
 return Data

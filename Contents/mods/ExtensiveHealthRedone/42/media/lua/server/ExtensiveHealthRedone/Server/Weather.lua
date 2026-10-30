@@ -4,8 +4,7 @@
 --
 -- Cold bath: the client's timed action asks to start at a bathtub, sends a heartbeat every few game minutes and says
 -- when it stops. The server checks the tub, the water (8 units, used up at the start) and the distance, and the
--- simulation (Diseases/Weather/Exposure) runs the 3 hours and cures heat stroke at the end. v0.9 never used water and
--- never checked it on the server.
+-- simulation (Diseases/Weather/Exposure) runs the 3 hours and cures heat stroke at the end.
 
 if isClient() then
     return
@@ -38,7 +37,7 @@ local function isHeatSource(object)
     return false
 end
 
--- A lit heat source within one square (v0.9 EHR_EnvironmentalDiseases.lua:795-844), campfires included.
+-- A lit heat source within one square, campfires included.
 function Weather.nearHeat(player)
     local square = player:getCurrentSquare()
     if not square then
@@ -69,8 +68,8 @@ function Weather.nearHeat(player)
     return false
 end
 
--- Any worn item on a head location: hats, full hats, hoods, helmets (v0.9 matched location names the same way; its
--- item-name matching gave false hits such as "Capacitor" and is gone).
+-- Any worn item on a head location: hats, full hats, hoods, helmets. By location, not item name (which would match
+-- "Capacitor").
 function Weather.headwear(player)
     local worn = player:getWornItems()
     for i = 0, worn:size() - 1 do
@@ -88,7 +87,7 @@ end)
 
 -- Cold bath ---------------------------------------------------------------------------------------------------------
 
--- Bathtub sprites: the main half of each tub (v0.9 EHR_HeatStrokeBath.lua:26-35).
+-- Bathtub sprites: the main half of each tub.
 Weather.TUB_SPRITES = {
     fixtures_bathroom_01_25 = true, fixtures_bathroom_01_26 = true,
     fixtures_bathroom_01_52 = true, fixtures_bathroom_01_55 = true,
@@ -148,7 +147,7 @@ Runtime.registry:register("weather.bathStart", {
             Meters.weather(p).bath = { left = Data.heatStroke.BATH_HEARTBEAT_MINUTES, elapsed = 0,
                 x = args.x, y = args.y, z = args.z }
         end)
-        log:info(ctx.actor.key, "starts a cold bath at", args.x, args.y, args.z)
+        log:debug(ctx.actor.key, "starts a cold bath at", args.x, args.y, args.z)
     end,
 })
 

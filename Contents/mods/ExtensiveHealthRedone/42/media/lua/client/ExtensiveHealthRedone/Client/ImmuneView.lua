@@ -1,5 +1,5 @@
 -- The Immune System tab of vanilla's character window (Client/CharacterWindow adds it while ImmunitySystemEnabled is
--- on). It draws UI/Immune's model in v0.9's layout: score, band, bar with the target marker, trend, target and
+-- on). It draws UI/Immune's model: score, band, bar with the target marker, trend, target and
 -- infection risk on top; the six factors on the lower left; dirtiness, bloodiness, the hygiene penalty, the current
 -- pressures (as many as fit) and the system state on the lower right.
 -- Controller: B closes, LB/RB switch tabs.
@@ -80,7 +80,7 @@ function ImmuneView:drawHygiene(m, x, y, w, h)
     end
     Draw.text(self, t(m.penalty), ix, ry, m.penaltyColor, UIFont.Small, iw)
     ry = Draw.section(self, getText("UI_EHR_Immunity_CurrentPressures"), x + 6, ry + Draw.SMALL + 10, w - 12)
-    -- As many pressure rows as fit above the state line (v0.9 overlapped it at the minimum height).
+    -- As many pressure rows as fit above the state line, so they never overlap it at the minimum height.
     local stateY = y + h - PAD - Draw.SMALL
     local rowH = Draw.SMALL + 6
     if #m.pressures == 0 then

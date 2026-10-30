@@ -19,7 +19,7 @@ local log = Env.logger("Lifestyle")
 local Lifestyle = {}
 
 Lifestyle.MOD_ID = "LifestyleHobbies"
--- What a sitting character with no Lifestyle seat counts as (v0.9's value for sitting on the ground).
+-- What a sitting character with no Lifestyle seat counts as (sitting on the ground).
 Lifestyle.GROUND_COMFORT = 0.2
 
 local cached      -- nil until asked, then true or false for the session

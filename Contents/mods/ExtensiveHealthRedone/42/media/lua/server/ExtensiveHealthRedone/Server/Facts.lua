@@ -65,7 +65,15 @@ local function part(bp)
         burn = bp:isBurnt(),
         stitched = bp:stitched(),
         infected = bp:isInfectedWound() or infectedLevel > WoundData.infection.VANILLA_EPSILON,
+        -- Healing timers (game hours left, 0 when healed): add-ons follow wounds closing and fractures knitting.
+        scratchTime = bp:getScratchTime(),
+        cutTime = bp:getCutTime(),
+        deepTime = bp:getDeepWoundTime(),
+        burnTime = bp:getBurnTime(),
+        fractureTime = bp:getFractureTime(),
     }
+    f.fracture = f.fractureTime > 0
+
     f.wound = bp:HasInjury() or f.stitched or f.bleeding or f.deep or f.glass or f.bullet
     return f
 end

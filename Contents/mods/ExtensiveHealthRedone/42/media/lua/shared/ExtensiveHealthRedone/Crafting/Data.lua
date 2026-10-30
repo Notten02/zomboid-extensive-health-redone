@@ -35,8 +35,8 @@ for _, name in ipairs(supply) do
 end
 
 return {
-    -- Medicinal ingredients that must be fresh (not stale, not rotten). v0.9's list; 42.21's dried herbs are not
-    -- accepted by the recipes at all (maintainer decision 2026-10-14).
+    -- Medicinal ingredients that must be fresh (not stale, not rotten). 42.21's dried herbs are not accepted by the
+    -- recipes at all.
     freshOnly = set({
         "Base.Garlic", "Base.WildGarlic2", "Base.Oregano", "Base.Thyme", "Base.Lavender", "Base.GingerRoot",
         "Base.Plantain", "Base.Comfrey", "Base.Marigold", "Base.CommonMallow", "Base.Chamomile", "Base.BlackSage",

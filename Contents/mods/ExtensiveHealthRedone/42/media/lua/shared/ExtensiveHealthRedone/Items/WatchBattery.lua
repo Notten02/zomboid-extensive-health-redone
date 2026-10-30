@@ -1,10 +1,10 @@
 -- The Medical Monitor Watch battery, as pure rules on a plain state. The state lives in the watch's item modData under
--- KEY, in v0.9's format so old watches carry over: { version = 1, installed = bool, charge = 0..1 }. A watch without
--- that table counts as full: that is how a watch spawns with a full battery (v0.9 EHR_WatchBatteryCore.lua; spec
--- docs/porting/phase7/tooltips-moodles-watch.md Part C). Game/Watch reads and writes it on items; Server/Watch drains.
+-- KEY, in the original mod's format so old watches carry over: { version = 1, installed = bool, charge = 0..1 }. A
+-- watch without that table counts as full: that is how a watch spawns with a full battery. Game/Watch reads and writes
+-- it on items; Server/Watch drains.
 --
--- A battery lasts LIFETIME_HOURS of game time while the watch is worn or held (v0.9 drained worn watches only; held
--- now counts too, because a held watch also gives the time). A watch in a bag keeps its charge.
+-- A battery lasts LIFETIME_HOURS of game time while the watch is worn or held (a held watch also gives the time). A
+-- watch in a bag keeps its charge.
 
 local WatchBattery = {}
 

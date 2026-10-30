@@ -1,4 +1,4 @@
--- Admin commands on another player, by name (decision W36 "two commands", plus Q6's read-only inspect):
+-- Admin commands on another player, by name:
 --   admin.fullHeal { name }   every health row back to normal, identity kept (Admin/FullHeal "heal")
 --   admin.reset { name }      the state back to a new character's, keeping blood type, knowledge and permanent Knox
 --                             immunity (Admin/FullHeal "reset")

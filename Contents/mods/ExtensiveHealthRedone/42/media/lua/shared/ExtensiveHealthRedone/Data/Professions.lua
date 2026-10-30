@@ -1,23 +1,21 @@
 -- The EHR professions (EHR Doctor, EHR Surgeon) and the Scalpel Master trait: what Lua adds on top of the scripts
 -- (scripts/EHR_Professions.txt, scripts/EHR_Traits.txt), plus the pure knowledge-grant rule.
--- Spec: docs/porting/phase8/professions-and-traits.md.
 --
 -- The scripts already give the starting levels (Doctor: First Aid 6, Short Blade 1, cost 0; Surgeon: First Aid 10,
 -- Short Blade 3, cost -8, the Scalpel Master trait) and the 24 recipes. Lua adds:
 --   * disease knowledge: knowledge.professionGrant names every non-Knox condition (Conditions/Knowledge; Knox only
---     from the Kentucky Herald, W16). The grant also writes the blood_types knowledge id, as v0.9 did (it wrote every
---     KNOWLEDGE_IDS entry, EHR_Professions.lua:206-253), so an EHR Doctor at First Aid 6 can judge blood compatibility
---     (Blood/Transfusion.knowsTypes). Decided by the authority when the player is simulated, never from a client;
---     never overwritten (an imported grant stays) and never revoked. Vanilla Doctor and Nurse get nothing (parity).
---   * an outfit at character creation (new; v0.9 had none): our own clothing selections, below.
---   * Scalpel Master's numbers (v0.9 EHR_Professions.lua:19-22): x9 damage, and x100 durability through
---     ConditionLowerChance instead of v0.9's ConditionMax (no rescaled condition, so no rounding repair exploit).
---     Exact Base.Scalpel only; v0.9 also took any item whose type is "Scalpel" (bug 5 in the spec).
+--     from the Kentucky Herald). The grant also writes the blood_types knowledge id, so an EHR Doctor at First Aid 6
+--     can judge blood compatibility (Blood/Transfusion.knowsTypes). Decided by the authority when the player is
+--     simulated, never from a client; never overwritten (an imported grant stays) and never revoked. Vanilla Doctor
+--     and Nurse get nothing.
+--   * an outfit at character creation: our own clothing selections, below.
+--   * Scalpel Master's numbers: x9 damage, and x100 durability through ConditionLowerChance (not a rescaled
+--     ConditionMax, which re-equipping could repair). Exact Base.Scalpel only.
 
 local Professions = {}
 
 -- Profession ids whose characters get the knowledge grant. Mirrors Data/LegacyEHR PROFESSION_GRANTS (the importer's
--- list of v0.9 values); tests keep the two equal.
+-- list of the original mod's values); tests keep the two equal.
 Professions.GRANTS = { ehrdoctor = true, ehrsurgeon = true }
 
 -- The order the profession reader checks them in (never pairs order).
@@ -29,7 +27,7 @@ Professions.GRANT_KNOWLEDGE = { "blood_types" }
 
 -- Character creation outfits, in vanilla's ClothingSelectionDefinitions format (shared/Definitions): per body location
 -- the items to pick from and an optional chance (%). Vanilla dresses a new character in them (on top of the default
--- selection) and adds them to the clothing choices. Maintainer decision 2026-10-20: our own outfits, because vanilla's
+-- selection) and adds them to the clothing choices. Our own outfits, because vanilla's
 -- "doctor" entry is only a formal shirt and suit trousers (its lab coat is commented out). The lab coat is a JacketSuit
 -- item (BodyLocation base:jacketsuit).
 Professions.OUTFITS = {
@@ -58,8 +56,8 @@ Professions.OUTFITS = {
 
 -- Scalpel Master.
 Professions.SCALPEL_TYPE = "Base.Scalpel"
-Professions.SCALPEL_DAMAGE = 9          -- v0.9 SCALPEL_DAMAGE_MULTIPLIER: 0.1-0.4 becomes 0.9-3.6
-Professions.SCALPEL_DURABILITY = 100    -- v0.9 SCALPEL_CONDITION_MULTIPLIER, applied to ConditionLowerChance (1 -> 100)
+Professions.SCALPEL_DAMAGE = 9          -- damage 0.1-0.4 becomes 0.9-3.6
+Professions.SCALPEL_DURABILITY = 100    -- applied to ConditionLowerChance (1 -> 100)
 
 -- The knowledge grant (pure). state: the player's state; professionId: the character's profession id or nil.
 -- Returns true when it changed state.knowledge (the caller marks it dirty). Idempotent.

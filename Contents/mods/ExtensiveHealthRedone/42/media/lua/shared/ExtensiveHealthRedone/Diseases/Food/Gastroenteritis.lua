@@ -1,8 +1,8 @@
 -- Gastroenteritis: from eating with bloody or dirty hands (Diseases/Food/Risk). Appetite loss, nausea and
--- dehydration, peak vomiting and weakness, recovery. No health damage. From v0.9 D:163-192, :3087-3105; timings follow
--- the guide (W11: 4-12 h, 1-3 days). Washing hands prevents it (Server/Food, Client/WashHands).
+-- dehydration, peak vomiting and weakness, recovery. No health damage. Incubation 4-12 h, then 1-3 days. Washing
+-- hands prevents it (Server/Food, Client/WashHands).
 --
--- Treatment (Phase 5): cure Antiviral Capsules (48 h course), IV Ciprofloxacin (fast).
+-- Treatment: cure Antiviral Capsules (48 h course), IV Ciprofloxacin (fast).
 -- Relief: Anti-Nausea, Electrolyte Powder.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Food/Data"
@@ -14,7 +14,7 @@ local STAGE_MULT = { [2] = 0.45, [3] = 1.0, [4] = 0.25 }
 local VOMIT = { [2] = 0.002, [3] = 0.006, [4] = 0.0006 }
 -- SICKNESS floors keep the stage's moodle (stage 3: Nauseous), lowered by relief.
 local FLOOR = { [2] = 0.31, [3] = 0.56, [4] = 0.18 }
-local VOMIT_COOLDOWN = 10.8     -- game minutes (v0.9 0.18 h)
+local VOMIT_COOLDOWN = 10.8     -- game minutes
 
 local def = {
     enabledOption = "GastroenteritisEnabled", speedOption = "DiseaseSpeed",

@@ -16,6 +16,8 @@ local Schema = require("ExtensiveHealthRedone/Core/Schema")
 local StatAggregator = require("ExtensiveHealthRedone/Core/StatAggregator")
 local BodyAggregator = require("ExtensiveHealthRedone/Core/BodyAggregator")
 local ClientEffects = require("ExtensiveHealthRedone/Core/ClientEffects")
+local Modifiers = require("ExtensiveHealthRedone/Core/Modifiers")
+local PerkAggregator = require("ExtensiveHealthRedone/Core/PerkAggregator")
 local Treatments = require("ExtensiveHealthRedone/Core/Treatments")
 local BodyParts = require("ExtensiveHealthRedone/Data/BodyParts")
 local ImmunityData = require("ExtensiveHealthRedone/Data/Immunity")
@@ -87,6 +89,8 @@ function Sim.context(opts)
         stats = StatAggregator.new(Sim.RANGES),
         body = BodyAggregator.new(),
         fx = ClientEffects.new(),
+        mods = Modifiers.new(),
+        perks = PerkAggregator.new(),
         facts = Sim.facts(),
         rng = rng,
         treatment = opts.treatment and Sim.treatment(opts.treatment) or Treatments.none,
@@ -117,7 +121,10 @@ function Sim.step(p)
     p.stats = StatAggregator.new(Sim.RANGES)
     p.body = BodyAggregator.new()
     p.fx = ClientEffects.new()
+    p.mods = Modifiers.new()
+    p.perks = PerkAggregator.new()
     return p
+
 end
 
 -- Whether key was said.

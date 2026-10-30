@@ -7,11 +7,9 @@
 --   Hive search:   hive.begin {x,y,z} -> hiveSession | hiveDenied; hive.collect {session, target} -> hiveCollected;
 --                  hive.sting {session, kind} -> hiveStung.
 -- World state (cooldowns, tree contents) lives in a server-only global ModData table that is never transmitted
--- (no client can write it); square modData from v0.9 is ignored (decision Q10).
--- XP (maintainer decision 2026-10-14): First Aid "herb" per herb found, Foraging "forage" per finished plant search
--- and per honeycomb or spiderweb.
--- From docs/porting/phase8/herbal-and-hive-minigames.md section 13. An MP client loads this file too and stops at
--- the first line.
+-- (no client can write it); square modData the original mod left is ignored.
+-- XP: First Aid "herb" per herb found, Foraging "forage" per finished plant search and per honeycomb or spiderweb.
+-- An MP client loads this file too and stops at the first line.
 
 if isClient() then
     return
@@ -143,7 +141,7 @@ local function deliverHerb(key, result)
     local player = Runtime.playerFor(key)
     local s = result.session
     if not player then
-        log:info(key, "plant search finished while offline; nothing given")
+        log:debug(key, "plant search finished while offline; nothing given")
         return
     end
     if result.depleted then
@@ -164,7 +162,7 @@ local function deliverHerb(key, result)
     end)
     reply(player, key, "herbResult", { id = s.id, found = roll.found, item = roll.item, count = roll.count,
         band = roll.band })
-    log:info(key, "plant search at", s.key, s.zoneClass, "hits", s.hits, "misses", s.misses, "hazards", s.hazards,
+    log:debug(key, "plant search at", s.key, s.zoneClass, "hits", s.hits, "misses", s.misses, "hazards", s.hazards,
         "quality", string.format("%.2f", roll.quality), "found", roll.item or "nothing", "x" .. roll.count)
 end
 
@@ -207,7 +205,7 @@ Runtime.registry:register("herb.begin", {
         local square = getCell():getGridSquare(args.x, args.y, args.z)
         if player:getVehicle() or not knowsPlants(key, player) or not square
             or not within(player, args.x, args.y, args.z, Data.BEGIN_RANGE) or not Vegetation.isPatch(square, api()) then
-            log:info(key, "plant search refused at", args.x, args.y, args.z)
+            log:debug(key, "plant search refused at", args.x, args.y, args.z)
             return reply(player, key, "herbDenied", { reason = "invalid" })
         end
         openHerb(ctx, square, false)
@@ -225,7 +223,7 @@ Runtime.registry:register("herb.pick", {
         local live = Search.herbSession(sessions, key, args.session, Env.realSeconds())
         if live and not within(player, live.x, live.y, live.z, Data.PLAY_RANGE) then
             Search.herbAbandon(sessions, key, env())
-            log:info(key, "plant search abandoned: walked away")
+            log:debug(key, "plant search abandoned: walked away")
             return reply(player, key, "herbClosed", { id = args.session })
         end
         local e = env()
@@ -261,7 +259,7 @@ Runtime.registry:register("herb.stop", {
         if outcome == "finish" then
             if walkedAway(key) then
                 Search.herbAbandon(sessions, key, e)
-                log:info(key, "plant search abandoned: walked away")
+                log:debug(key, "plant search abandoned: walked away")
                 return reply(ctx.actor.player, key, "herbClosed", { id = args.session })
             end
             deliverHerb(key, Search.herbFinish(sessions, key, e))
@@ -292,7 +290,7 @@ Runtime.registry:register("hive.begin", {
         local square = getCell():getGridSquare(args.x, args.y, args.z)
         if player:getVehicle() or not Vegetation.isTreeSquare(square)
             or not within(player, args.x, args.y, args.z, Data.BEGIN_RANGE) then
-            log:info(key, "hive search refused at", args.x, args.y, args.z)
+            log:debug(key, "hive search refused at", args.x, args.y, args.z)
             return reply(player, key, "hiveDenied", { reason = "invalid" })
         end
         openHive(ctx, square, nil)
@@ -315,7 +313,7 @@ Runtime.registry:register("hive.collect", {
         end
         local r, why = Search.hiveCollect(sessions, key, args.session, args.target, env())
         if not r then
-            log:info(key, "hive grab refused:", why)
+            log:debug(key, "hive grab refused:", why)
             return reply(player, key, "hiveCollected", { id = args.session, target = args.target, ok = false,
                 reason = why })
         end
@@ -325,7 +323,7 @@ Runtime.registry:register("hive.collect", {
         end)
         reply(player, key, "hiveCollected", { id = args.session, target = args.target, ok = true, item = r.item,
             done = r.done })
-        log:info(key, "hive search at", r.session.key, "took", r.item, r.done and "(tree now empty)" or "")
+        log:debug(key, "hive search at", r.session.key, "took", r.item, r.done and "(tree now empty)" or "")
     end,
 })
 
@@ -347,7 +345,7 @@ Runtime.registry:register("hive.sting", {
 
 -- Upkeep -------------------------------------------------------------------------------------------------------------
 
--- Sessions past their deadline: a plant search with picks finishes with its roll (v0.9's timeout), others end
+-- Sessions past their deadline: a plant search with picks finishes with its roll, others end
 -- silently. Checked every game minute (a few real seconds at normal speed).
 Runtime.scheduler:every("wildSearchSessions", 1, function()
     if Tables.isEmpty(sessions.herb) and Tables.isEmpty(sessions.hive) then
@@ -357,7 +355,7 @@ Runtime.scheduler:every("wildSearchSessions", 1, function()
     for _, key in ipairs(Tables.sortedKeys(sessions.herb)) do
         if e.now > sessions.herb[key].deadline and walkedAway(key) then
             Search.herbAbandon(sessions, key, e)
-            log:info(key, "plant search abandoned at its deadline: walked away")
+            log:debug(key, "plant search abandoned at its deadline: walked away")
         end
     end
     for _, ended in ipairs(Search.herbSweep(sessions, e)) do

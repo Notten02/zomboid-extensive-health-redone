@@ -1,8 +1,8 @@
 -- Refuses to fall asleep while the server says natural sleep is blocked (state.effects.noSleep: insomnia from stage
 -- 2 without a sleep aid, caffeine, beta blockers, a medication's insomnia side effect; state.effects.sleepBy names
 -- the one to mention). Every vanilla way to sleep (bed, ground, vehicle seat, controller
--- prompt) ends in ISWorldObjectContextMenu.onSleepWalkToComplete, so one intercept covers them all; v0.9's
--- ISSleepDialog hook is dead in 42.21. Like the stitch minigame and lockjaw, this is one of the few intercepts
+-- prompt) ends in ISWorldObjectContextMenu.onSleepWalkToComplete, so one intercept covers them all (42.21 no longer
+-- uses ISSleepDialog). Like the stitch minigame and lockjaw, this is one of the few intercepts
 -- Core/PatchPoints allows. Vanilla's forced sleep at exhaustion and our own blackouts don't pass through it.
 
 local Patches = require "ExtensiveHealthRedone/Game/Patches"
@@ -23,7 +23,16 @@ Sleep.REASONS = {
     insomnia = "UI_EHR_Insomnia_NoSleep",
 }
 
+-- The line for an add-on's noSleep source (Core/ClientEffects:noSleep).
+function Sleep.registerReason(source, key)
+    if type(source) ~= "string" or type(key) ~= "string" or Sleep.REASONS[source] then
+        error("sleep reason " .. tostring(source) .. " is already registered", 2)
+    end
+    Sleep.REASONS[source] = key
+end
+
 -- The reason to show: the blocking source's own line, else insomnia's when that's active.
+
 function Sleep.reason(player)
     local effects = Client.section(player, "effects")
     local by = effects and effects.sleepBy

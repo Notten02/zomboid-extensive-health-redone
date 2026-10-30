@@ -1,9 +1,7 @@
--- Pain sounds (W5): a character in real pain cries out now and then, louder the worse it is, and the cry draws zombies
+-- Pain sounds: a character in real pain cries out now and then, louder the worse it is, and the cry draws zombies
 -- within ZombieAttractionRadius. A sudden jump in pain (a fresh injury) makes a cry likely at once. Nothing while
--- asleep, while a painkiller dose works, during the PainSoundCooldown, or with PainSoundsEnabled off.
--- v0.9 had this module but never called it (docs/porting/phase4/mental-knox-sounds.md, section 5); its thresholds
--- were on a 0-1 pain scale, its sounds didn't exist and its zombie volume was 1. The sounds here are vanilla's own pain
--- voices (Data/Noise pain, painSevere); the cadence and volumes are ours.
+-- asleep, while a painkiller dose works, during the PainSoundCooldown, or with PainSoundsEnabled off. The sounds are
+-- vanilla's own pain voices (Data/Noise pain, painSevere).
 
 local Data = require("ExtensiveHealthRedone/Diseases/Mind/Data").pain
 local Addiction = require "ExtensiveHealthRedone/Diseases/Mind/Addiction"

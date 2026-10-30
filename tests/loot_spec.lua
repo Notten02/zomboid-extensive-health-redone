@@ -371,7 +371,7 @@ describe("loot placement follows the guide", function()
         end
     end)
 
-    it("puts plain Epinephrine only in hospitals, ambulances and medical bags (W6)", function()
+    it("puts plain Epinephrine only in hospitals, ambulances and medical bags", function()
         assert.same({ MedicalStorageOutfit = true, MedicalStorageDrugs = true, HospitalRoomShelves = true,
             AmbulanceTruckBed = true, AmbulanceSeatFront = true, AmbulanceGloveBox = true, Bag_MedicalBag = true,
             Bag_Satchel_Medical = true }, where("Epinephrine"))

@@ -1,10 +1,8 @@
--- Drug interactions (v0.9 M:2845-3066; docs/porting/phase5/side-effects-interactions-consumption.md section 2). A
--- pair fires once when both categories have an active dose at the same time: the character says the warning and the
--- effect applies once. It can fire again after one of the two has worn off. The tuberculosis pairs are dropped (W1).
+-- Drug interactions. A pair fires once when both categories have an active dose at the same time: the character says
+-- the warning and the effect applies once. It can fire again after one of the two has worn off. A pair may also weaken
+-- a category for as long as both are active (weakens: Interactions.weakened, read by Medication/Provider).
 --
--- Fixed against v0.9 (maintainer, Phase 5: intended strengths): categories are by item (Medication/Data), so homemade
--- twins and the IV antibiotics count; painkillers take part; the effects add what they say instead of v0.9's
--- wrong-scale writes that removed pain and nausea.
+-- Categories are by item (Medication/Data), so homemade twins and the IV antibiotics count; painkillers take part.
 --
 -- State: state.meds.pairs[pairId] = true while the pair is active (fired).
 
@@ -25,7 +23,8 @@ local function addUpTo(p, stat, amount, cap)
     end
 end
 
--- id -> { a, b (categories), line, effect(p) (optional) }. Effects are one-off.
+-- id -> { a, b (categories), line, effect(p) (optional), weakens (optional) }. Effects are one-off; weakens =
+-- { category, factor } scales the relief of that category's doses by factor while both are active.
 Interactions.PAIRS = {
     antibioticCorticosteroid = { a = "antibiotic", b = "corticosteroid",
         line = T .. "AntibioticsCorticosteroidsRiskOf",
@@ -50,7 +49,8 @@ Interactions.PAIRS = {
         line = T .. "PainkillersMuscleRelaxantsIncreasedDrowsiness",
         effect = function(p) addUpTo(p, "FATIGUE", 0.10, 0.70) end },
     -- While both are active, antibiotic relief is halved (Medication/Provider).
-    charcoalAntibiotic = { a = "charcoal", b = "antibiotic", line = T .. "ActivatedCharcoalAbsorbsAntibioticsReduced" },
+    charcoalAntibiotic = { a = "charcoal", b = "antibiotic", line = T .. "ActivatedCharcoalAbsorbsAntibioticsReduced",
+        weakens = { category = "antibiotic", factor = 0.5 } },
     epinephrineBeta = { a = "epinephrine", b = "betaBlocker", line = T .. "EpinephrineBetaBlockersReducedEpinephrine" },
     coughCold = { a = "coughSuppressant", b = "coldFlu", line = T .. "MultipleColdMedicationsWatchForDrowsiness" },
     nauseaDiarrheal = { a = "antiNausea", b = "antiDiarrheal", line = T .. "MultipleGIMedicationsWatchForConstipation" },
@@ -61,7 +61,39 @@ Interactions.PAIRS = {
 
 Interactions.IDS = Tables.sortedKeys(Interactions.PAIRS)
 
--- categories: { [category] = true } of the active doses (Medication/Provider.activeCategories).
+-- Adds an interaction from an add-on mod: pair = { a, b (categories, Medication/Data), line = key, effect(p),
+-- weakens = { category, factor (0-1) } }. Errors on a known id.
+function Interactions.register(id, pair)
+    if type(id) ~= "string" or Interactions.PAIRS[id] then
+        error("drug interaction " .. tostring(id) .. " is already registered", 2)
+    end
+    if type(pair) ~= "table" or type(pair.a) ~= "string" or type(pair.b) ~= "string" or type(pair.line) ~= "string" then
+        error("drug interaction " .. id .. " needs categories a, b and a line", 2)
+    end
+    local w = pair.weakens
+    if w ~= nil and (type(w) ~= "table" or type(w.category) ~= "string" or type(w.factor) ~= "number"
+        or w.factor < 0 or w.factor > 1) then
+        error("drug interaction " .. id .. " weakens needs a category and a factor from 0 to 1", 2)
+    end
+    Interactions.PAIRS[id] = pair
+    Interactions.IDS = Tables.sortedKeys(Interactions.PAIRS)
+end
+
+-- What the active pairs weaken: { [category] = factor }, the lowest factor when several pairs weaken one category.
+-- categories: { [category] = true } of the active doses (Medication/Provider.activeDoses).
+function Interactions.weakened(categories)
+    local out = {}
+    for _, id in ipairs(Interactions.IDS) do
+        local pair = Interactions.PAIRS[id]
+        local w = pair.weakens
+        if w and categories[pair.a] and categories[pair.b] then
+            out[w.category] = math.min(out[w.category] or 1, w.factor)
+        end
+    end
+    return out
+end
+
+-- categories: { [category] = true } of the active doses (Medication/Provider.activeDoses).
 function Interactions.update(p, categories)
     local fired = p.state.meds.pairs
     for _, id in ipairs(Interactions.IDS) do

@@ -5,11 +5,10 @@
 --
 -- Plant search: the server holds the board and reveals one cell per pick; the result is rolled from its own counts.
 -- Cancelling or walking away costs nothing before the first pick and spends the spot after it (no roll). Time running
--- out after a pick finishes with the roll, as in v0.9; with no pick the session is just dropped.
+-- out after a pick finishes with the roll; with no pick the session is just dropped.
 -- Hive search: the server rolls and keeps the tree's contents. A grab needs a live session, at least MIN_REACH_S
 -- since it started and MIN_GAP_S since the last grab, and the target still in the tree. A sting ends the session and
--- leaves the contents, so an instant retry is allowed (v0.9 H17, kept by decision).
--- From docs/porting/phase8/herbal-and-hive-minigames.md sections 13.2-13.4; fixes v0.9 H2, H5, H6, H9, H16.
+-- leaves the contents, so an instant retry is allowed.
 -- Residual trust (accepted): a modified hive client can skip the dodging and never report a sting; its gain is capped
 -- by the server-rolled contents and the cooldown.
 
@@ -79,7 +78,7 @@ function Search.herbSession(state, actor, id, now)
     return s
 end
 
--- One pick; cell 1-16, or 0 for empty space (a miss, as in v0.9). Returns { cell, kind, outcome, done, session }
+-- One pick; cell 1-16, or 0 for empty space (a miss). Returns { cell, kind, outcome, done, session }
 -- (kind "empty" for cell 0), or nil and a reason: "noSession", "expired", "badCell", "picked".
 function Search.herbPick(state, actor, id, cell, env)
     local s, reason = Search.herbSession(state, actor, id, env.now)
@@ -261,7 +260,7 @@ function Search.hiveSting(state, actor, id, env)
     return s
 end
 
--- Drops hive sessions past their deadline (silently, as v0.9's timeout). Returns how many.
+-- Drops hive sessions past their deadline (silently). Returns how many.
 function Search.hiveSweep(state, env)
     local dropped = 0
     for _, actor in ipairs(Tables.sortedKeys(state.hive)) do

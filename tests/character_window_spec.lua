@@ -212,8 +212,8 @@ insulate("character window", function()
             window:setWidth(window.panel:getX() + window.panel:getWidth())
         end
         local tabs = window.panel:getWidthOfAllTabs()
-        -- One pixel wider than the tabs, or the strip shows a needless scroll arrow (issue #8).
-        local minWidth = tabs + 1
+        -- Wider than the tabs, or the strip looks cramped and shows a needless scroll arrow (issue #8).
+        local minWidth = tabs + require("ExtensiveHealthRedone/Client/Draw").TAB_SPARE
         viewWidth(tabs - 100)
         assert.equal(minWidth, window.panel.width)
         assert.equal(minWidth, window.width)
@@ -322,5 +322,36 @@ insulate("character window", function()
         build()
         press(Keyboard.KEY_H)
         assert.is_false(window.visible)
+    end)
+
+    it("adds add-on tabs after ours, in order, and toggles them by id", function()
+        game.sandbox.ImmunitySystemEnabled = true
+        local stale = 0
+        local function view()
+            local v = { onOpened = function(self) self.opened = true end }
+            function v:initialise() end
+            function v:markStale() stale = stale + 1 end
+            return v
+        end
+        CharacterWindow.addTab({ id = "addonB", name = function() return "Addon B" end, create = view, order = 20 })
+        CharacterWindow.addTab({ id = "addonA", name = function() return "Addon A" end, create = view, order = 10 })
+        CharacterWindow.addTab({ id = "addonHidden", name = function() return "Hidden" end, create = view,
+            visible = function() return false end })
+        assert.has_error(function()
+            CharacterWindow.addTab({ id = "monitor", name = function() return "x" end, create = view })
+        end)
+        build()
+        local names = {}
+        for _, v in ipairs(window.panel.viewList) do names[#names + 1] = v.name end
+        assert.same({ "Info", "Skills", "Health", "UI_EHR_Tab_EHR", "UI_EHR_Tab_Immunity", "Addon A", "Addon B" },
+            names)
+        CharacterWindow.toggle(0, "addonB")
+        assert.is_true(window.visible)
+        assert.equal("Addon B", activeName())
+        assert.is_true(window.ehrAddonViews.addonB.opened)
+        CharacterWindow.toggle(0, "addonB")
+        assert.is_false(window.visible)
+        CharacterWindow.open(0, "addonA")
+        assert.equal("Addon A", activeName())
     end)
 end)

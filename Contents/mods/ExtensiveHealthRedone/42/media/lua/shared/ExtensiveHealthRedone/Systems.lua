@@ -1,8 +1,8 @@
 -- Every simulation system, in one list. Server/Health registers them with the runtime; tests run them directly.
 -- Order: blood (200), wounds (300: infection, tetanus triggers), disease triggers and exposure meters (310-390),
--- medication (390: doses, courses and their cures), immunity (395), conditions (400), effects that read the conditions (410-789),
--- body temperature (790: takes every TEMPERATURE contribution), pre-disease stages (795), healing (800), and the
--- monitor's timer refresh (990).
+-- medication (390: doses, courses and their cures), immunity (395), conditions (400), effects that read the
+-- conditions (410-789), body temperature (790: takes every TEMPERATURE contribution), pre-disease stages (795),
+-- healing (800), and the monitor's timer refresh (990).
 
 local Blood = require "ExtensiveHealthRedone/Blood/Blood"
 local Healing = require "ExtensiveHealthRedone/Body/Healing"

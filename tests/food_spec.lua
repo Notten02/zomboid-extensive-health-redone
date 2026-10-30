@@ -58,7 +58,7 @@ describe("food-borne diseases", function()
                 assert.equal(id, defs[id].knowledge)
             end
             assert.is_true(defs.food_poisoning.selfEvident)
-            -- W11: the guide's timings.
+            -- The guide's timings.
             assert.same({ 4, 12 }, defs.gastroenteritis.incubation)
             assert.same({ 24, 72 }, defs.gastroenteritis.duration)
             assert.same({ 24, 48 }, defs.trichinosis.incubation)
@@ -108,7 +108,7 @@ describe("food-borne diseases", function()
             assert.same({}, Risk.ofBite(p, food({ fullType = "Base.WaterRationCan", type = "waterrationcan" }), nil, 1))
         end)
 
-        it("rates bloody and dirty hands for gastroenteritis (W26), capped", function()
+        it("rates bloody and dirty hands for gastroenteritis, capped", function()
             local p = Sim.context()
             local r = risksById(Risk.ofBite(p, food(), { blood = 1, dirt = 1 }, 1))
             assert.near(0.23, r.gastroenteritis.chance, 1e-9)
@@ -232,7 +232,7 @@ describe("food-borne diseases", function()
             assert.equal(0, #treated.body.damages)
         end)
 
-        it("dysentery keeps its thirst cap even with relief (W30) and bleeds down to a floor", function()
+        it("dysentery keeps its thirst cap even with relief and bleeds down to a floor", function()
             local p = Sim.context({ treatment = { relief = { ["dysentery.diarrhea"] = 0.85 } } })
             contract(p, "dysentery", { stage = 2 }).left = 1e9
             run(p, 1)

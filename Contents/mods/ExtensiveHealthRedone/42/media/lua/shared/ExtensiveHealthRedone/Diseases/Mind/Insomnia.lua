@@ -2,16 +2,15 @@
 -- restoring properly. Stage 2 (about 24 h later): natural sleep is blocked; only a sleep aid lets the character sleep.
 -- Stage 3 (about 24 h after that): persists until DORA or antidepressants cure it. Stress, unhappiness and a headache
 -- grow with each stage.
--- From v0.9 EHR_Insomnia.lua and EHR_Disease.lua:2879-2947 (docs/porting/phase4/mental-knox-sounds.md, section 2).
 --
--- Recovery (W11 and the maintainer's Phase 4 decision; v0.9 had none): stages 1 and 2 recover with a consistent sleep
+-- Recovery: stages 1 and 2 recover with a consistent sleep
 -- pattern. A good night is 6+ hours asleep (at stage 2 only with a sleep aid active, since natural sleep is blocked);
 -- with tea before sleeping it counts as two. Three good nights in a row drop one stage (2 -> 1, 1 -> cured); more than
 -- 30 hours without a good night breaks the streak. Each good night also restarts the current stage's clock, and the
 -- stage can't worsen while the last good night is less than 30 hours ago, so a character who sleeps well every night
 -- doesn't slide on to the next stage because one night came a little late.
 --
--- Phase 5 treatment hooks:
+-- Treatment hooks:
 --   p.treatment:active("sleepAid")         sleeping pills, DORA, antidepressants: sleep allowed, fatigue not pushed,
 --                                          stress, unhappiness and headache capped low
 --   p.treatment:active("sleepTea")         tea drunk before sleeping (herbal teas, vanilla tea): the night counts double
@@ -60,8 +59,8 @@ function Insomnia.trigger(p, defs, dt)
     end
 end
 
--- A stimulant wore off (caffeine pills, combat stimulants, nitric oxide booster; Phase 5 calls this): a 10% chance of
--- insomnia, rolled at most once every 12 game hours. Returns the new condition or nil.
+-- A stimulant wore off (caffeine pills, combat stimulants, nitric oxide booster; the medication rules call this): a
+-- 10% chance of insomnia, rolled at most once every 12 game hours. Returns the new condition or nil.
 function Insomnia.stimulantCrash(p, defs, source)
     local mind = p.state.mind
     if p.state.conditions.active.insomnia or (mind.stimulantCooldown or 0) > 0 then
@@ -167,7 +166,7 @@ Insomnia.def = {
     selfEvident = true,
     name = "UI_EHR_Disease_insomnia",
     baseSeverity = 0.65,
-    -- Not scaled by DiseaseSpeed, as in v0.9.
+    -- Not scaled by DiseaseSpeed.
     stages = { [1] = { 24, 24 }, [2] = { 24, 24 } },
     persistsAt = 3,
     hold = Insomnia.hold,

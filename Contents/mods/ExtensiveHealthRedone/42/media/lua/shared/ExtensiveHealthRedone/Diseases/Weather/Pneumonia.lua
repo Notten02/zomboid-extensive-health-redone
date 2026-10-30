@@ -1,9 +1,8 @@
--- Pneumonia: from an untreated common cold (W14: no other source). Coughs that draw zombies, chest pain, fever, an
+-- Pneumonia: from an untreated common cold (no other source). Coughs that draw zombies, chest pain, fever, an
 -- endurance cap from stage 2, and a health drain from stage 3 (to 30 HP) that turns lethal in stage 4. An active cure
--- course holds the stage and pauses the drain. From v0.9 EHR_EnvironmentalDiseases.lua:2621-2682, :2950-3137 and
--- EHR_DiseaseDefinitions.lua:140-239 (docs/porting/phase4/environmental.md, section 2).
+-- course holds the stage and pauses the drain.
 --
--- Treatment (Phase 5, through p.treatment): cure courses Prescription, Broad Spectrum or Plant-Based Antibiotics
+-- Treatment (through p.treatment): cure courses Prescription, Broad Spectrum or Plant-Based Antibiotics
 -- (72 h), IV Ciprofloxacin (24 h); vanilla Antibiotics only minor help. Relief: Bronchodilator
 -- ("breathingDifficulty", lifts the endurance cap), cough medicine ("coughing"), Antipyretic ("fever"), "pain".
 
@@ -52,7 +51,7 @@ function Pneumonia.effects(p, c, dt, curing)
     local t = p.treatment
     p.stats:raiseF("SICKNESS", "pneumonia", row.sickness, 0.01 * dt)
     if p.facts.asleep then
-        c.data.coughIn = nil        -- v0.9: the cough clock restarts on waking
+        c.data.coughIn = nil        -- the cough clock restarts on waking
     else
         Episodes.every(p, c, "coughIn", row.coughH, t:relief("pneumonia", "coughing"), dt, cough(row.severe))
     end
@@ -66,7 +65,7 @@ function Pneumonia.effects(p, c, dt, curing)
     local target, step = Symptoms.fever(row.fever, row.feverStep * K * dt * c.severity, t:relief("pneumonia", "fever"))
     Symptoms.applyFever(p, "pneumonia", target, step)
     if row.drain and not curing then
-        -- v0.9 ratchet: natural healing can't outpace the drain.
+        -- Ratchet: natural healing can't outpace the drain.
         p.body:damage("pneumonia", row.drain / 60 * dt, row.floor)
         p.body:healFactorAll(Symptoms.ALL_PARTS, "pneumonia", 0)
     end

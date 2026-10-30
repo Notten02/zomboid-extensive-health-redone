@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Starts a local, non-Steam dedicated server from the game install with this mod, for the Phase 9 load test
-# (docs/porting/phase9/load-test-runbook.md). It never touches ~/Zomboid: the server has its own cache dir.
+# Starts a local, non-Steam dedicated server from the game install with this mod, for a load test with
+# tools/mp-client.sh. It never touches ~/Zomboid: the server has its own cache dir.
 #
 #   tools/mp-server.sh            deploy the mod, write or patch the server config, start the server (foreground)
 #
@@ -8,9 +8,9 @@
 #   EHR_MPTEST_DIR      root of the test cache dirs        default: <repo>/.cache/mptest (git-ignored)
 #   EHR_SERVER_NAME     server name (config file names)    default: ehrload
 #   EHR_ADMIN_PASSWORD  password of the "admin" account    default: admin
-#   EHR_MOD_ID          the Mods= entry                     default: ExtensiveHealthRedone (see UNVERIFIED below)
+#   EHR_MOD_ID          the Mods= entry                     default: ExtensiveHealthRedone (see Untested below)
 #   EHR_SERVER_DEBUG    1 passes -debug to the server       default: 1
-#   PZ_GAME_DIR         the game's projectzomboid folder    default: the maintainer's Steam library
+#   PZ_GAME_DIR         the game's projectzomboid folder    default: under /mnt/games/Steam (see GAME below)
 #
 # What it does on every start:
 #   1. tools/deploy-dev.sh into <cache>/Workshop, so the server and every client load the same copy;
@@ -19,7 +19,7 @@
 #   3. <cache>/Server/<name>_SandboxVars.lua: ExtensiveHealthRework.DebugMode = true once the server has written the
 #      file (the first start writes it; stop the server and run this script again to switch debug mode on).
 #
-# UNVERIFIED (check on the first run and fix this script if needed):
+# Untested assumptions:
 #   - that 42.21 keeps a hand-written partial ini and fills in the missing keys (if it overwrites it, the patch step
 #     of the next start sets our keys again);
 #   - the Mods= format. Vanilla's settings screen writes the plain mod ids joined with ';'. B42 mod.info files refer to
@@ -46,7 +46,7 @@ fi
 mkdir -p "$CACHE/Server"
 ZOMBOID_DIR="$CACHE" "$REPO/tools/deploy-dev.sh"
 # A non-Steam dedicated server doesn't look in Workshop/ (42.21: "required mod ... not found"); it finds local mods
-# in <cache>/mods/<id>. A copy again, never a symlink (Phase 3).
+# in <cache>/mods/<id>. A copy again, never a symlink (see tools/deploy-dev.sh).
 mkdir -p "$CACHE/mods/ExtensiveHealthRedone"
 rsync -a --delete "$REPO/Contents/mods/ExtensiveHealthRedone/" "$CACHE/mods/ExtensiveHealthRedone/"
 echo "copied the mod -> $CACHE/mods/ExtensiveHealthRedone"

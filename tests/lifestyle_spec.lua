@@ -3,7 +3,7 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake game objects are deliberately partial.
 ---@diagnostic disable: missing-fields, duplicate-set-field
--- Lifestyle: Hobbies (Phase 10): the pure recovery pace, how the engine and the heat meters use it, the bladder pressure
+-- Lifestyle: Hobbies: the pure recovery pace, how the engine and the heat meters use it, the bladder pressure
 -- of dysentery and furosemide, the reader on the server (SP and MP report), and the client's two jobs.
 local Pace = require("ExtensiveHealthRedone/Lifestyle/Pace")
 local Engine = require("ExtensiveHealthRedone/Conditions/Engine")

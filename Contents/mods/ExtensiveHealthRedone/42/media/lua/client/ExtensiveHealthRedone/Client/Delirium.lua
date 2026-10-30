@@ -1,5 +1,5 @@
 -- Carries out delirium episodes the server decides (Diseases/Mind/Delirium): a hallucinated sound only this player
--- hears, a strange line over the head, the coloured screen tint, and the unsafe impulse. W31: the tint shows in MP
+-- hears, a strange line over the head, the coloured screen tint, and the unsafe impulse. The tint shows in MP
 -- too. The tint strength comes from the mirrored state.effects.tint; its colour from the last episode message.
 
 require "ISUI/ISUIElement"
@@ -48,7 +48,7 @@ local IMPULSES = {
         if not window then
             return false
         end
-        -- Unlike v0.9, the smash is only queued when the walk to the window could be planned.
+        -- The smash is only queued when the walk to the window could be planned.
         if not luautils.walkAdjWindowOrDoor(player, window:getSquare(), window) then
             return false
         end
@@ -127,7 +127,7 @@ local function draw()
                 end
                 local colour = colourOf[key] or Data.COLOURS[1]
                 local pulse = 0.78 + 0.22 * math.sin(getGameTime():getWorldAgeHours() * 320)
-                -- No texture: a plain coloured rectangle, as v0.9 drew it.
+                -- No texture: a plain coloured rectangle.
                 ---@diagnostic disable-next-line: param-type-mismatch
                 canvas.javaObject:DrawTextureScaledColor(nil, getPlayerScreenLeft(i), getPlayerScreenTop(i),
                     getPlayerScreenWidth(i), getPlayerScreenHeight(i), colour[1], colour[2], colour[3], alpha * pulse)
