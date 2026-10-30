@@ -208,5 +208,7 @@
     "Sandbox_EHR_ImmunityRecoveryRate": "Immune Recovery Rate",
     "Sandbox_EHR_ImmunityRecoveryRate_tooltip": "Scales how quickly the immune system score rises toward its current target. 1.0 = default.",
     "Sandbox_EHR_ImmunityDeclineRate": "Immune Decline Rate",
-    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Scales how quickly the immune system score falls toward its current target. 1.0 = default."
+    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Scales how quickly the immune system score falls toward its current target. 1.0 = default.",
+    "Sandbox_EHR_BloodTypeTraitsDisabled": "Disable Blood Type Traits",
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "When enabled, the blood type traits are hidden during character creation and every character rolls a random blood type. Characters who already picked one keep it."
 }

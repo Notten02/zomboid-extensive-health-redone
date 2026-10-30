@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "La espalda se me arquea y no puedo evitarlo.",
     "UI_EHR_Ambient_Tetanus_4_1": "Los espasmos son menos frecuentes.",
     "UI_EHR_Ambient_Tetanus_4_2": "Los músculos se van relajando poco a poco.",
-    "UI_EHR_Ambient_Tetanus_4_3": "Sigo rígido, pero ya muevo un poco la mandíbula."
+    "UI_EHR_Ambient_Tetanus_4_3": "Sigo rígido, pero ya muevo un poco la mandíbula.",
+    "UI_trait_EHR_BloodTypeONeg": "Grupo sanguíneo: O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "Tu grupo sanguíneo es O-. Solo puedes recibir sangre O-, pero cualquiera puede recibir la tuya. Probabilidad de éxito de la terapia génica: 95%%.",
+    "UI_trait_EHR_BloodTypeOPos": "Grupo sanguíneo: O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "Tu grupo sanguíneo es O+. Puedes recibir sangre O- y O+. Probabilidad de éxito de la terapia génica: 85%%.",
+    "UI_trait_EHR_BloodTypeANeg": "Grupo sanguíneo: A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "Tu grupo sanguíneo es A-. Puedes recibir sangre O- y A-. Probabilidad de éxito de la terapia génica: 75%%.",
+    "UI_trait_EHR_BloodTypeAPos": "Grupo sanguíneo: A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "Tu grupo sanguíneo es A+. Puedes recibir sangre O-, O+, A- y A+. Probabilidad de éxito de la terapia génica: 65%%.",
+    "UI_trait_EHR_BloodTypeBNeg": "Grupo sanguíneo: B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "Tu grupo sanguíneo es B-. Puedes recibir sangre O- y B-. Probabilidad de éxito de la terapia génica: 75%%.",
+    "UI_trait_EHR_BloodTypeBPos": "Grupo sanguíneo: B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "Tu grupo sanguíneo es B+. Puedes recibir sangre O-, O+, B- y B+. Probabilidad de éxito de la terapia génica: 65%%.",
+    "UI_trait_EHR_BloodTypeABNeg": "Grupo sanguíneo: AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "Tu grupo sanguíneo es AB-. Puedes recibir sangre O-, A-, B- y AB-. Probabilidad de éxito de la terapia génica: 50%%.",
+    "UI_trait_EHR_BloodTypeABPos": "Grupo sanguíneo: AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "Tu grupo sanguíneo es AB+. Puedes recibir sangre de cualquier grupo. Probabilidad de éxito de la terapia génica: 40%%."
 }

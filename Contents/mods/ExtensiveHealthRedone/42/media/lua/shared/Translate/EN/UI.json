@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "My back arches and I can't stop it.",
     "UI_EHR_Ambient_Tetanus_4_1": "The spasms are coming less often.",
     "UI_EHR_Ambient_Tetanus_4_2": "My muscles are slowly letting go.",
-    "UI_EHR_Ambient_Tetanus_4_3": "Still stiff, but I can move my jaw a little."
+    "UI_EHR_Ambient_Tetanus_4_3": "Still stiff, but I can move my jaw a little.",
+    "UI_trait_EHR_BloodTypeONeg": "Blood Type: O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "Your blood type is O-. You can only receive O- blood, but anyone can receive yours. Gene therapy success chance: 95%%.",
+    "UI_trait_EHR_BloodTypeOPos": "Blood Type: O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "Your blood type is O+. You can receive O- and O+ blood. Gene therapy success chance: 85%%.",
+    "UI_trait_EHR_BloodTypeANeg": "Blood Type: A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "Your blood type is A-. You can receive O- and A- blood. Gene therapy success chance: 75%%.",
+    "UI_trait_EHR_BloodTypeAPos": "Blood Type: A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "Your blood type is A+. You can receive O-, O+, A- and A+ blood. Gene therapy success chance: 65%%.",
+    "UI_trait_EHR_BloodTypeBNeg": "Blood Type: B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "Your blood type is B-. You can receive O- and B- blood. Gene therapy success chance: 75%%.",
+    "UI_trait_EHR_BloodTypeBPos": "Blood Type: B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "Your blood type is B+. You can receive O-, O+, B- and B+ blood. Gene therapy success chance: 65%%.",
+    "UI_trait_EHR_BloodTypeABNeg": "Blood Type: AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "Your blood type is AB-. You can receive O-, A-, B- and AB- blood. Gene therapy success chance: 50%%.",
+    "UI_trait_EHR_BloodTypeABPos": "Blood Type: AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "Your blood type is AB+. You can receive blood of any type. Gene therapy success chance: 40%%."
 }

@@ -812,6 +812,14 @@ option ExtensiveHealthRework.PatientZeroTraitDisabled
     translation = EHR_PatientZeroTraitDisabled,
 }
 
+option ExtensiveHealthRework.BloodTypeTraitsDisabled
+{
+    type = boolean,
+    default = false,
+    page = EHR_Other,
+    translation = EHR_BloodTypeTraitsDisabled,
+}
+
 option ExtensiveHealthRework.ImmunitySystemEnabled
 {
     type = boolean,

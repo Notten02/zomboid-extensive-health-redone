@@ -208,5 +208,7 @@
     "Sandbox_EHR_ImmunityRecoveryRate": "Velocidad de recuperación inmunitaria",
     "Sandbox_EHR_ImmunityRecoveryRate_tooltip": "Ajusta la velocidad a la que la puntuación del sistema inmunitario sube hacia su objetivo actual. 1.0 = predeterminado.",
     "Sandbox_EHR_ImmunityDeclineRate": "Velocidad de deterioro inmunitario",
-    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Ajusta la velocidad a la que la puntuación del sistema inmunitario baja hacia su objetivo actual. 1.0 = predeterminado."
+    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Ajusta la velocidad a la que la puntuación del sistema inmunitario baja hacia su objetivo actual. 1.0 = predeterminado.",
+    "Sandbox_EHR_BloodTypeTraitsDisabled": "Desactivar rasgos de grupo sanguíneo",
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Si está activado, los rasgos de grupo sanguíneo se ocultan durante la creación del personaje y cada personaje recibe un grupo sanguíneo aleatorio. Los personajes que ya eligieron uno lo conservan."
 }

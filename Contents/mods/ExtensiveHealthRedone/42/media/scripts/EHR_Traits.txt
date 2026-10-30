@@ -19,4 +19,92 @@ module ExtensiveHealth
         UIName = UI_trait_EHR_ScalpelMaster,
         UIDescription = UI_trait_EHR_ScalpelMasterDesc,
     }
+
+    character_trait_definition ExtensiveHealth:bloodtypeoneg
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypeoneg,
+        Cost = 3,
+        UIName = UI_trait_EHR_BloodTypeONeg,
+        UIDescription = UI_trait_EHR_BloodTypeONegDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabneg;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypeopos
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypeopos,
+        Cost = 4,
+        UIName = UI_trait_EHR_BloodTypeOPos,
+        UIDescription = UI_trait_EHR_BloodTypeOPosDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabneg;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypeaneg
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypeaneg,
+        Cost = 2,
+        UIName = UI_trait_EHR_BloodTypeANeg,
+        UIDescription = UI_trait_EHR_BloodTypeANegDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabneg;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypeapos
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypeapos,
+        Cost = 4,
+        UIName = UI_trait_EHR_BloodTypeAPos,
+        UIDescription = UI_trait_EHR_BloodTypeAPosDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabneg;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypebneg
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypebneg,
+        Cost = 2,
+        UIName = UI_trait_EHR_BloodTypeBNeg,
+        UIDescription = UI_trait_EHR_BloodTypeBNegDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabneg;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypebpos
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypebpos,
+        Cost = 3,
+        UIName = UI_trait_EHR_BloodTypeBPos,
+        UIDescription = UI_trait_EHR_BloodTypeBPosDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypeabneg;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypeabneg
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypeabneg,
+        Cost = 1,
+        UIName = UI_trait_EHR_BloodTypeABNeg,
+        UIDescription = UI_trait_EHR_BloodTypeABNegDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabpos,
+    }
+
+    character_trait_definition ExtensiveHealth:bloodtypeabpos
+    {
+        IsProfessionTrait = false,
+        DisabledInMultiplayer = false,
+        CharacterTrait = ExtensiveHealth:bloodtypeabpos,
+        Cost = 3,
+        UIName = UI_trait_EHR_BloodTypeABPos,
+        UIDescription = UI_trait_EHR_BloodTypeABPosDesc,
+        MutuallyExclusiveTraits = ExtensiveHealth:bloodtypeoneg;ExtensiveHealth:bloodtypeopos;ExtensiveHealth:bloodtypeaneg;ExtensiveHealth:bloodtypeapos;ExtensiveHealth:bloodtypebneg;ExtensiveHealth:bloodtypebpos;ExtensiveHealth:bloodtypeabneg,
+    }
 }

@@ -208,5 +208,7 @@
     "Sandbox_EHR_ImmunityRecoveryRate": "免疫回復速度",
     "Sandbox_EHR_ImmunityRecoveryRate_tooltip": "免疫システム値が現在の目標値へ回復する速度を調整します。1.0 = デフォルト。",
     "Sandbox_EHR_ImmunityDeclineRate": "免疫低下速度",
-    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "免疫システム値が現在の目標値へ低下する速度を調整します。1.0 = デフォルト。"
+    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "免疫システム値が現在の目標値へ低下する速度を調整します。1.0 = デフォルト。",
+    "Sandbox_EHR_BloodTypeTraitsDisabled": "血液型特性を無効化",
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "有効にすると、キャラクター作成時に血液型特性が非表示になり、すべてのキャラクターの血液型がランダムに決まります。すでに選んだキャラクターはその血液型のままです。"
 }

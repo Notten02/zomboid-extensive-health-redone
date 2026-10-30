@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "Mon dos se cambre et je n'y peux rien.",
     "UI_EHR_Ambient_Tetanus_4_1": "Les spasmes sont moins fréquents.",
     "UI_EHR_Ambient_Tetanus_4_2": "Mes muscles se relâchent peu à peu.",
-    "UI_EHR_Ambient_Tetanus_4_3": "Encore raide, mais je peux un peu bouger la mâchoire."
+    "UI_EHR_Ambient_Tetanus_4_3": "Encore raide, mais je peux un peu bouger la mâchoire.",
+    "UI_trait_EHR_BloodTypeONeg": "Groupe sanguin : O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "Votre groupe sanguin est O-. Vous ne pouvez recevoir que du sang O-, mais tout le monde peut recevoir le vôtre. Chances de réussite de la thérapie génique : 95%%.",
+    "UI_trait_EHR_BloodTypeOPos": "Groupe sanguin : O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "Votre groupe sanguin est O+. Vous pouvez recevoir du sang O- et O+. Chances de réussite de la thérapie génique : 85%%.",
+    "UI_trait_EHR_BloodTypeANeg": "Groupe sanguin : A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "Votre groupe sanguin est A-. Vous pouvez recevoir du sang O- et A-. Chances de réussite de la thérapie génique : 75%%.",
+    "UI_trait_EHR_BloodTypeAPos": "Groupe sanguin : A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "Votre groupe sanguin est A+. Vous pouvez recevoir du sang O-, O+, A- et A+. Chances de réussite de la thérapie génique : 65%%.",
+    "UI_trait_EHR_BloodTypeBNeg": "Groupe sanguin : B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "Votre groupe sanguin est B-. Vous pouvez recevoir du sang O- et B-. Chances de réussite de la thérapie génique : 75%%.",
+    "UI_trait_EHR_BloodTypeBPos": "Groupe sanguin : B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "Votre groupe sanguin est B+. Vous pouvez recevoir du sang O-, O+, B- et B+. Chances de réussite de la thérapie génique : 65%%.",
+    "UI_trait_EHR_BloodTypeABNeg": "Groupe sanguin : AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "Votre groupe sanguin est AB-. Vous pouvez recevoir du sang O-, A-, B- et AB-. Chances de réussite de la thérapie génique : 50%%.",
+    "UI_trait_EHR_BloodTypeABPos": "Groupe sanguin : AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "Votre groupe sanguin est AB+. Vous pouvez recevoir du sang de tous les groupes. Chances de réussite de la thérapie génique : 40%%."
 }
