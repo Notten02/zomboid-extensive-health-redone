@@ -208,5 +208,7 @@
     "Sandbox_EHR_ImmunityRecoveryRate": "Скорость восстановления иммунитета",
     "Sandbox_EHR_ImmunityRecoveryRate_tooltip": "Масштабирует скорость роста показателя иммунной системы к текущей цели. 1.0 = по умолчанию.",
     "Sandbox_EHR_ImmunityDeclineRate": "Скорость падения иммунитета",
-    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Масштабирует скорость падения показателя иммунной системы к текущей цели. 1.0 = по умолчанию."
+    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Масштабирует скорость падения показателя иммунной системы к текущей цели. 1.0 = по умолчанию.",
+    "Sandbox_EHR_BloodTypeTraitsDisabled": "Отключить черты группы крови",
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Если включено, черты группы крови скрыты при создании персонажа, и каждый персонаж получает случайную группу крови. Персонажи, которые уже выбрали группу, сохраняют её."
 }

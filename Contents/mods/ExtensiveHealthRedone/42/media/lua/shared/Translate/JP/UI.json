@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "背中が反って、止められない。",
     "UI_EHR_Ambient_Tetanus_4_1": "けいれんの回数が減ってきた。",
     "UI_EHR_Ambient_Tetanus_4_2": "筋肉が少しずつゆるんでいく。",
-    "UI_EHR_Ambient_Tetanus_4_3": "まだ硬いが、顎が少し動く。"
+    "UI_EHR_Ambient_Tetanus_4_3": "まだ硬いが、顎が少し動く。",
+    "UI_trait_EHR_BloodTypeONeg": "血液型：O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "あなたの血液型はO-です。輸血できるのはO-の血液だけですが、あなたの血液は誰にでも輸血できます。遺伝子治療の成功率：95%%。",
+    "UI_trait_EHR_BloodTypeOPos": "血液型：O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "あなたの血液型はO+です。O-、O+の血液を輸血できます。遺伝子治療の成功率：85%%。",
+    "UI_trait_EHR_BloodTypeANeg": "血液型：A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "あなたの血液型はA-です。O-、A-の血液を輸血できます。遺伝子治療の成功率：75%%。",
+    "UI_trait_EHR_BloodTypeAPos": "血液型：A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "あなたの血液型はA+です。O-、O+、A-、A+の血液を輸血できます。遺伝子治療の成功率：65%%。",
+    "UI_trait_EHR_BloodTypeBNeg": "血液型：B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "あなたの血液型はB-です。O-、B-の血液を輸血できます。遺伝子治療の成功率：75%%。",
+    "UI_trait_EHR_BloodTypeBPos": "血液型：B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "あなたの血液型はB+です。O-、O+、B-、B+の血液を輸血できます。遺伝子治療の成功率：65%%。",
+    "UI_trait_EHR_BloodTypeABNeg": "血液型：AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "あなたの血液型はAB-です。O-、A-、B-、AB-の血液を輸血できます。遺伝子治療の成功率：50%%。",
+    "UI_trait_EHR_BloodTypeABPos": "血液型：AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "あなたの血液型はAB+です。どの血液型の血液でも輸血できます。遺伝子治療の成功率：40%%。"
 }

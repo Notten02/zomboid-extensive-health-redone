@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "Minhas costas se arqueiam e não consigo evitar.",
     "UI_EHR_Ambient_Tetanus_4_1": "Os espasmos estão mais raros.",
     "UI_EHR_Ambient_Tetanus_4_2": "Meus músculos estão relaxando aos poucos.",
-    "UI_EHR_Ambient_Tetanus_4_3": "Ainda estou rígido, mas já mexo um pouco a mandíbula."
+    "UI_EHR_Ambient_Tetanus_4_3": "Ainda estou rígido, mas já mexo um pouco a mandíbula.",
+    "UI_trait_EHR_BloodTypeONeg": "Tipo sanguíneo: O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "Seu tipo sanguíneo é O-. Você só pode receber sangue O-, mas qualquer um pode receber o seu. Chance de sucesso da terapia genética: 95%%.",
+    "UI_trait_EHR_BloodTypeOPos": "Tipo sanguíneo: O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "Seu tipo sanguíneo é O+. Você pode receber sangue O- e O+. Chance de sucesso da terapia genética: 85%%.",
+    "UI_trait_EHR_BloodTypeANeg": "Tipo sanguíneo: A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "Seu tipo sanguíneo é A-. Você pode receber sangue O- e A-. Chance de sucesso da terapia genética: 75%%.",
+    "UI_trait_EHR_BloodTypeAPos": "Tipo sanguíneo: A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "Seu tipo sanguíneo é A+. Você pode receber sangue O-, O+, A- e A+. Chance de sucesso da terapia genética: 65%%.",
+    "UI_trait_EHR_BloodTypeBNeg": "Tipo sanguíneo: B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "Seu tipo sanguíneo é B-. Você pode receber sangue O- e B-. Chance de sucesso da terapia genética: 75%%.",
+    "UI_trait_EHR_BloodTypeBPos": "Tipo sanguíneo: B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "Seu tipo sanguíneo é B+. Você pode receber sangue O-, O+, B- e B+. Chance de sucesso da terapia genética: 65%%.",
+    "UI_trait_EHR_BloodTypeABNeg": "Tipo sanguíneo: AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "Seu tipo sanguíneo é AB-. Você pode receber sangue O-, A-, B- e AB-. Chance de sucesso da terapia genética: 50%%.",
+    "UI_trait_EHR_BloodTypeABPos": "Tipo sanguíneo: AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "Seu tipo sanguíneo é AB+. Você pode receber sangue de qualquer tipo. Chance de sucesso da terapia genética: 40%%."
 }

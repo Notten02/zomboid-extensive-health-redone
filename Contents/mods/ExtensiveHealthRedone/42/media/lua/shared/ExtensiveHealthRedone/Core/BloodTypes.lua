@@ -29,4 +29,15 @@ function BloodTypes.roll(rng)
     return data.types[#data.types]
 end
 
+-- The blood type a character picked with a trait, or nil. has(traitKey) -> bool, with the keys of data.traits. Should
+-- a character carry several (an admin, a modified client), the first in data.types order wins.
+function BloodTypes.chosen(has)
+    for _, t in ipairs(data.types) do
+        if has(data.traits[t]) then
+            return t
+        end
+    end
+    return nil
+end
+
 return BloodTypes

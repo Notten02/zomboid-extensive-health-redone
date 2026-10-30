@@ -208,5 +208,7 @@
     "Sandbox_EHR_ImmunityRecoveryRate": "免疫恢復速度",
     "Sandbox_EHR_ImmunityRecoveryRate_tooltip": "調整免疫系統數值向目前目標值恢復的速度。1.0 = 預設。",
     "Sandbox_EHR_ImmunityDeclineRate": "免疫下降速度",
-    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "調整免疫系統數值向目前目標值下降的速度。1.0 = 預設。"
+    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "調整免疫系統數值向目前目標值下降的速度。1.0 = 預設。",
+    "Sandbox_EHR_BloodTypeTraitsDisabled": "停用血型特質",
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "啟用後，血型特質在角色建立時隱藏，每個角色的血型隨機決定。已經選擇血型的角色保留其血型。"
 }

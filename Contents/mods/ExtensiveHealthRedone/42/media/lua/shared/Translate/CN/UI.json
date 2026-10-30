@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "我的背不由自主地弓起来。",
     "UI_EHR_Ambient_Tetanus_4_1": "痉挛的次数变少了。",
     "UI_EHR_Ambient_Tetanus_4_2": "我的肌肉慢慢放松了。",
-    "UI_EHR_Ambient_Tetanus_4_3": "还是很僵，但下巴能动一点了。"
+    "UI_EHR_Ambient_Tetanus_4_3": "还是很僵，但下巴能动一点了。",
+    "UI_trait_EHR_BloodTypeONeg": "血型：O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "你的血型是O-。你只能接受O-型血，但任何人都可以接受你的血。基因治疗成功率：95%%。",
+    "UI_trait_EHR_BloodTypeOPos": "血型：O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "你的血型是O+。你可以接受O-和O+型血。基因治疗成功率：85%%。",
+    "UI_trait_EHR_BloodTypeANeg": "血型：A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "你的血型是A-。你可以接受O-和A-型血。基因治疗成功率：75%%。",
+    "UI_trait_EHR_BloodTypeAPos": "血型：A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "你的血型是A+。你可以接受O-、O+、A-和A+型血。基因治疗成功率：65%%。",
+    "UI_trait_EHR_BloodTypeBNeg": "血型：B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "你的血型是B-。你可以接受O-和B-型血。基因治疗成功率：75%%。",
+    "UI_trait_EHR_BloodTypeBPos": "血型：B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "你的血型是B+。你可以接受O-、O+、B-和B+型血。基因治疗成功率：65%%。",
+    "UI_trait_EHR_BloodTypeABNeg": "血型：AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "你的血型是AB-。你可以接受O-、A-、B-和AB-型血。基因治疗成功率：50%%。",
+    "UI_trait_EHR_BloodTypeABPos": "血型：AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "你的血型是AB+。你可以接受任何血型的血。基因治疗成功率：40%%。"
 }

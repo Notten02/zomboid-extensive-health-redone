@@ -83,8 +83,8 @@ Watch Required* turns the requirement off.
 
 - Blood volume is a pool of **5000 mL**. Bleeding wounds drain it, faster on the neck, groin and torso.
 - Falling blood brings growing penalties, blackouts at the lowest stage, and death.
-- **Eight blood types.** Blood bags carry a type and **spoil** unless frozen (stale after about one warm hour, rotten
-  after two).
+- **Eight blood types.** Each character rolls one, or picks it with a **blood type trait** (see Professions and traits).
+  Blood bags carry a type and **spoil** unless frozen (stale after about one warm hour, rotten after two).
 - You can **draw your own blood** (it costs blood and a bit of endurance), give **saline**, use **IV kits**, and
   **transfuse** yourself or another player. **Incompatible blood** triggers an immediate reaction and then **AHTR**. You
   learn type compatibility from the **Blood Types flyer** or at **First Aid 8**.
@@ -159,6 +159,22 @@ The Knox infection is never taught by radio.
 - Both start knowing the homemade medicine, tea, syringe, IV kit and blood bag recipes.
 - **Patient Zero:** a character trait (cost 20) that gives immunity to Knox infection. It can be turned off for a server
   with the sandbox option *Patient Zero Trait Disabled*.
+- **Blood type traits:** pick your blood type instead of rolling it. You can take only one. The cost depends on how
+  useful the type is: which blood bags you can receive, and your Gene Therapy odds.
+
+  | Trait | Cost | Can receive | Gene Therapy |
+  |---|---|---|---|
+  | Blood Type: O+ | 4 | O-, O+ | 85% |
+  | Blood Type: A+ | 4 | O-, O+, A-, A+ | 65% |
+  | Blood Type: O- | 3 | O- only (anyone can receive yours) | 95% |
+  | Blood Type: B+ | 3 | O-, O+, B-, B+ | 65% |
+  | Blood Type: AB+ | 3 | every type | 40% |
+  | Blood Type: A- | 2 | O-, A- | 75% |
+  | Blood Type: B- | 2 | O-, B- | 75% |
+  | Blood Type: AB- | 1 | O-, A-, B-, AB- | 50% |
+
+  They can be turned off for a server with the sandbox option *Disable Blood Type Traits*: every character then rolls a
+  random type, and characters who already picked one keep it.
 
 ## Crafting and the wild
 

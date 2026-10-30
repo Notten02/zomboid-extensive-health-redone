@@ -208,5 +208,7 @@
     "Sandbox_EHR_ImmunityRecoveryRate": "Velocidade de recuperação imunológica",
     "Sandbox_EHR_ImmunityRecoveryRate_tooltip": "Ajusta a velocidade com que a pontuação do sistema imunológico sobe até o alvo atual. 1.0 = padrão.",
     "Sandbox_EHR_ImmunityDeclineRate": "Velocidade de queda imunológica",
-    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Ajusta a velocidade com que a pontuação do sistema imunológico cai até o alvo atual. 1.0 = padrão."
+    "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Ajusta a velocidade com que a pontuação do sistema imunológico cai até o alvo atual. 1.0 = padrão.",
+    "Sandbox_EHR_BloodTypeTraitsDisabled": "Desativar traços de tipo sanguíneo",
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Quando ativado, os traços de tipo sanguíneo ficam ocultos na criação do personagem e cada personagem recebe um tipo sanguíneo aleatório. Personagens que já escolheram um o mantêm."
 }

@@ -2541,5 +2541,21 @@
     "UI_EHR_Ambient_Tetanus_3_3": "Спину выгибает, и я не могу это остановить.",
     "UI_EHR_Ambient_Tetanus_4_1": "Спазмы случаются реже.",
     "UI_EHR_Ambient_Tetanus_4_2": "Мышцы постепенно расслабляются.",
-    "UI_EHR_Ambient_Tetanus_4_3": "Всё ещё сковано, но челюстью уже немного двигаю."
+    "UI_EHR_Ambient_Tetanus_4_3": "Всё ещё сковано, но челюстью уже немного двигаю.",
+    "UI_trait_EHR_BloodTypeONeg": "Группа крови: O-",
+    "UI_trait_EHR_BloodTypeONegDesc": "Ваша группа крови — O-. Вам можно переливать только кровь O-, но ваша кровь подходит всем. Шанс успеха генной терапии: 95%%.",
+    "UI_trait_EHR_BloodTypeOPos": "Группа крови: O+",
+    "UI_trait_EHR_BloodTypeOPosDesc": "Ваша группа крови — O+. Вам можно переливать кровь O- и O+. Шанс успеха генной терапии: 85%%.",
+    "UI_trait_EHR_BloodTypeANeg": "Группа крови: A-",
+    "UI_trait_EHR_BloodTypeANegDesc": "Ваша группа крови — A-. Вам можно переливать кровь O- и A-. Шанс успеха генной терапии: 75%%.",
+    "UI_trait_EHR_BloodTypeAPos": "Группа крови: A+",
+    "UI_trait_EHR_BloodTypeAPosDesc": "Ваша группа крови — A+. Вам можно переливать кровь O-, O+, A- и A+. Шанс успеха генной терапии: 65%%.",
+    "UI_trait_EHR_BloodTypeBNeg": "Группа крови: B-",
+    "UI_trait_EHR_BloodTypeBNegDesc": "Ваша группа крови — B-. Вам можно переливать кровь O- и B-. Шанс успеха генной терапии: 75%%.",
+    "UI_trait_EHR_BloodTypeBPos": "Группа крови: B+",
+    "UI_trait_EHR_BloodTypeBPosDesc": "Ваша группа крови — B+. Вам можно переливать кровь O-, O+, B- и B+. Шанс успеха генной терапии: 65%%.",
+    "UI_trait_EHR_BloodTypeABNeg": "Группа крови: AB-",
+    "UI_trait_EHR_BloodTypeABNegDesc": "Ваша группа крови — AB-. Вам можно переливать кровь O-, A-, B- и AB-. Шанс успеха генной терапии: 50%%.",
+    "UI_trait_EHR_BloodTypeABPos": "Группа крови: AB+",
+    "UI_trait_EHR_BloodTypeABPosDesc": "Ваша группа крови — AB+. Вам можно переливать кровь любой группы. Шанс успеха генной терапии: 40%%."
 }

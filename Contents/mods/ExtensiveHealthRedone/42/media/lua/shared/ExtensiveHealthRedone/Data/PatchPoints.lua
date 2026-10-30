@@ -49,10 +49,11 @@ return {
     -- Reading: the Kentucky Herald, July 16 1993 unlocks Knox knowledge (Server/Knox); disease flyers and the Wild
     -- Plants guide unlock their knowledge (Server/Flyers).
     { name = "readBookComplete", path = "ISReadABook.complete", side = "server" },
-    -- Character creation: PatientZeroTraitDisabled hides the Patient Zero trait (Client/PatientZero).
+    -- Character creation: PatientZeroTraitDisabled hides the Patient Zero trait (Client/PatientZero),
+    -- BloodTypeTraitsDisabled the blood type traits (Client/BloodTypeTraits).
     { name = "traitListPopulated", path = "CharacterCreationProfession.populateTraitList", side = "client" },
-    -- A custom sandbox is saved after the profession screen is built; the trait lists are rebuilt then so Patient Zero
-    -- disappears at once (Client/PatientZero).
+    -- A custom sandbox is saved after the profession screen is built; the trait lists are rebuilt then so hidden traits
+    -- disappear at once (Client/CreationTraits).
     { name = "sandboxVarsSet", path = "SandboxOptionsScreen.setSandboxVars", side = "client" },
     -- The character window (Client/CharacterWindow): our EHR Monitor and Immune System tabs are added after vanilla's
     -- views; with PrimaryHealthPanel on, a toggle of vanilla's Health view (the H key, the heart button) toggles the
