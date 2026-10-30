@@ -1,31 +1,30 @@
--- The Last Prescription, Amelie Crowe's station on 47.0 MHz (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md
--- Part C). Constants and the rotation tables; Radio/Station has the rules, Server/Radio airs it.
+-- The Last Prescription, Amelie Crowe's station on 47.0 MHz. Constants and the rotation tables; Radio/Station has the
+-- rules, Server/Radio airs it.
 --
--- From v0.9 sv/EHR_Radio.lua:15-25 (name, uuid, frequency, category, air counter) and sv/EHR_RadioMessages.lua (colours
--- :8-14, 21 morning tips, 22 story episodes, 20 disease files :415-556). The text is ours to translate now: every line
--- is a UI_EHR_Radio_* key (W35, decided 2026-10-14) with v0.9's typos fixed; the profanity in tip 5 stays.
+-- 21 morning tips, 22 story episodes and 20 disease files. Every line is a UI_EHR_Radio_* key, so it can be
+-- translated; the profanity in tip 5 stays.
 --   UI_EHR_Radio_Intro_{Morning,Afternoon,Evening}
 --   UI_EHR_Radio_Tip_<n>_<line>, UI_EHR_Radio_Story_<n>_<line>
 --   UI_EHR_Radio_File_{Title,Cause,Symptoms,Treatment,WriteDown} (each takes %1)
 --   UI_EHR_Radio_File_<id>_{Cause,Symptoms,Treatment}; the file's name is UI_EHR_Disease_<id>, so corpse sickness is
---   "Corpse Exposure Illness" on air (W4; v0.9 said "Putrefaction Sickness")
+--   "Corpse Exposure Illness" on air
 --
--- Decisions (2026-10-14): 47.0 MHz stays, so only HAM radios, the ManPack and walkie-talkies 3-5 can tune it. The story
+-- On 47.0 MHz only HAM radios, the ManPack and walkie-talkies 3-5 can tune it. The story
 -- advances only when an episode airs and the last episode (the loop recording) repeats after 22.
 
 local Radio = {}
 
 Radio.NAME = "The Last Prescription"
-Radio.UUID = "EHR-LAST-PRESCRIPTION-470"       -- v0.9's, kept
+Radio.UUID = "EHR-LAST-PRESCRIPTION-470"       -- the original mod's, kept
 Radio.FREQUENCY = 47000                        -- vanilla units: kHz
 Radio.CATEGORY = "Emergency"                   -- a ChannelCategory field name
-Radio.AIR_COUNTER_MULTIPLIER = 1.35            -- how long each line stays up (v0.9)
+Radio.AIR_COUNTER_MULTIPLIER = 1.35            -- how long each line stays up
 
 -- Slot hours (game clock) -> slot name.
 Radio.SLOTS = { [9] = "morning", [15] = "afternoon", [21] = "evening" }
 Radio.HOURS = { morning = 9, afternoon = 15, evening = 21 }
 
--- Line colours, r g b (v0.9 RM:8-14).
+-- Line colours, r g b.
 Radio.COLORS = {
     static = { 0.65, 0.65, 0.65 },     -- the intro line
     tip = { 0.50, 0.90, 0.62 },        -- morning text, Treatment
@@ -34,14 +33,14 @@ Radio.COLORS = {
     warning = { 1.00, 0.35, 0.25 },    -- Symptoms
 }
 
--- Lines per 09:00 tip (21 tips; tip n is UI_EHR_Radio_Tip_<n>_1 .. _<count>). v0.9 numbered the last one 22.
+-- Lines per 09:00 tip (21 tips; tip n is UI_EHR_Radio_Tip_<n>_1 .. _<count>).
 Radio.TIP_LINES = { 6, 7, 6, 6, 7, 6, 6, 6, 6, 6, 6, 7, 6, 6, 6, 6, 6, 6, 6, 6, 6 }
 
--- Lines per 15:00 story episode (22 episodes, in order). v0.9 numbered the last two 22 and 23.
+-- Lines per 15:00 story episode (22 episodes, in order).
 Radio.STORY_LINES = { 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6 }
 
 -- 21:00 disease files in airing order (day d airs file ((d - 1) mod 20) + 1). The ids are our knowledge ids. The Knox
--- file never teaches Knox (W16): only the Kentucky Herald does.
+-- file never teaches Knox: only the Kentucky Herald does.
 Radio.FILES = {
     "food_poisoning", "gastroenteritis", "trichinosis", "dysentery", "toxin_poisoning", "corpse_sickness",
     "cadaveric_aspergillosis", "common_cold", "pneumonia", "hypothermia", "heat_exhaustion", "heat_stroke",

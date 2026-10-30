@@ -2,11 +2,10 @@
 -- cures it. Delirium itself changes no stats; it comes in episodes every 30-60 minutes: a hallucinated sound only the
 -- player hears, a strange line, a coloured screen tint, and an unsafe impulse (break a nearby window, shout and draw
 -- zombies, drop the backpack, fire the held gun).
--- From v0.9 EHR_Delirium.lua (docs/porting/phase4/mental-knox-sounds.md, section 1). W31: the server decides the
--- trigger, the schedule and the impulse; the owning client plays the episode (Client/Delirium) and the tint shows in MP
--- too. v0.9 ran it all on the client, where the server's sync wiped it.
+-- The server decides the trigger, the schedule and the impulse; the owning client plays the episode (Client/Delirium),
+-- so the tint shows in MP too.
 --
--- Phase 5 treatment hooks:
+-- Treatment hooks:
 --   p.treatment:active("antipsychotic")   an antipsychotic dose is active: episodes 2.5x further apart, impulses 40%
 --   p.treatment:curing("delirium")        the antipsychotic course (8 doses, 12 h apart) cures it when complete
 
@@ -127,7 +126,7 @@ function Delirium.effects(p, c, dt)
         end
     end
     d.next = d.next - dt
-    -- Asleep or driving: the episode waits and comes once the character is free again (as in v0.9).
+    -- Asleep or driving: the episode waits and comes once the character is free again.
     if d.next > 0 or p.facts.asleep or p.facts.inVehicle then
         return
     end

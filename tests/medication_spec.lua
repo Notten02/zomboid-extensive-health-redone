@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter
 -- state.meds.overdose is false or a record; the tests read it after an overdose.
 ---@diagnostic disable: undefined-field
--- Medication (Phase 5): the database, dose courses, relief, overdose, timed effects, side effects, interactions and
+-- Medication: the database, dose courses, relief, overdose, timed effects, side effects, interactions and
 -- First Aid XP, as pure rules on a test context (tests/support/sim.lua).
 local Data = require("ExtensiveHealthRedone/Medication/Data")
 local Doses = require("ExtensiveHealthRedone/Medication/Doses")
@@ -113,7 +113,7 @@ describe("medication database", function()
         end
     end)
 
-    it("matches the checklist's course and cure times (maintainer, Phase 5)", function()
+    it("has the intended course and cure times", function()
         assert.equal(28, med("ExtensiveHealth.ColdFluTablets").cures.common_cold)
         assert.equal(8, med("ExtensiveHealth.ColdFluTablets").doses)
         assert.equal(48, med("ExtensiveHealth.AntiviralCapsules").cures.gastroenteritis)
@@ -123,9 +123,9 @@ describe("medication database", function()
         assert.equal(72, med("ExtensiveHealth.AlbendazoleInjection").cures.trichinosis)
         assert.equal(24, med("ExtensiveHealth.ChelationKit").cures.toxin_poisoning)
         assert.equal("ivKit", med("ExtensiveHealth.ChelationKit").supply)
-        assert.is_nil(med("Base.PillsBeta").treats)          -- W8: no hypothermia relief
+        assert.is_nil(med("Base.PillsBeta").treats)          -- no hypothermia relief
         assert.is_true(med("Base.Pills").addiction)
-        assert.is_nil(med("ExtensiveHealth.HomemadePainkillers").addiction)   -- W18
+        assert.is_nil(med("ExtensiveHealth.HomemadePainkillers").addiction)   -- not addictive
     end)
 end)
 
@@ -349,6 +349,20 @@ describe("relief", function()
         assert.near(0.3, Provider.new(p.state):relief("pneumonia", "coughing"), 1e-9)
     end)
 
+    it("weakens a category only while both drugs of a pair that says so are active, the lowest factor winning", function()
+        assert.same({}, Interactions.weakened({ antibiotic = true }))
+        assert.same({ antibiotic = 0.5 }, Interactions.weakened({ antibiotic = true, charcoal = true }))
+        assert.has_error(function()
+            Interactions.register("badWeakens", { a = "x", b = "y", line = "k", weakens = { category = "x", factor = 2 } })
+        end)
+        assert.is_nil(Interactions.PAIRS.badWeakens)
+        Interactions.register("specWeakens", { a = "specIron", b = "antibiotic", line = "k",
+            weakens = { category = "antibiotic", factor = 0.25 } })
+        assert.same({ antibiotic = 0.25 }, Interactions.weakened({ antibiotic = true, charcoal = true, specIron = true }))
+        Interactions.PAIRS.specWeakens = nil
+        Interactions.IDS = require("ExtensiveHealthRedone/Core/Tables").sortedKeys(Interactions.PAIRS)
+    end)
+
     it("reports active flags only while the dose lasts", function()
         local p = context()
         take(p, "Base.PillsBeta", { consumed = true })
@@ -443,7 +457,7 @@ describe("timed effects and crashes", function()
         assert.truthy(lucky.state.meds.side.last_chance_severe_headache)
     end)
 
-    it("wakes a blacked-out patient with epinephrine (W6)", function()
+    it("wakes a blacked-out patient with epinephrine", function()
         local p = context()
         p.state.blood.blackout = true
         take(p, "ExtensiveHealth.Epinephrine")

@@ -1,5 +1,5 @@
 -- What the importer needs to know about the original mod's player modData (Extensive Health Rework Evolved v0.9,
--- internal version 2.8.1). The full key inventory and formats are in docs/porting/old-moddata-keys.md.
+-- internal version 2.8.1).
 
 return {
     MOD_ID = "ExtensiveHealthReworkEvolved",
@@ -8,8 +8,8 @@ return {
     -- the import. The original's own 14-key check missed knowledge-only characters.
     KEY_PREFIX = "EHR_",
 
-    -- Knowledge ids the original could store (EHR_DiseaseFlyers.lua:45-71), less tuberculosis and flu: both diseases
-    -- and their flyers are gone (W1, W2), so that knowledge is reported as unknown and dropped.
+    -- Knowledge ids the original could store, less tuberculosis and flu: both diseases and their flyers are gone, so
+    -- that knowledge is reported as unknown and dropped.
     KNOWLEDGE_IDS = {
         ahtr = true, blood_types = true, common_cold = true, concussion = true, delirium = true, insomnia = true,
         pneumonia = true, food_poisoning = true, gastroenteritis = true, dysentery = true,
@@ -19,8 +19,8 @@ return {
         cellulitis = true, knox_infection = true,
     },
 
-    -- The original's id normaliser compacted ids (no spaces, _ - ( ), lower case) and looked them up here
-    -- (EHR_DiseaseFlyers.lua:82-184). Applied to every imported knowledge id.
+    -- The original's id normaliser compacted ids (no spaces, _ - ( ), lower case) and looked them up here. Applied to
+    -- every imported knowledge id.
     COMPACT_ALIASES = {
         ahtr = "ahtr", acutehemolytictransfusionreaction = "ahtr",
         bloodtype = "blood_types", bloodtypes = "blood_types",

@@ -1,7 +1,7 @@
 -- Reports fall and vehicle-crash damage to the server for the concussion check (Diseases/Concussion). Vanilla only
--- raises OnPlayerGetDamage for local players, so the owning client sees it first. The report only speeds things up
--- (Phase 9, SA-4): the server also notices falls and crashes itself, takes the kind from its own facts, and looks for
--- real trauma on the body before it rolls.
+-- raises OnPlayerGetDamage for local players, so the owning client sees it first. The report only speeds things up:
+-- the server also notices falls and crashes itself, takes the kind from its own facts, and looks for real trauma on
+-- the body before it rolls.
 
 local Env = require "ExtensiveHealthRedone/Game/Env"
 local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"

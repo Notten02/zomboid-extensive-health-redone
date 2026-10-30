@@ -1,10 +1,9 @@
 -- Toxin poisoning: from eating anything with a poison value (poisonous mushrooms, berries, other toxic food). Always
 -- contracted, no roll. Bitter taste (incubation), nausea and dizziness, then dangerous vomiting, weakness, vision blur
--- and (mushrooms) lethal health loss at stage 3, then recovery. From v0.9 D:255-288, :3107-3198, :4301-4458 and
--- EHR_ToxinVision.lua; timings follow the guide (W11: 1-4 h, 1-4 days, scaled by DiseaseSpeed; v0.9's per-source
--- timings are dropped). Severity still depends on the source.
+-- and (mushrooms) lethal health loss at stage 3, then recovery. Incubation 1-4 h, then 1-4 days, scaled by
+-- DiseaseSpeed whatever the source; the severity depends on the source.
 --
--- Treatment (Phase 5): cure Activated Charcoal / Homemade (about 12 h), Chelation Kit (W7, undecided).
+-- Treatment: cure Activated Charcoal / Homemade (about 12 h), Chelation Kit.
 -- Relief: Anti-Nausea, Electrolyte Powder.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Food/Data"
@@ -15,7 +14,7 @@ local ID = "toxin_poisoning"
 
 local TOXIN_MULT = { mushroom = 1.20, berry = 0.75, toxin = 0.95 }
 
--- Per v0.9 engine tick.
+-- Per engine check (Data TICK).
 local ROWS = {
     [2] = { drain = 0.007, floor = 0.70, curedFloor = 0.86, thirst = 0.0009, fatigue = 0.22, fatigueStep = 0.0025,
             vomit = 0.0025, dizzy = 0.002 },
@@ -24,10 +23,10 @@ local ROWS = {
             pain = 12, mushroomPain = 22, vomit = 0.007, dizzy = 0.005 },
     [4] = { drain = 0.003, floor = 0.82, curedFloor = 0.90, thirst = 0.00035, vomit = 0.0007, dizzy = 0.0005 },
 }
-local VOMIT_COOLDOWN = 9.6      -- game minutes (v0.9 0.16 h)
-local DIZZY_COOLDOWN = 12       -- game minutes (v0.9 0.20 h)
+local VOMIT_COOLDOWN = 9.6      -- game minutes
+local DIZZY_COOLDOWN = 12       -- game minutes
 -- Vision: a dizzy spell blurs for 5-10 minutes; at stage 3 recurring episodes of 10-20 minutes, 25-45 minutes apart,
--- the first at once (v0.9 EHR_ToxinVision.lua).
+-- the first at once.
 local BLUR_TOXIN = 1.0
 local BLUR_DIZZY = 0.6
 
@@ -54,7 +53,7 @@ local def = {
     onEnd = Common.onEnd,
 }
 
--- Severity by source and poison power (v0.9 GetPoisonSeverity).
+-- Severity by source and poison power.
 function def.poisonSeverity(toxinType, power)
     local sev
     if toxinType == "mushroom" then
@@ -145,7 +144,7 @@ function def.effects(p, c, dt, curing)
     if not curing then
         Common.nausea(p, ID, c, dt, m)
     end
-    -- v0.9: mushrooms do 0.45 + 1.10 x severity every 0.35 h at stage 3 with no regeneration; other toxins don't.
+    -- Mushrooms do 0.45 + 1.10 x severity every 0.35 h at stage 3 with no regeneration; other toxins don't.
     if c.stage == 3 and mushroom and not curing then
         Common.drain(p, ID, c, dt, 0.45 + 1.10 * sev, 21, 15, 0.012 * sev)
     end

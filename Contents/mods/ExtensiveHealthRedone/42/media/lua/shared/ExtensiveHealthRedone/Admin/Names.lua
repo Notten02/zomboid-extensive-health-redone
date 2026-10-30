@@ -7,8 +7,8 @@
 --
 -- Tiers, the first that finds anyone decides: the exact username, then the exact display name or character name
 -- ("Forename Surname"), then a part of the username. Case is ignored, surrounding spaces and one pair of double quotes
--- are stripped. Unlike v0.9, players are counted (not names), several exact name matches are reported as ambiguous
--- instead of the first one winning, and a full character name can match.
+-- are stripped. Players are counted (not names), several exact name matches are reported as ambiguous instead of the
+-- first one winning, and a full character name can match.
 
 local Names = {}
 

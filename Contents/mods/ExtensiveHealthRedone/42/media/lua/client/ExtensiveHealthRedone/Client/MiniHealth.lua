@@ -1,9 +1,9 @@
--- Mini Health Panel companion (Phase 10, W44): a small "EHR Status" panel docked beside Mini Health Panel's wound
--- diagram (blood, infected wounds, sepsis, worst illness; UI/MiniHealth). It follows the host panel's position,
--- visibility and fade, and docks left when the right side would leave the screen. Optional mod, id MiniHealthPanel,
--- checked against v1.6.1.42 (its 42/ folder, versionMin 42.13): it keeps one global `mhpHandle` (an ISPanel, created at OnCreatePlayer for the first local
--- player, player available through mhpHandle:getPlayer()). Without the mod this file does nothing. The data is the
--- mirror, so it works in MP too (v0.9's was single player only).
+-- Mini Health Panel companion: a small "EHR Status" panel docked beside Mini Health Panel's wound diagram (blood,
+-- infected wounds, sepsis, worst illness; UI/MiniHealth). It follows the host panel's position, visibility and fade,
+-- and docks left when the right side would leave the screen. Optional mod, id MiniHealthPanel, checked against
+-- v1.6.1.42 (its 42/ folder, versionMin 42.13): it keeps one global `mhpHandle` (an ISPanel, created at
+-- OnCreatePlayer for the first local player, player available through mhpHandle:getPlayer()). Without the mod this
+-- file does nothing. The data is the mirror, so it works in MP too.
 
 require "ISUI/ISPanel"
 

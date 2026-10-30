@@ -1,26 +1,22 @@
 -- World loot: which EHR items go into which vanilla 42.21 distribution list, and at what weight. Pure data; the
 -- builder (Loot/Build) turns it into one entry per item per list, the writer (Loot/Apply) puts it into the game's
--- tables, and Server/Loot runs both at OnPreDistributionMerge (docs/porting/phase8/loot-distribution.md).
+-- tables, and Server/Loot runs both at OnPreDistributionMerge.
 --
--- Numbers are v0.9's (EHR_Distributions.lua, EHR_MedicineStorageBoxDistribution.lua) unless marked "ours". Changes
--- from v0.9 (maintainer decisions 2026-10-14, spec section 13 defaults):
---   * Tuberculosis items are gone (W1): no TBAntibiotics, no tuberculosis flyer. Flu and Knox flyers (W2, W3) are
---     deleted too. Crafted-only items never spawn.
---   * One entry per item per list: v0.9's accidental doubles (bandages on pharmacy shelves, the clinic's
---     Furosemide/psych drugs/Permethrin/saline, the army saline alias) are summed into one weight (bug L3).
---     Overlapping pools (a list's own pool plus the clinical pool, say) are summed by the builder.
---   * No aliases and no dead lists: MedicalStorageBlood's block is folded into MedicalStorageOutfit (pool
---     hospitalBlood, replacing its hand-written blood subset); AmbulanceMedical's block is dropped (the ambulance
---     trunk carries all of it); ArmySurplusMedical's entries are written into ArmyStorageMedical directly (L1, L2).
---   * Plain Epinephrine (W6) in hospital and ambulance loot, at the spec's suggested weights (ours).
---   * Police storage rooms, evidence lockers and SWAT truck beds get the military high-value pool x 0.3 (maintainer).
+--   * No tuberculosis items, and no tuberculosis, flu or Knox flyers. Crafted-only items never spawn.
+--   * One entry per item per list. Overlapping pools (a list's own pool plus the clinical pool, say) are summed by the
+--     builder.
+--   * No aliases and no dead lists: the blood block is folded into MedicalStorageOutfit (pool hospitalBlood);
+--     AmbulanceMedical gets nothing (the ambulance trunk carries all of it); the army surplus entries are written into
+--     ArmyStorageMedical directly.
+--   * Plain Epinephrine in hospital and ambulance loot.
+--   * Police storage rooms, evidence lockers and SWAT truck beds get the military high-value pool x 0.3.
 --   * Clinical drugs stay in clinics, offices, hospital rooms, medical storage, the army bunker and story safehouses;
 --     household clinical leftovers and FridgeMedical (which also fills school-lab fridges) are dropped.
 --   * StoreShelfMedical (also gas-station and convenience-store shelves) loses Antipsychotics, DORA and
 --     Buprenorphine; pharmacies still get them from MedicalClinicDrugs (pharmacy counter and storage).
 --   * MedicationLootMultiplier scales every medication and medical supply, blood bags, saline, empty bags and the
 --     Medicine Storage Box (spawn and contents) included. Flyers and recipe guides are unscaled; watches follow
---     MedicalWatchLootMultiplier (L4).
+--     MedicalWatchLootMultiplier.
 --
 -- Shapes:
 --   pools[name]   = { scale = "med" | "lit", items = { [item] = weight } }   ("lit": unscaled literature)
@@ -33,12 +29,12 @@
 --     gate     a boolean sandbox option that must be on for this contribution (HouseholdPrescriptionLoot)
 --     front    the contribution's items go first in the list (medical bags: trauma gear wins limited capacity)
 --     minRolls the list's rolls are raised to this, only when it got entries (never at multiplier 0)
---   roomProcs     vanilla procedural lists added to raw room containers (spec 1.3; adds vanilla loot there too)
---   box           the Medicine Storage Box's own contents, SuburbsDistributions.MedicineStorageBox (spec 7)
---   watch         the vanilla item whose entries the medical watch mirrors (spec 8; Left only, vanilla has no Right)
+--   roomProcs     vanilla procedural lists added to raw room containers (adds vanilla loot there too)
+--   box           the Medicine Storage Box's own contents, SuburbsDistributions.MedicineStorageBox
+--   watch         the vanilla item whose entries the medical watch mirrors (Left only, vanilla has no Right)
 -- Item names without a module are ExtensiveHealth items.
 
--- Blood bag loot rarity (v0.9 DI:405-414): O+ most common, AB- rarest. Not the character blood-type weights (Q13).
+-- Blood bag loot rarity: O+ most common, AB- rarest. Not the character blood-type weights.
 local bloodRarity = {
     BloodBagOPos = 8, BloodBagAPos = 7, BloodBagBPos = 3, BloodBagONeg = 2,
     BloodBagANeg = 2, BloodBagBNeg = 1, BloodBagABPos = 1, BloodBagABNeg = 0.5,
@@ -56,7 +52,7 @@ local function med(items)
 end
 
 local pools = {
-    -- Pharmacy and general-store medical shelves (StoreShelfMedical). Bandages and ice packs: v0.9's two adds summed.
+    -- Pharmacy and general-store medical shelves (StoreShelfMedical).
     pharmacyShelf = med({
         ColdFluTablets = 3.5, AntipyreticTablets = 3.5, CoughSyrup = 2.5, CoughSuppressant = 2, AntiNauseaTablets = 2.5,
         AntiDiarrheal = 2.5, AntiInflammatory = 3.5, ElectrolytePowder = 2.5, AntisepticCream = 3.5,
@@ -75,8 +71,7 @@ local pools = {
         AntiInflammatory = 3, ElectrolytePowder = 2, AntisepticCream = 3, SterilizedBandages = 2, AlchoholicBandage = 1,
         InstantIcePack = 1, TopicalPermethrin = 1,
     }),
-    -- Clinics and pharmacy counters (MedicalClinicDrugs). v0.9's doubled adds summed: Furosemide 1 + 3,
-    -- Antipsychotics 2 + 4, DORA 1.5 + 4, Buprenorphine 1.5 + 4, Permethrin 2 + 4, Saline 3 + 4. Rare blood bags.
+    -- Clinics and pharmacy counters (MedicalClinicDrugs). Rare blood bags.
     clinic = med(withBlood({
         PrescriptionAntibiotics = 10, BroadSpectrumAntibiotics = 8, AntiviralCapsules = 5, AntifungalTablets = 3,
         OralRehydrationKit = 5, AntibioticOintment = 6, InstantIcePack = 5, Syringe = 8, Furosemide = 4,
@@ -84,7 +79,7 @@ local pools = {
         TopicalPermethrin = 6, SterilizedBandages = 6, AlchoholicBandage = 4, SalineBag = 7, IVFluids = 2,
         EmptyBloodBag = 4, WarmingPack = 0.2,
     }, 0.3)),
-    -- Medical and hospital storage (MedicalStorageDrugs). TB drugs dropped (W1). Epinephrine 1.0 (W6, ours).
+    -- Medical and hospital storage (MedicalStorageDrugs). Epinephrine 1.0.
     storage = med({
         ColdFluTablets = 7, AntipyreticTablets = 6, CoughSyrup = 6, ElectrolytePowder = 6, BronchodilatorInhaler = 4,
         AntiNauseaTablets = 6, AntiInflammatory = 7, MuscleRelaxants = 5, NitricOxideBooster = 3, Syringe = 10,
@@ -94,7 +89,7 @@ local pools = {
         BroadSpectrumAntibiotics = 8, IVKit = 5, IVFluids = 2, SalineBag = 6, TopicalPermethrin = 3,
         BloodBagONeg = 1, BloodBagOPos = 2, BloodBagAPos = 2, BloodBagBPos = 1, WarmingPack = 0.35, Epinephrine = 1.0,
     }),
-    -- Large hospital storage (MedicalStorageOutfit): the best civilian clinical source. Epinephrine 2.4 (W6, ours).
+    -- Large hospital storage (MedicalStorageOutfit): the best civilian clinical source. Epinephrine 2.4.
     hospital = med({
         IVAntibiotics = 3.6, IVMetronidazole = 2.4, IVAmphotericin = 2.4, IVCiprofloxacin = 2.4, IVVancomycin = 2.4,
         IVFluids = 4.8, EmergencySepsisKit = 2.4, CorticosteroidInjection = 2.4, RespiratorySupportKit = 2.4,
@@ -102,24 +97,23 @@ local pools = {
         Furosemide = 3, Antipsychotics = 2, DualOrexinReceptor = 2, Buprenorphine = 2, IVKit = 7, Syringe = 10,
         SalineBag = 7, SterilizedBandages = 8, AlchoholicBandage = 5, InstantIcePack = 4, Epinephrine = 2.4,
     }),
-    -- v0.9's dead MedicalStorageBlood block, folded into large hospital storage (Q5).
+    -- Blood bags, saline and IV fluids for large hospital storage.
     hospitalBlood = med(withBlood({ SalineBag = 6, IVFluids = 5, EmptyBloodBag = 8 }, 1)),
-    -- Prescription leftovers in offices, hospital rooms and medical cabinets (v0.9 secondary pool, no TB).
+    -- Prescription leftovers in offices, hospital rooms and medical cabinets.
     secondary = med({
         PrescriptionAntibiotics = 4, AntiviralCapsules = 1.5, AntifungalTablets = 1, AntiparasiticPills = 0.7,
         AntibioticOintment = 2, BroadSpectrumAntibiotics = 3, OralRehydrationKit = 1.5, Furosemide = 1,
         Antipsychotics = 0.8, DualOrexinReceptor = 0.8, Buprenorphine = 0.8, TetanusAntitoxin = 0.7,
         TopicalPermethrin = 1,
     }),
-    -- Clinical drugs and IV gear (v0.9 clinical pool).
+    -- Clinical drugs and IV gear.
     clinical = med({
         IVAntibiotics = 2.4, IVMetronidazole = 1.5, IVAmphotericin = 0.8, IVCiprofloxacin = 1.5, IVVancomycin = 1.2,
         IVFluids = 3, EmergencySepsisKit = 1.2, CorticosteroidInjection = 1.5, RespiratorySupportKit = 1.5,
         ChelationKit = 0.8, AlbendazoleInjection = 0.8, TetanusImmunoglobulin = 1.2, LastChanceEpinephrine = 0.7,
         IVKit = 3, Syringe = 4, SalineBag = 3,
     }),
-    -- The guide's military / police high-value list (v0.9 ArmyStorageMedical plus the ArmySurplusMedical alias,
-    -- saline 5 + 7 summed). Combat stimulants are separate (combat).
+    -- The guide's military / police high-value list. Combat stimulants are separate (combat).
     military = med(withBlood({
         SalineBag = 12, EmptyBloodBag = 6, IVAntibiotics = 5, IVCiprofloxacin = 3, IVFluids = 3,
         EmergencySepsisKit = 2, CorticosteroidInjection = 2, RespiratorySupportKit = 2, TetanusImmunoglobulin = 2,
@@ -127,7 +121,7 @@ local pools = {
         AlchoholicBandage = 4, InstantIcePack = 3,
     }, 0.7)),
     combat = med({ CombatStimulants = 1 }),
-    -- Plain Epinephrine (W6) for hospital rooms; the other lists carry it in their own pools.
+    -- Plain Epinephrine for hospital rooms; the other lists carry it in their own pools.
     epinephrine = med({ Epinephrine = 1 }),
     warming = med({ WarmingPack = 1 }),
     box = med({ MedicineStorageBox = 1 }),
@@ -141,7 +135,7 @@ local pools = {
         AntibioticOintment = 2, OralRehydrationKit = 1.5, BronchodilatorInhaler = 1.5, PrescriptionAntibiotics = 0.8,
         IVKit = 0.5, CorticosteroidInjection = 0.3, RespiratorySupportKit = 0.3,
     }),
-    -- Ambulance glove box, seats and trunk. Epinephrine 0.5 / 1 / 4 (W6, ours); the box (v0.9 BX) included.
+    -- Ambulance glove box, seats and trunk. Epinephrine 0.5 / 1 / 4; the box included.
     ambulanceGlove = med({
         SterilizedBandages = 4, AlchoholicBandage = 2, AntisepticCream = 3, AntiInflammatory = 3,
         AntipyreticTablets = 3, AntiNauseaTablets = 2.5, ElectrolytePowder = 2, BronchodilatorInhaler = 1.5,
@@ -165,7 +159,7 @@ local pools = {
         AlbendazoleInjection = 1.5, IVAmphotericin = 1.5, EmptyBloodBag = 22, Epinephrine = 4,
         MedicineStorageBox = 7,
     }, 0.75)),
-    -- Medical bags: a basic and prescription mix, plus the front-inserted trauma gear. Epinephrine 1.5 (W6, ours).
+    -- Medical bags: a basic and prescription mix, plus the front-inserted trauma gear. Epinephrine 1.5.
     medicalBag = med({
         SterilizedBandages = 18, AlchoholicBandage = 9, AntisepticCream = 14, AntiInflammatory = 10,
         AntipyreticTablets = 10, AntiNauseaTablets = 8, AntiDiarrheal = 7, ElectrolytePowder = 8,
@@ -179,7 +173,7 @@ local pools = {
         IVMetronidazole = 1.5, IVVancomycin = 1.5, TetanusImmunoglobulin = 1.5, ChelationKit = 0.7,
         AlbendazoleInjection = 0.7, IVAmphotericin = 0.5, Epinephrine = 1.5,
     }, 0.35)),
-    -- Houses (weights are multiplied per container below). Household clinical leftovers are dropped (Q3).
+    -- Houses (weights are multiplied per container below). No household clinical leftovers.
     homeCommon = med({
         ColdFluTablets = 0.3, AntipyreticTablets = 0.3, CoughSyrup = 0.2, CoughSuppressant = 0.15,
         AntiNauseaTablets = 0.2, AntiDiarrheal = 0.2, AntiInflammatory = 0.3, AntisepticCream = 0.2,
@@ -214,7 +208,7 @@ local pools = {
             DiseaseFlyer_BloodType = 1.5, MedicalWildPlants = 1.2,
         },
     },
-    -- Recipe guides: v0.9 gave each list its own pair of weights, so each list has its own small pool.
+    -- Recipe guides: each list has its own pair of weights, so its own small pool.
     recipesStorage = { scale = "lit", items = {
         EhrRecipePlantBasedAntibiotics = 1.2, EhrRecipeUltimateCraftGuide = 0.525 } },
     recipesClinic = { scale = "lit", items = {
@@ -266,7 +260,7 @@ local targets = {
     { kind = "proc", list = "ArmyStorageAmmunition", add = { { pool = "combat", mult = 1.5 } } },
     { kind = "proc", list = "ArmyBunkerMedical", add = {
         { pool = "clinical", mult = 0.8 }, { pool = "box", mult = 12 } } },
-    -- Story safehouses (survivor stashes) keep v0.9's small clinical weights.
+    -- Story safehouses (survivor stashes): small clinical weights.
     { kind = "proc", list = "SafehouseMedical", add = { { pool = "clinical", mult = 0.6 } } },
     { kind = "proc", list = "SafehouseMedical_Mid", add = { { pool = "clinical", mult = 0.3 } } },
     { kind = "proc", list = "SafehouseMedical_Late", add = { { pool = "clinical", mult = 0.12 } } },
@@ -367,7 +361,7 @@ return {
     bloodRarity = bloodRarity,
     pools = pools,
     targets = targets,
-    -- Raw medical room containers get vanilla's medical procedural lists (v0.9 DI:390-398, kept per Q15). A
+    -- Raw medical room containers get vanilla's medical procedural lists. A
     -- container that already has its own non-empty item list is left alone.
     roomProcs = {
         { room = "medical", container = "medicine", proc = "MedicalClinicDrugs", min = 0, max = 99, weight = 100 },
@@ -384,7 +378,7 @@ return {
         { room = "oldmedical", container = "medicine", proc = "MedicalClinicTools", min = 0, max = 1, weight = 35 },
     },
     -- The Medicine Storage Box's contents, keyed by its item type: three prescription rolls and one clinical roll
-    -- (vanilla's junk pool, which ItemPicker always processes; v0.9 BX:130-142). Scaled by the multiplier (Q6).
+    -- (vanilla's junk pool, which ItemPicker always processes). Scaled by the multiplier.
     box = {
         type = "MedicineStorageBox",
         rolls = 3,
@@ -402,6 +396,6 @@ return {
             LastChanceEpinephrine = 1,
         },
     },
-    -- The medical watch spawns wherever this vanilla watch does, at its weight x MedicalWatchLootMultiplier (spec 8).
+    -- The medical watch spawns wherever this vanilla watch does, at its weight x MedicalWatchLootMultiplier.
     watch = { source = "Base.WristWatch_Left_DigitalRed", target = "EHRMedicalWatch_Left" },
 }

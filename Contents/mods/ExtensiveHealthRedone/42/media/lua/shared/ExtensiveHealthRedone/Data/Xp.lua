@@ -1,13 +1,11 @@
--- First Aid XP for medical actions (v0.9 s/EHR_SkillXP.lua; docs/porting/phase5/side-effects-interactions-consumption.md
--- section 7), times FirstAidXPMultiplier, none with FirstAidXPEnabled off. Server/Xp awards it.
+-- First Aid XP for medical actions, times FirstAidXPMultiplier, none with FirstAidXPEnabled off. Server/Xp awards it.
 --
--- Fixed against v0.9: a medication cure gives the cure XP (v0.9 gave it only for natural recovery), and a dose gives
--- the "take" XP at most once per medication interval (at least 30 minutes, Medication/Doses), so cheap doses can't be
--- farmed.
+-- A medication cure gives the cure XP as natural recovery does, and a dose gives the "take" XP at most once per
+-- medication interval (at least 30 minutes, Medication/Doses), so cheap doses can't be farmed.
 --
--- Phase 8: a flyer gives XP only when it teaches something new, the Wild Plants guide on its first read, the 09:00
--- radio tip once per broadcast heard, a herb once per herb found. The two wild searches also give Foraging XP
--- (maintainer decision 2026-10-14; v0.9 gave none): one per finished herb search, one per hive or web item.
+-- A flyer gives XP only when it teaches something new, the Wild Plants guide on its first read, the 09:00 radio tip
+-- once per broadcast heard, a herb once per herb found. The two wild searches also give Foraging XP: one per finished
+-- herb search, one per hive or web item.
 
 local Xp = {}
 

@@ -1,5 +1,6 @@
--- Slim debug window, toggled with the debug key (Mod Options, default G). Only available with the sandbox DebugMode option and, in MP, the medicalAdmin
--- permission (Game/Permissions). The server checks both again for every debug command; this gate only hides the UI.
+-- Slim debug window, toggled with the debug key (Mod Options, default G). Only available with the sandbox DebugMode
+-- option and, in MP, the medicalAdmin permission (Game/Permissions). The server checks both again for every debug
+-- command; this gate only hides the UI.
 --
 -- Live status lines show body temperature, the held fever, immunity and the active conditions. Inspect the server
 -- state and the client mirror, skip health-simulation time, force a resync, set blood volume and saline, infect a
@@ -48,7 +49,7 @@ local BUTTONS = {
     -- /ehrfullheal and /ehrreset in chat).
     { label = "Full heal", command = "debug.healAll", args = {} },
     { label = "Reset state", command = "debug.resetState", args = {} },
-    -- Server/DebugItems: watches (one nearly empty), a battery, bags, pills and supplies for the Phase 7 UI.
+    -- Server/DebugItems: watches (one nearly empty), a battery, bags, pills and supplies for trying the UI.
     { label = "Test items", command = "debug.testItems", args = {} },
 }
 
@@ -57,15 +58,12 @@ for _, score in ipairs({ 100, 50, 10 }) do
     BUTTONS[#BUTTONS + 1] = { label = "Immunity " .. score, command = "debug.immunity", args = { score = score } }
 end
 
--- Phase 6 diagnostic (Server/TemperatureProbe): does vanilla keep a TEMPERATURE we write? Logs to console.txt.
-BUTTONS[#BUTTONS + 1] = { label = "Fever probe", command = "debug.feverProbe", args = {} }
-
 -- Weather meters (Server/Weather).
 for _, b in ipairs({ { "Cold meter 100%", "cold", 100 }, { "Heat meter 90%", "heat", 90 }, { "Heat meter 0%", "heat", 0 } }) do
     BUTTONS[#BUTTONS + 1] = { label = b[1], command = "debug.weatherMeter", args = { meter = b[2], percent = b[3] } }
 end
 
--- Phase 8 world content: the 47.0 MHz radio (Server/Radio; "Radio status" and the loot report answer in the
+-- World content: the 47.0 MHz radio (Server/Radio; "Radio status" and the loot report answer in the
 -- output), knowledge (Server/Flyers, Server/Professions), recipes (Server/Recipes), the scalpel (Server/Scalpel) and
 -- loot (Server/Loot).
 for _, b in ipairs({
@@ -93,7 +91,7 @@ for _, b in ipairs({
     BUTTONS[#BUTTONS + 1] = { label = b[1], command = b[2], args = b[3] }
 end
 
--- Phase 9 load test (Server/Perf): counters on/off, the report, and the ghost load (N throwaway copies of this
+-- Load test (Server/Perf): counters on/off, the report, and the ghost load (N throwaway copies of this
 -- player's state for 10 game minutes, in one server tick). Each answers in the output.
 for _, b in ipairs({
     { "Perf on", "debug.perf", { on = true } },

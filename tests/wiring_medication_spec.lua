@@ -227,7 +227,7 @@ insulate("single-player wiring: medication", function()
         assert.equal(xpBefore + 5 * 8 + 3 * 8 + 20, game.xp.patient)
     end)
 
-    it("upgrades a Phase 4 save with an empty medication section", function()
+    it("upgrades a version 3 save, which has no medication section", function()
         local Schema = require("ExtensiveHealthRedone/Core/Schema")
         local old = Schema.new({ int = function(lo) return lo end })
         old.version = 3

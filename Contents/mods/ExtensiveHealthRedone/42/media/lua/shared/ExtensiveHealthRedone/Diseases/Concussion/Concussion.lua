@@ -5,17 +5,15 @@
 --
 -- Detection: a short window in which the server compares the body with how it was just before (head pain or head
 -- damage, new wounds, health lost) and only then rolls. Two things open it:
---   - the server's own facts (Phase 9, SA-4): a drop of at least FALL_Z_DROP floors since the last step outside a
+--   - the server's own facts: a drop of at least FALL_Z_DROP floors since the last step outside a
 --     vehicle (a fall), or a loss of at least CRASH_SPEED_LOSS km/h since the last step in a vehicle (a crash);
 --   - the owning client's report (OnPlayerGetDamage fires for local players only; Client/Concussion ->
 --     concussion.trauma), which only speeds things up. The kind is the server's: in a vehicle now or at the last step
 --     means a crash, otherwise a fall; the client's word is ignored.
--- A report can at worst ask for a roll the body already justifies, and withholding it no longer avoids the roll.
--- From v0.9 EHR_Concussion.lua and EHR_Disease.lua:3811-3906 (docs/porting/phase4/corpse-scabies-concussion.md,
--- section 4). Changes: honours DiseaseSpeed and DiseaseEnabled; detection from vanilla's damage events instead of
--- polling the character's height and vehicle speed.
+-- A report can at worst ask for a roll the body already justifies, and withholding it doesn't avoid the roll.
+-- Honours DiseaseSpeed and DiseaseEnabled.
 --
--- Treatment (Phase 5): no cure. Relief read: "nausea", "sickness", "pain", "inflammation", "dizziness".
+-- Treatment: no cure. Relief read: "nausea", "sickness", "pain", "inflammation", "dizziness".
 
 local Engine = require "ExtensiveHealthRedone/Conditions/Engine"
 local Chance = require "ExtensiveHealthRedone/Core/Chance"
@@ -29,20 +27,20 @@ local Concussion = {}
 
 Concussion.CHANCE = { fall = 0.65, crash = 0.45 }
 Concussion.MULTIPLIER = { fall = "ConcussionFallChanceMultiplier", crash = "ConcussionVehicleChanceMultiplier" }
-Concussion.WINDOW = { fall = 2, crash = 4 }     -- game minutes to see the trauma (ours; v0.9 0.02 h and 0.06 h)
+Concussion.WINDOW = { fall = 2, crash = 4 }     -- game minutes to see the trauma
 Concussion.HISTORY = 3                          -- body snapshots kept (one per step) to compare against
-Concussion.COOLDOWN_FAILED = 1.2                -- game minutes after a failed roll (v0.9 0.02 h)
-Concussion.COOLDOWN_STARTED = 15                -- game minutes after a concussion started (v0.9 0.25 h)
--- Server-side causes (ours, Phase 9). Stairs or a slow stop also match, but open only a window: the roll still
+Concussion.COOLDOWN_FAILED = 1.2                -- game minutes after a failed roll
+Concussion.COOLDOWN_STARTED = 15                -- game minutes after a concussion started
+-- Server-side causes. Stairs or a slow stop also match, but open only a window: the roll still
 -- needs the trauma pattern on the body.
 Concussion.FALL_Z_DROP = 0.9                    -- floors lost between two steps
 Concussion.CRASH_SPEED_LOSS = 20                -- km/h lost between two steps while in a vehicle
 
--- Wound score per part flag (v0.9 getBodySnapshot); severe ones also count separately.
+-- Wound score per part flag; severe ones also count separately.
 local WOUNDS = { bleeding = 2, scratch = 1, cut = 2, burn = 2, bite = 4, deep = 4, glass = 3, bullet = 4 }
 local SEVERE = { bite = true, deep = true, glass = true, bullet = true }
 
--- Trauma thresholds (v0.9 isTraumaticInjury).
+-- Trauma thresholds.
 local TRAUMA = {
     fall = { headPain = 5, partLoss = nil },
     crash = { headPain = 2.5, partLoss = 6 },
@@ -77,7 +75,7 @@ Concussion.def = {
             [1] = { "UI_EHR_Text_JustALittleHeadacheNow", "UI_EHR_Text_AlmostSteadyAgain",
                     "UI_EHR_Text_TheNauseaIsMostlyGone" },
         },
-        every = 384,        -- v0.9: 1 in 10/16/28 every 1800 frames; the middle one
+        every = 384,        -- about 1 in 16 every 1800 frames
     },
 }
 
@@ -151,7 +149,7 @@ local function data(p)
     return d.concussion
 end
 
--- Whether the body shows real trauma since `before` (v0.9 isTraumaticInjury).
+-- Whether the body shows real trauma since `before`.
 function Concussion.traumatic(kind, before, now)
     local rule = TRAUMA[kind]
     local headPainGain = now.headPain - before.headPain

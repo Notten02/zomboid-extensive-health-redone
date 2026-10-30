@@ -2,9 +2,8 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake vanilla screens and tokens are deliberately partial.
 ---@diagnostic disable: missing-fields
--- EHR Doctor and EHR Surgeon (Phase 8, docs/porting/phase8/professions-and-traits.md section 2): the knowledge grant as
--- a pure rule, then on the authority against the fake game; the doctor outfit alias and the Patient Zero trait lists
--- rebuilt after a custom sandbox is set (section 5.3.1).
+-- EHR Doctor and EHR Surgeon: the knowledge grant as a pure rule, then on the authority against the fake game; the
+-- doctor outfit alias and the Patient Zero trait lists rebuilt after a custom sandbox is set.
 local Professions = require("ExtensiveHealthRedone/Data/Professions")
 local Legacy = require("ExtensiveHealthRedone/Data/LegacyEHR")
 local Knowledge = require("ExtensiveHealthRedone/Conditions/Knowledge")

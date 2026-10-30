@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter
 -- Results of calls that return nil on refusal are indexed directly; a nil there fails the test anyway.
 ---@diagnostic disable: need-check-nil
--- The wild searches (Phase 8): the medicinal plant search and the hive and spiderweb search. Pure rules (board,
+-- The wild searches: the medicinal plant search and the hive and spiderweb search. Pure rules (board,
 -- quality, find chance, pools, tree contents, cooldowns, square classification, hive scene) and the server's session
 -- machine (Wild/Search), which is where the command checks live.
 local Sim = require("support/sim")

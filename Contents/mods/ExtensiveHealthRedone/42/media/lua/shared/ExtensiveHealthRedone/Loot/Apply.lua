@@ -4,7 +4,7 @@
 --   tables = { procedural = ProceduralDistributions.list, suburbs = SuburbsDistributions,
 --              vehicles = VehicleDistributions }
 --
--- A list that does not exist is reported, never aliased to another list (bugs L1, L2). Everything written goes into
+-- A list that does not exist is reported, never aliased to another list. Everything written goes into
 -- a record, so Apply.undo can take it back out (the re-apply when the sandbox options turn out to differ, Server/Loot).
 
 local Apply = {}
@@ -119,7 +119,7 @@ local function sortedKeys(t)
 end
 
 -- Mirrors a vanilla item into the medical watch: in every procedural list holding the source (with or without its
--- module), one target entry at the sum of the source's weights x mult (spec 8; vanilla lists the watch twice in two
+-- module), one target entry at the sum of the source's weights x mult (vanilla lists the watch twice in two
 -- store lists, so the sum keeps their intended total). Returns the number of lists.
 function Apply.mirror(procedural, source, target, mult, record)
     if not procedural or mult <= 0 then

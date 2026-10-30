@@ -19,11 +19,11 @@ local log = Env.logger("Corpse")
 
 local Corpse = {}
 
-Corpse.RADIUS = 10              -- tiles, same floor only (v0.9 SEARCH_RADIUS)
-Corpse.SCAN_EVERY = 5 / 60      -- game hours between corpse scans per player (ours; v0.9 scanned every ~4 game min)
+Corpse.RADIUS = 10              -- tiles, same floor only
+Corpse.SCAN_EVERY = 5 / 60      -- game hours between corpse scans per player
 Corpse.AGE = { decomposing = 24, rotten = 48 }      -- hours since death
 Corpse.ENV = { outdoors = 1, indoors = 1.5, smallRoom = 2 }
-Corpse.SMALL_ROOM = 20          -- RoomDef area in squares (v0.9's dead getAreaSquares branch, restored)
+Corpse.SMALL_ROOM = 20          -- RoomDef area in squares
 
 -- Corpses ------------------------------------------------------------------------------------------------------------
 
@@ -153,7 +153,7 @@ Facts.extend("corpses", function(player, facts)
     }
 end)
 
--- Scabies: v0.9 also counted floors named grass, dirt or soil, beyond vanilla's natural-floor prefixes.
+-- Scabies: floors named grass, dirt or soil count as natural ground.
 Facts.extend("ground", function(player, facts)
     local square = player:getCurrentSquare()
     local floor = square and square:getFloor()
@@ -164,9 +164,8 @@ Facts.extend("ground", function(player, facts)
 end)
 
 -- Concussion: head pain and fractures, for the trauma check; height and vehicle speed for the server-side causes
--- (Diseases/Concussion SA-4). Unverified in game: that a dedicated server's getZ follows a fall closely enough, and
--- that its copy of the vehicle reports getCurrentSpeedKmHour (vanilla calls it in server/Vehicles/Vehicles.lua, but
--- the driver's client simulates the vehicle). If either stays flat on the server, the client report still works.
+-- (Diseases/Concussion). A dedicated server's getZ may lag a fall, and the driver's client simulates the vehicle;
+-- where either stays flat on the server, the client's trauma report still works.
 Facts.extend("trauma", function(player, facts)
     local parts = player:getBodyDamage():getBodyParts()
     local vehicle = player:getVehicle()
@@ -187,7 +186,7 @@ end)
 -- Commands -------------------------------------------------------------------------------------------------------------
 
 -- The owning client saw fall or crash damage. The server checks the body itself before rolling, and takes the kind
--- from its own facts (the client's kind is only logged); the server also opens the window by itself (SA-4).
+-- from its own facts (the client's kind is only logged); the server also opens the window by itself.
 Runtime.registry:register("concussion.trauma", {
     args = { kind = { type = "string", oneOf = { fall = true, crash = true } } },
     rate = { count = 2, seconds = 5 },

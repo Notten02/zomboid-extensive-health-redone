@@ -1,6 +1,6 @@
 -- Scalpel Master on game objects, used the same way by the authority (Server/Scalpel) and the owning MP client
 -- (Client/Scalpel). The rules are Items/Scalpel; this file reads the item, its script and the holder, and writes the
--- three weapon fields. Spec: docs/porting/phase8/professions-and-traits.md section 3.5.
+-- three weapon fields.
 --
 -- Both sides compute the same values from the same inputs (the trait, the script item, the held item; vanilla syncs
 -- equipment and traits), so they agree without a packet of ours, whichever side computes a melee hit in 42.21 MP.

@@ -1,15 +1,14 @@
 -- The hive search's scene on the client: the trunk, the hive and webs the server said the tree holds, the bees and
 -- spiders, the start zone, the corridor the hand may move in, and touch tests. Cosmetic and pure (rng passed in);
 -- the server never trusts any of it beyond the residual trust noted in Wild/Search.
--- From v0.9 c/EHR_HiveWebSearch.lua:206-375 (docs/porting/phase8/herbal-and-hive-minigames.md section 7). Change:
--- touches are tested along the hand's whole movement since the last update, not one sample per frame (H18), so a
--- fast mouse can't tunnel through a bee.
+-- Touches are tested along the hand's whole movement since the last update, not one sample per frame, so a fast mouse
+-- can't tunnel through a bee.
 
 local HiveScene = {}
 
 HiveScene.HAND_W = 32               -- the hand sprite
 HiveScene.HAND_HIT = 24             -- its hit box
-HiveScene.DT_MIN = 0.006            -- seconds per update, clamped (v0.9)
+HiveScene.DT_MIN = 0.006            -- seconds per update, clamped
 HiveScene.DT_MAX = 0.055
 HiveScene.JOYPAD_SPEED = 220        -- px/s for the hand on a controller
 
@@ -42,7 +41,7 @@ local function inside(x, y, r)
     return x >= r.x and x <= r.x + r.w and y >= r.y and y <= r.y + r.h
 end
 
--- board: { x, y, w, h } in panel coordinates (v0.9: 24, 112, 612, 390). hive: bool; webs: 0-3.
+-- board: { x, y, w, h } in panel coordinates. hive: bool; webs: 0-3.
 function HiveScene.new(rng, board, hive, webs)
     local tree = { x = board.x + math.floor(board.w * 0.43), y = board.y + 44, w = 110, h = board.h - 56 }
     local scene = {

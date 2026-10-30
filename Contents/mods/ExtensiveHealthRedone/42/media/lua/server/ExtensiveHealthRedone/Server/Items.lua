@@ -60,7 +60,7 @@ end
 
 local syncWarned = false
 
--- Sends an item's modData to its owner on a dedicated server (unverified in game; a failure is logged once).
+-- Sends an item's modData to its owner on a dedicated server (a failure is logged once).
 function Items.syncModData(player, item)
     if not isServer() then
         return

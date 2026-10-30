@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Prepares a COPY of a save made with the original mod (Extensive Health Rework Evolved) for the one-time import into
-# Extensive Health Redone, so the maintainer can try the migration without risking the real save.
+# Extensive Health Redone, so the migration can be tried without risking the real save.
 #
 #   tools/prepare-migration-save.sh [--dry-run] SAVE_NAME
 #

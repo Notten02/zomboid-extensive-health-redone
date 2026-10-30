@@ -11,7 +11,7 @@ local Log = {}
 
 Log.LEVELS = { off = 0, error = 1, warn = 2, info = 3, debug = 4, trace = 5 }
 
-local PREFIX = "[ExtensiveHealthRedone] "
+Log.PREFIX = "[ExtensiveHealthRedone] "
 
 local Logger = {}
 Logger.__index = Logger
@@ -25,8 +25,10 @@ local function levelValue(name)
 end
 
 -- tag: short module name shown in each line. sink: function(line), e.g. print. level: a name from Log.LEVELS.
-function Log.new(tag, sink, level)
-    return setmetatable({ tag = tag, sink = sink, level = levelValue(level or "info") }, Logger)
+-- prefix: the mod name the line starts with, e.g. "[MyAddon] " (default Log.PREFIX).
+function Log.new(tag, sink, level, prefix)
+    return setmetatable({ tag = tag, sink = sink, level = levelValue(level or "info"), prefix = prefix or Log.PREFIX },
+        Logger)
 end
 
 function Logger:setLevel(name)
@@ -45,7 +47,8 @@ local function emit(self, label, value, ...)
     for i = 1, select("#", ...) do
         parts[i] = tostring((select(i, ...)))
     end
-    self.sink(PREFIX .. label .. " " .. self.tag .. ": " .. table.concat(parts, " "))
+    self.sink(self.prefix .. label .. " " .. self.tag .. ": " .. table.concat(parts, " "))
+
 end
 
 function Logger:error(...) emit(self, "ERROR", 1, ...) end

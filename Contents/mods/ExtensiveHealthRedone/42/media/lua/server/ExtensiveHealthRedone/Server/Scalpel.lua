@@ -2,16 +2,11 @@
 -- scalpel at the values Items/Scalpel gives (x9 damage, x100 ConditionLowerChance for a Scalpel Master; the script's
 -- values for anyone else), and puts it back to base when it leaves the hand, on death and on detach. The owning MP
 -- client does the same for its local players (Client/Scalpel), so both sides agree without a packet of ours.
--- Spec: docs/porting/phase8/professions-and-traits.md section 3; maintainer decision 2026-10-14 (keep v0.9's x9 and
--- x100; durability through ConditionLowerChance, main hand only, no modData).
---
--- v0.9 (EHR_Professions.lua:402-554) boosted both hands every tick from OnPlayerUpdate, saved the originals in item
--- modData and restored them from a 120-tick inventory scan of the holder only, so buffed scalpels leaked into the
--- world, and the rescaled condition could be repaired by re-equipping. None of that is kept.
+-- Main hand only, and nothing is kept in the item's modData, so a buffed scalpel never leaks into the world.
 --
 -- When: every tick, one getter per player and an identity compare (the work happens only when the main hand changed);
 -- every simulation step a full pass re-evaluates held scalpels (trait added or removed by an admin); OnEquipPrimary,
--- OnEquipSecondary and OnWeaponSwing where they fire (unverified on a dedicated server; harmless where they don't).
+-- OnEquipSecondary and OnWeaponSwing where they fire (harmless where they don't).
 -- An MP client loads this file too and stops at the first line.
 
 if isClient() then
@@ -31,9 +26,9 @@ local ServerScalpel = {}
 
 local syncWarned = false
 
--- Dedicated server: the owner's copy gets the server's fields too. Unverified which fields syncHandWeaponFields
--- carries (vanilla uses it after attaching weapon parts); the client computes the same values anyway, so this is a
--- cheap extra. Only while the owner still carries the item.
+-- Dedicated server: the owner's copy gets the server's fields too (syncHandWeaponFields, as vanilla after attaching
+-- weapon parts); the client computes the same values anyway, so this is a cheap extra. Only while the owner still
+-- carries the item.
 local function sync(player, item)
     if not isServer() or not player:getInventory():containsRecursive(item) then
         return

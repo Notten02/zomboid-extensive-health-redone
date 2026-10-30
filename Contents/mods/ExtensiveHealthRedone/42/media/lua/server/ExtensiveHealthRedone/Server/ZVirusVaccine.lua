@@ -1,11 +1,12 @@
 -- Zombie Virus Vaccine (B42 port by rEXX, Workshop 3615135168) beside us. Its Knox cure, delay and accidental infection
 -- need nothing from us: they write vanilla's infection and our knox_infection display mirrors vanilla. Three ties (all
--- server side, only while the mod is on; docs/porting/phase10/zombie-virus-vaccine.md):
+-- server side, only while the mod is on):
 --   * its syringe blood draw costs blood (Transfusion.sample) and stamps the drawer's blood type on the sample;
 --   * a finished Knox blood test of it (positive or negative) teaches Knox knowledge (Knox.learnFromBloodTest);
 --   * Knox progress follows the infection timers while it is on (Knox.progress, set in Server/Knox facts).
--- The vaccine mod exposes plain module tables; its own OnClientCommand handler reads their fields at call time, so wrapping
--- a field here works whichever mod loads first. A change to its module names or return values is logged and skipped.
+-- The vaccine mod exposes plain module tables; its own OnClientCommand handler reads their fields at call time, so
+-- wrapping a field here works whichever mod loads first. A change to its module names or return values is logged and
+-- skipped.
 -- An MP client loads this file too and stops at the first line.
 
 if isClient() then
@@ -59,7 +60,7 @@ function ServerVaccine.wrapCollect(logic)
         local refusal = Transfusion.sampleRefusal(state)
         if refusal then
             notice(player, refusal)
-            log:info(key, "refused a blood sample:", refusal)
+            log:debug(key, "refused a blood sample:", refusal)
             return nil
         end
         local before = sampleIds(player)
@@ -76,7 +77,7 @@ function ServerVaccine.wrapCollect(logic)
             for _ = 1, drawn do
                 Runtime.applyNow(key, Transfusion.sample)
             end
-            log:info(key, "gave a blood sample,", drawn * BloodData.SAMPLE_ML, "mL")
+            log:debug(key, "gave a blood sample,", drawn * BloodData.SAMPLE_ML, "mL")
         end
         return result
     end

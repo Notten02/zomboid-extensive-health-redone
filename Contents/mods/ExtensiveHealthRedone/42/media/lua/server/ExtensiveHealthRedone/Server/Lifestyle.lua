@@ -1,4 +1,4 @@
--- Lifestyle: Hobbies as the simulation sees it (Phase 10): facts.lifestyle, a cleaned reading of the player's hygiene,
+-- Lifestyle: Hobbies as the simulation sees it: facts.lifestyle, a cleaned reading of the player's hygiene,
 -- bathing, sitting and yoga (Lifestyle/Pace), which Conditions/Engine turns into faster or slower recovery and
 -- Diseases/Weather/Meters into "a shower counts as bathing for heat". An MP client loads this file too and stops at the
 -- first line.
@@ -8,7 +8,7 @@
 -- real seconds old; in single player the reading comes straight from the player (Game/Lifestyle). Without Lifestyle,
 -- facts.lifestyle stays nil and nothing changes.
 --
--- Trust (Phase 9 audit rule: a client can't be believed): every field is clamped to its range, a shower only counts
+-- Trust (a client can't be believed): every field is clamped to its range, a shower only counts
 -- while the character stands still outside a vehicle, and the whole effect is bounded: the pace is at most +50 % and
 -- the heat meters only get the usual bathing relief. Residual, accepted: a modified client can claim a clean, seated,
 -- yogi character and recover faster. It affects nobody else, and the option to ignore Lifestyle is simply not

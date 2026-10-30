@@ -15,18 +15,22 @@
 --              driven = true with drive(p, c, dt) -> a stage, "recovered" or nil: no timers, the module sets the stage
 --              (hypothermia follows body temperature)
 --   Speech     lines = { stage = { [s] = key }, random = { [s] = { keys } }, every = mean game minutes between random
---              lines at DialogueFrequency Normal, quiet(p, c) -> true mutes random lines }
+--              lines at DialogueFrequency Normal (or { [s] = minutes } by stage), quiet(p, c) -> true mutes random
+--              lines }
 --   Chains     complications = { { stage = s, id = other, chance = 0..1, risk = true (immunity-modified),
 --              untreated = true (only without a curative course), replace = true (this condition ends) } }
 --   Behaviour  onStage(p, c, stage, defs), effects(p, c, dt, curing, defs), effectsInStage1,
 --              onEnd(p, c, reason, defs): the one cleanup path for every way a condition ends ("recovered", "cured",
 --              "complication", "admin", "debug"), blockAfterCureHours
---   Knowledge  knowledge = knowledge id, selfEvident (Conditions/Knowledge)
+--   Knowledge  knowledge = knowledge id, selfEvident, strand = a registered knowledge strand (Conditions/Knowledge)
+--   Elsewhere  alert = false (no Medical Alert moodle), pressure = false | "half" (immune pressure), display (how an
+--              add-on condition is shown); see Conditions/Registration
+
 --   Display    severityHidden = true: the monitor shows no severity word (its symptoms don't scale with severity)
 --   XP         xp = false: ending it gives no First Aid XP (p.xp("cure", id) otherwise)
 --
--- Treatment: while p.treatment:curing(id), a condition holds its stage (the course cures it when it completes, in
--- Phase 5). Untreated, it advances; at the end of its last stage it recovers, unless it persists or is held.
+-- Treatment: while p.treatment:curing(id), a condition holds its stage (the course cures it when it completes).
+-- Untreated, it advances; at the end of its last stage it recovers, unless it persists or is held.
 
 local Tables = require "ExtensiveHealthRedone/Core/Tables"
 local Chance = require "ExtensiveHealthRedone/Core/Chance"
@@ -157,7 +161,7 @@ function Engine.finish(p, defs, id, reason)
     if def and def.onEnd then
         def.onEnd(p, c, reason, defs)
     end
-    -- First Aid XP for getting over it, by medicine or naturally (v0.9 gave none for a medication cure: a bug).
+    -- First Aid XP for getting over it, by medicine or naturally.
     if p.xp and (reason == "cured" or reason == "recovered") and not (def and def.xp == false) then
         p.xp("cure", id)
     end
@@ -214,7 +218,7 @@ function Engine.enterStage(p, defs, id, c, stage)
 end
 
 -- Lifestyle: Hobbies (facts.lifestyle, Server/Lifestyle): a clean, rested, bathed character gets over an illness
--- faster, a filthy one slower. The incubation (stage 1) never moves, as in v0.9.
+-- faster, a filthy one slower. The incubation (stage 1) never moves.
 local function pace(p, c, id)
     local lifestyle = p.facts and p.facts.lifestyle
     if not lifestyle or c.stage < 2 then
@@ -252,7 +256,11 @@ local function randomLine(p, def, c, dt)
     if not pool or #pool == 0 or (lines.quiet and lines.quiet(p, c)) then
         return
     end
-    Speech.maybePick(p, pool, lines.every or 60, dt)
+    local every = lines.every
+    if type(every) == "table" then
+        every = every[c.stage]
+    end
+    Speech.maybePick(p, pool, every or 60, dt)
 end
 
 -- One simulation step for every active condition, in id order.

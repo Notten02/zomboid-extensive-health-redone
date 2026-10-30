@@ -1,7 +1,7 @@
 -- Loads or creates a player's health state in their modData, on the side that owns it.
 --
--- Existing state: upgraded through the schema's migration chain. New character: a fresh state, plus the one-time
--- import when the character carries the original mod's data.
+-- Existing state: upgraded through the schema's migration chain, then each add-on section through its own. New
+-- character: a fresh state, plus the one-time import when the character carries the original mod's data.
 
 local Env = require "ExtensiveHealthRedone/Game/Env"
 local Schema = require "ExtensiveHealthRedone/Core/Schema"
@@ -21,7 +21,13 @@ function PlayerState.load(player, key)
             log:error(key, "state left untouched:", err)
             return nil
         end
+        ok, err = Schema.upgradeSections(state)
+        if not ok then
+            log:error(key, "state left untouched:", err)
+            return nil
+        end
         Schema.fillDefaults(state)
+
         return state
     end
     state = Schema.new(Env.rng)

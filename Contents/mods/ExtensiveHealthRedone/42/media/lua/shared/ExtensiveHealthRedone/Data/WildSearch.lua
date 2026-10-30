@@ -1,13 +1,11 @@
 -- Numbers for the two wild searches: the medicinal plant search (herbal) and the hive and spiderweb search (hive).
--- From v0.9 EHR_HerbalSearch(.Server).lua and EHR_HiveWebSearch(.Server).lua (docs/porting/phase8/
--- herbal-and-hive-minigames.md sections 1-8). Rules: Wild/HerbalBoard, Wild/HiveTree, Wild/SpotCooldowns,
--- Wild/Search; the authority is Server/WildSearch.
+-- Rules: Wild/HerbalBoard, Wild/HiveTree, Wild/SpotCooldowns, Wild/Search; the authority is Server/WildSearch.
 --
--- Maintainer decisions 2026-10-14 (spec section 15): only real bushes outdoors (canBeCut) with v0.9's hash density;
--- one herb per find, two on an Excellent run; Base.LemonGrass added to the common pool, berries at half weight;
--- v0.9's winter multiplier kept; cancelling with no pick is free, after a pick the spot is spent; any intact HANDS
--- item counts as gloves and loses 1 condition per hit; injuries on a hand or forearm; no skill scaling in the hive
--- game; instant retry after a sting; at least 1 s before the first hive grab.
+-- Only real bushes outdoors (canBeCut), at a fixed hash density; one herb per find, two on an Excellent run;
+-- Base.LemonGrass in the common pool, berries at half weight; a winter multiplier; cancelling with no pick is free,
+-- after a pick the spot is spent; any intact HANDS item counts as gloves and loses 1 condition per hit; injuries on a
+-- hand or forearm; no skill scaling in the hive game; instant retry after a sting; at least 1 s before the first hive
+-- grab.
 
 local WildSearch = {}
 
@@ -16,7 +14,7 @@ WildSearch.STORE_TAG = "ExtensiveHealthRedone_WildSearch"
 
 -- Distances in tiles from the player to the searched square's centre, same floor only.
 WildSearch.BEGIN_RANGE = 2.5        -- the walk ends next to the bush or tree
-WildSearch.PLAY_RANGE = 4.5         -- while playing (v0.9: 4.5 on the server)
+WildSearch.PLAY_RANGE = 4.5         -- while playing
 
 WildSearch.herb = {
     -- Who may search: the Wild Medicinal Plants guide read, or First Aid and Foraging both at least this.
@@ -37,7 +35,7 @@ WildSearch.herb = {
     MAX_PICKS = 10,
 
     -- quality = BASE + hits/3 * HIT + skill * SKILL - misses * MISS - hazards * HAZARD, clamped; skill =
-    -- min(1, (First Aid + Foraging) / SKILL_DIVISOR). No "best so far" latching (v0.9 bug H8).
+    -- min(1, (First Aid + Foraging) / SKILL_DIVISOR).
     QUALITY = { BASE = 0.18, HIT = 0.58, SKILL = 0.14, SKILL_DIVISOR = 16, MISS = 0.08, HAZARD = 0.12,
         MIN = 0.05, MAX = 1.0 },
     BANDS = { EXCELLENT = 0.82, GOOD = 0.60, ROUGH = 0.38 },
@@ -64,7 +62,7 @@ WildSearch.herb = {
     -- By 1-based month: Dec-Feb x0.58, Apr-Aug x1.15, Mar and Sep-Nov x0.92.
     SEASON = { 0.58, 0.58, 0.92, 1.15, 1.15, 1.15, 1.15, 1.15, 0.92, 0.92, 0.92, 0.58 },
 
-    -- { fullType, weight }. Berries at half weight (H20); LemonGrass is needed by two medicine recipes.
+    -- { fullType, weight }. Berries at half weight; LemonGrass is needed by two medicine recipes.
     COMMON = {
         { "Base.Plantain", 2 }, { "Base.CommonMallow", 2 }, { "Base.Chamomile", 2 }, { "Base.Marigold", 2 },
         { "Base.Lavender", 2 }, { "Base.WildGarlic2", 2 }, { "Base.LemonGrass", 2 },
@@ -84,7 +82,7 @@ WildSearch.hive = {
     MIN_REACH_S = 1.0,              -- from the session start to the first grab
     MIN_GAP_S = 0.5,                -- between two grabs
     COOLDOWN_HOURS = 48,            -- an empty or emptied tree, game hours
-    FORGET_HOURS = 168,             -- a tree that still holds something, unvisited this long, is forgotten (ours)
+    FORGET_HOURS = 168,             -- a tree that still holds something, unvisited this long, is forgotten
     HONEYCOMB = "ExtensiveHealth.Honeycomb",
     SPIDERWEB = "ExtensiveHealth.Spiderweb",
 }

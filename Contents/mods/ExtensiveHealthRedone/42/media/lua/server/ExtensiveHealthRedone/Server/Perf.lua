@@ -1,4 +1,4 @@
--- Load-test commands (Phase 9) over Runtime.perf (Core/Perf). Debug only: sandbox DebugMode plus medicalAdmin.
+-- Load-test commands over Runtime.perf (Core/Perf). Debug only: sandbox DebugMode plus medicalAdmin.
 --
 --   debug.perf { on }                 on = true starts a new window, false stops counting; no argument toggles
 --   debug.perfReport {}               the report as text in the debug window (debugDump) and in the server log
@@ -27,6 +27,9 @@ local Perf = require "ExtensiveHealthRedone/Core/Perf"
 local StatAggregator = require "ExtensiveHealthRedone/Core/StatAggregator"
 local BodyAggregator = require "ExtensiveHealthRedone/Core/BodyAggregator"
 local ClientEffects = require "ExtensiveHealthRedone/Core/ClientEffects"
+local Modifiers = require "ExtensiveHealthRedone/Core/Modifiers"
+local PerkAggregator = require "ExtensiveHealthRedone/Core/PerkAggregator"
+
 local Treatments = require "ExtensiveHealthRedone/Core/Treatments"
 local Facts = require "ExtensiveHealthRedone/Server/Facts"
 local StatWriter = require "ExtensiveHealthRedone/Server/StatWriter"
@@ -47,7 +50,10 @@ local function ghostContext(key, state, facts, ranges)
         stats = StatAggregator.new(ranges),
         body = BodyAggregator.new(),
         fx = ClientEffects.new(),
+        mods = Modifiers.new(),
+        perks = PerkAggregator.new(),
         rng = Env.rng,
+
         sandbox = Env.sandbox,
         facts = facts,
         treatment = Treatments.forState(state),

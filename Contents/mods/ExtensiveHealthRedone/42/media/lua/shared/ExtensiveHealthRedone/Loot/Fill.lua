@@ -35,7 +35,7 @@ function Fill.profile(data, setting)
     return data.profiles[tonumber(setting) or data.defaultProfile] or data.profiles[data.defaultProfile]
 end
 
--- How many of maxUses doses a freshly spawned package keeps (v0.9 MS:214-266). A one-use item stays full. Pharmacy
+-- How many of maxUses doses a freshly spawned package keeps. A one-use item stays full. Pharmacy
 -- packages are sometimes full when allowFull (AllowFullPharmacyPackages).
 function Fill.doses(maxUses, profile, location, allowFull, rng)
     if maxUses <= 1 then
@@ -69,7 +69,7 @@ function Fill.knoxItems(knox, x, y, z, containerType)
     return nil
 end
 
--- Each item rolls on its own, chance in percent (v0.9 KD:105-108). Returns the item types that spawn.
+-- Each item rolls on its own, chance in percent. Returns the item types that spawn.
 function Fill.knoxRoll(items, rng)
     local out = {}
     for _, entry in ipairs(items) do

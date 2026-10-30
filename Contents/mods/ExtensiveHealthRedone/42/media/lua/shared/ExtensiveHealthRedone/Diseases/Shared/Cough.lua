@@ -1,5 +1,5 @@
--- The one cough gap every disease shares (v0.9's EHR_LastCoughSoundHour: no second cough sound within 0.02 game h,
--- from any source). Lives in state.exposure.timers, which Diseases/Shared/Group counts down once per step.
+-- The one cough gap every disease shares: no second cough sound within GAP game minutes, from any source. Lives in
+-- state.exposure.timers, which Diseases/Shared/Group counts down once per step.
 
 local Timers = require "ExtensiveHealthRedone/Core/Timers"
 

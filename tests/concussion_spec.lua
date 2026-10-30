@@ -1,7 +1,7 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- Concussion: the server-side trauma check behind a client report or the server's own fall and crash causes (SA-4),
--- the reverse course, and its effects.
+-- Concussion: the server-side trauma check behind a client report or the server's own fall and crash causes, the
+-- reverse course, and its effects.
 local Engine = require("ExtensiveHealthRedone/Conditions/Engine")
 local defs = require("ExtensiveHealthRedone/Conditions/Registry")
 local Concussion = require("ExtensiveHealthRedone/Diseases/Concussion/Concussion")

@@ -1,13 +1,12 @@
--- The disease handbook (J): every in-scope disease in v0.9's order, known or locked, with its Cause, Symptoms,
--- Timing, Prevention and Treatment. Pure: the window (Client/Handbook) only draws what this returns.
--- From docs/porting/phase7/immune-tab-and-journal.md Part B, with the suggested defaults taken in Phase 7:
+-- The disease handbook (J): every in-scope disease in the original mod's order, known or locked, with its Cause,
+-- Symptoms, Timing, Prevention and Treatment. Pure: the window (Client/Handbook) only draws what this returns.
 --   * a disease is known by the monitor's own rule (Conditions/Knowledge, name level): flyer or radio, a medical
 --     profession, First Aid 8, or self-evident; Knox only from the Kentucky Herald. The handbook has no stage or
 --     progress tiers: known shows everything.
 --   * Timing: the authored _Incubation/_Duration texts where they exist, else computed from the definition's hours
 --     (divided by its speed option), else left out (driven, staged and per-part conditions).
---   * "LETHAL RISK" only on known entries (v0.9 showed it on locked ones, bug B5), Knox included (bug B4).
---   * Knox has its own locked text: a flyer or First Aid never unlocks it (bug B6).
+--   * "LETHAL RISK" only on known entries, Knox included.
+--   * Knox has its own locked text: a flyer or First Aid never unlocks it.
 --   * Every disease is listed, even when switched off in the sandbox: it is a reference book.
 --
 --   Handbook.build(knowledge, firstAid, defs, sandbox) -> { known, total, entries = { ... } }
@@ -89,7 +88,8 @@ local function entry(id, knowledge, firstAid, defs, sandbox)
         e.icon = DiseaseInfo.UNKNOWN_ICON
         e.name = Text.key("UI_EHR_Codex_UnknownCategory_" .. info.category)
         e.lethal = false
-        e.locked = Text.key(id == Knowledge.KNOX and "UI_EHR_Codex_LockedDescKnox" or "UI_EHR_Codex_LockedDesc")
+        e.locked = Text.key(id == Knowledge.KNOX and "UI_EHR_Codex_LockedDescKnox" or info.lockedDesc
+            or "UI_EHR_Codex_LockedDesc")
         return e
     end
     e.icon = info.icon

@@ -1,13 +1,13 @@
 -- Character creation: with PatientZeroTraitDisabled, the Patient Zero trait is not offered, and a build or preset that
 -- carries it loses it (its cost is refunded). The option is read from the sandbox options being set up, because
--- SandboxVars still hold the defaults on the new-game screens (v0.9 EHR_PatientZeroTraitToggle.lua).
--- The option never takes immunity away from a character who already has it (decided 2026-10-07). A character who
+-- SandboxVars still hold the defaults on the new-game screens.
+-- The option never takes immunity away from a character who already has it. A character who
 -- has the trait anyway (a modified client, an admin) gets no immunity from it while the option is on: the authority
 -- checks that itself (Diseases/Knox/Infection traitImmunity).
 --
 -- In the custom-sandbox flow vanilla shows the profession screen first and commits the sandbox screen's values after
 -- (SandboxOptions.lua:968-972), so the trait lists were filled with the old value. They are rebuilt once the values
--- are set, so Patient Zero disappears (or comes back) at once (spec professions-and-traits.md 5.3.1).
+-- are set, so Patient Zero disappears (or comes back) at once.
 
 local Env = require "ExtensiveHealthRedone/Game/Env"
 local Patches = require "ExtensiveHealthRedone/Game/Patches"

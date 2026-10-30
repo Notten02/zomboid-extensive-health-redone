@@ -1,6 +1,5 @@
--- Timed medication effects a dose starts (v0.9's "general effects": docs/porting/phase5/utility-drugs-and-b42-api.md
--- part A). Each has a start (once, at the dose), an update (every step while it runs) and an end (once, when it runs
--- out: the stimulant crashes). Stat values are fractions of each stat's range.
+-- Timed medication effects a dose starts. Each has a start (once, at the dose), an update (every step while it runs)
+-- and an end (once, when it runs out: the stimulant crashes). Stat values are fractions of each stat's range.
 --
 -- State: state.meds.effects[id] = { left = minutes, data = {} }. One of each kind; a medication's "early" rule keeps
 -- most of them from being taken twice, and a second hydration or respiratory dose restarts that effect.
@@ -15,7 +14,7 @@ local Insomnia = require "ExtensiveHealthRedone/Diseases/Mind/Insomnia"
 
 local Effects = {}
 
--- Last Chance Epinephrine (v0.9 M:1169-1200, M:5389-5488).
+-- Last Chance Epinephrine.
 Effects.LAST_CHANCE = {
     THRESHOLD = 15,         -- overall health at or below which it is a rescue
     TARGET = 75,            -- rescued health
@@ -75,7 +74,7 @@ Effects.DEFS = {
             stimulantCrash(p, defs, "caffeine_crash")
         end,
     },
-    -- Nitric oxide booster: endurance locked at 100% for 3 h (the lock beats disease caps: maintainer, Phase 5),
+    -- Nitric oxide booster: endurance locked at 100% for 3 h (the lock beats disease caps),
     -- then 6 h of whole-body muscle pain and an insomnia chance.
     staminaLock = {
         update = function(p)
@@ -87,7 +86,7 @@ Effects.DEFS = {
         end,
     },
     -- Combat stimulants: 3 h of no stress, panic or unhappiness, endurance helped up toward 92%, and double attack
-    -- speed with the held weapon (no walking boost: maintainer, Phase 5); then a 6 h crash and an insomnia chance.
+    -- speed with the held weapon (no walking boost); then a 6 h crash and an insomnia chance.
     combat = {
         update = function(p, _, dt)
             p.stats:ceilingF("STRESS", src("combat"), 0)
@@ -136,7 +135,7 @@ Effects.DEFS = {
             SideEffects.start(p, "last_chance_thirst", { force = true })
         end,
     },
-    -- Plain epinephrine (W6): no fatigue, full endurance, less pain, an adrenaline rush of panic, and it wakes the
+    -- Plain epinephrine: no fatigue, full endurance, less pain, an adrenaline rush of panic, and it wakes the
     -- character, from a blackout too. Immediate only.
     epinephrine = {
         start = function(p)

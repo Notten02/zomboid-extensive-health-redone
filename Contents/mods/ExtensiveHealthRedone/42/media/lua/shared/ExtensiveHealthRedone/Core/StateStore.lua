@@ -14,16 +14,31 @@ local Tables = require "ExtensiveHealthRedone/Core/Tables"
 local StateStore = {}
 StateStore.__index = StateStore
 
--- sections: ordered list of section names. epoch: any string unique to this server run.
+-- sections: ordered list of section names (copied). epoch: any string unique to this server run.
 function StateStore.new(sections, epoch)
-    local known = {}
+    local known, list = {}, {}
     for _, name in ipairs(sections) do
         known[name] = true
+        list[#list + 1] = name
     end
     return setmetatable({
-        sections = sections, known = known, epoch = epoch, players = {}, revisions = {},
+        sections = list, known = known,
+ epoch = epoch, players = {}, revisions = {},
         withChanges = {},   -- key -> true while the player has a dirty section (dirtyKeys)
     }, StateStore)
+end
+
+-- A section added after the store was built (an add-on's, Core/Schema.registerSection). Attached players start it at
+-- revision 1. Adding a known section again does nothing.
+function StateStore:addSection(name)
+    if self.known[name] then
+        return
+    end
+    self.known[name] = true
+    self.sections[#self.sections + 1] = name
+    for _, revs in pairs(self.revisions) do
+        revs[name] = 1
+    end
 end
 
 function StateStore:attach(key, state)

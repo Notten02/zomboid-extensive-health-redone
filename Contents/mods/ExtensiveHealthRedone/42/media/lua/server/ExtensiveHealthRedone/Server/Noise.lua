@@ -8,6 +8,21 @@ local log = Env.logger("Noise")
 
 local Noise = {}
 
+-- Adds a sound kind for p.noise from an add-on mod: def has the Data/Noise fields (male, female, radius, volume,
+-- optional audioOption, which may name the add-on's own option as "Namespace.Option", and muffled). Errors on a known
+-- kind. Call it from the add-on's server code.
+function Noise.register(kind, def)
+    if type(kind) ~= "string" or Data[kind] then
+        error("noise " .. tostring(kind) .. " is already registered", 2)
+    end
+    if type(def) ~= "table" or type(def.male) ~= "string" or type(def.female) ~= "string"
+        or type(def.radius) ~= "number" or type(def.volume) ~= "number" then
+        error("noise " .. kind .. " needs male, female, radius and volume", 2)
+    end
+    Data[kind] = def
+end
+
+
 -- A held item that muffles a sneeze or cough (vanilla Tissue, ToiletPaper, PaperNapkins2), or nil.
 local function muffler(player)
     for _, item in ipairs({ player:getPrimaryHandItem(), player:getSecondaryHandItem() }) do

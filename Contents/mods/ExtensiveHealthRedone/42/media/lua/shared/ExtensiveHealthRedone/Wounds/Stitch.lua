@@ -1,12 +1,11 @@
 -- Stitch minigame rules: quality from misses, and what a stitch of that quality does. The client runs the minigame
 -- and reports misses; the server applies the outcome (rolls happen here, on the authority).
--- From v0.9 EHR_StitchMinigame.lua (docs/porting/phase3/stitch-minigame-and-b42-api.md, part A). W34: a failed or
--- cancelled poor attempt rolls cellulitis, a very poor stitch can infect the wound, and immunity modifies the
--- cellulitis chance. A great stitch no longer clears infections.
--- Phase 9 (SA-1 to SA-3, Server/Health): stitching another player needs consent, the doctor must carry a stitching
--- item, a success faster than Stitch.MIN_SECONDS counts as poor, and with the minigame on a vanilla stitch that
--- arrives without a minigame result counts as poor.
--- Residual trust (accepted): the miss count is the client's. A modified client can wait out MIN_SECONDS and claim
+-- A failed or cancelled poor attempt rolls cellulitis, a very poor stitch can infect the wound, and immunity modifies
+-- the cellulitis chance. A great stitch doesn't clear infections.
+-- Server/Health: stitching another player needs consent, the doctor must carry a stitching item, a success faster
+-- than Stitch.MIN_SECONDS counts as poor, and with the minigame on a vanilla stitch that arrives without a minigame
+-- result counts as poor.
+-- Residual trust: the miss count is the client's. A modified client can wait out MIN_SECONDS and claim
 -- 0 misses ("excellent"); the server logs every excellent claim with its duration so admins can spot it. The gain is
 -- capped at one excellent stitch per wound (less pain, no cellulitis roll).
 
@@ -41,7 +40,7 @@ function Stitch.band(quality)
     return "poor"
 end
 
--- Immunity modifies the chance (W34; Conditions/Risk).
+-- Immunity modifies the chance (Conditions/Risk).
 function Stitch.cellulitisChance(p)
     return Risk.chance(p, "cellulitis", Data.CELLULITIS_CHANCE)
 end

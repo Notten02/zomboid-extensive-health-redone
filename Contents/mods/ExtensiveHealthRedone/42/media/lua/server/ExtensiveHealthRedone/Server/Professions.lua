@@ -1,12 +1,10 @@
 -- Wires the EHR professions to the authority: the profession facts reader and the knowledge-grant system. The rule is
--- Data/Professions.grantKnowledge; this file only translates. Spec: docs/porting/phase8/professions-and-traits.md
--- section 2 (decisions 2026-10-14: W10 keeps EHR Doctor; the grant also writes blood_types).
+-- Data/Professions.grantKnowledge; this file only translates.
 --
 -- The grant is decided here, on the authority, every simulation step (idempotent: it writes once, then nothing), so a
 -- character created before the mod was added, or on a dedicated server where OnCreatePlayer never fires, gets it
--- too. v0.9 wrote it from the client's OnCreatePlayer and transmitted modData (bug 7 in the spec).
--- Everything else the professions give comes from the scripts: levels, the Scalpel Master trait (Server/Scalpel)
--- and the 24 recipes (GrantedRecipes; whether a dedicated server delivers them is checked in game).
+-- too. Everything else the professions give comes from the scripts: levels, the Scalpel Master trait
+-- (Server/Scalpel) and the 24 recipes (GrantedRecipes).
 -- An MP client loads this file too and stops at the first line.
 
 if isClient() then

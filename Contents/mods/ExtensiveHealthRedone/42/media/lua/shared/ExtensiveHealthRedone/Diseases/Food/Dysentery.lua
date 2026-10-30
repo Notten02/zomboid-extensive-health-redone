@@ -1,16 +1,14 @@
 -- Dysentery: from drinking contaminated water (Diseases/Food/Risk). Thirst and hunger capped low at stage 1;
 -- heavier drain, abdominal pain and some blood loss at stage 2; dangerous dehydration, frequent vomiting, a movement
 -- penalty and noticeable blood loss at stage 3; recovery at stage 4. Lethal mainly through dehydration (vanilla
--- thirst). From v0.9 EHR_DiseaseDefinitions.lua:250-358 and EHR_EnvironmentalDiseases.lua:3139-3206.
--- Changes from v0.9: relief medicine slows the drain but never lifts the caps (W30); the stage-3 slowdown ends with
--- stage 3 (v0.9's speed mod stuck); the abdominal pain goes away on every kind of ending (it stayed after natural
--- recovery). The lines are v0.9's older dysentery set, which has translations.
+-- thirst). Relief medicine slows the drain but never lifts the caps; the stage-3 slowdown ends with stage 3; the
+-- abdominal pain goes away on every kind of ending. The lines are the older dysentery set, which has translations.
 --
--- Treatment (Phase 5): cure Oral Rehydration Kit (48 h, 8 doses), Broad Spectrum or Plant-Based Antibiotics,
+-- Treatment: cure Oral Rehydration Kit (48 h, 8 doses), Broad Spectrum or Plant-Based Antibiotics,
 -- IV Antibiotics, IV Metronidazole, IV Ciprofloxacin.
 -- Relief: Anti-Diarrheal (diarrhea .85, bathroomNeed .85), Electrolyte Powder (dehydration), Anti-Nausea (vomiting).
--- Lifestyle: Hobbies (Phase 10): dysentery raises its bathroom need (BLADDER_RATE points per game hour by stage, v0.9
--- EHR_LifestyleCompat.lua:61-66), less with relief; an anti-diarrheal also drains the need that is there. The client
+-- Lifestyle: Hobbies: dysentery raises its bathroom need (BLADDER_RATE points per game hour by stage), less with
+-- relief; an anti-diarrheal also drains the need that is there. The client
 -- adds it to Lifestyle's own number (Client/Lifestyle); without Lifestyle nobody reads it.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Food/Data"
@@ -18,7 +16,7 @@ local Common = require "ExtensiveHealthRedone/Diseases/Food/Common"
 
 local ID = "dysentery"
 
--- Per v0.9 environmental tick (DYS_TICK per game minute). Caps are fractions of the stat's range (1 = none); blood
+-- Per environmental check (DYS_TICK per game minute, Data). Caps are fractions of the stat's range (1 = none); blood
 -- loss in mL per tick, never taking blood below floor mL; pain on Torso_Lower.
 local ROWS = {
     [1] = { thirst = 0.0003, thirstCap = 0.10, hunger = 0.0002, hungerCap = 0.10, vomit = 0 },
@@ -37,7 +35,7 @@ local def = {
     enabledOption = "DysenteryEnabled", speedOption = "DiseaseSpeed",
     incubation = { 6, 12 }, duration = { 72, 120 }, baseSeverity = 0.6,
     severityHidden = true,      -- no symptom scales with the severity, so the monitor shows no severity word
-    effectsInStage1 = true,     -- v0.9: the stage-1 caps already apply during the incubation
+    effectsInStage1 = true,     -- the stage-1 caps already apply during the incubation
     name = "UI_EHR_Disease_dysentery", knowledge = ID,
     lines = {
         stage = {
@@ -99,7 +97,7 @@ function def.effects(p, c, dt)
         Common.vomit(p, ID, 0, 0)
         thirst, hunger = thirst + VOMIT_THIRST, hunger + VOMIT_HUNGER
     end
-    -- W30: the caps hold whatever relief is active. A cap never lowers a stat that is already above it.
+    -- The caps hold whatever relief is active. A cap never lowers a stat that is already above it.
     p.stats:raiseF("THIRST", ID, row.thirstCap, thirst)
     p.stats:raiseF("HUNGER", ID, row.hungerCap, hunger)
 

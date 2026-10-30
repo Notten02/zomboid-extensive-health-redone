@@ -1,11 +1,9 @@
 -- Medication side effects: time-limited effects a dose (or a crash) starts, held every simulation step while they run.
--- From v0.9's SideEffects table (docs/porting/phase5/side-effects-interactions-consumption.md section 1) at their
--- intended strengths (maintainer, Phase 5): v0.9 wrote many of them on the wrong stat scale, so they did nearly
--- nothing. Stat values are fractions of each stat's range; pain is body-part pain (0-100), which vanilla turns into
--- the PAIN stat.
+-- Stat values are fractions of each stat's range; pain is body-part pain (0-100), which vanilla turns into the PAIN
+-- stat.
 --
 -- State: state.meds.side[id] = { left = minutes, data = {} }. A side effect that is already running is not
--- restarted by another dose (v0.9), unless forced (the crashes).
+-- restarted by another dose, unless forced (the crashes).
 --
 --   SideEffects.start(p, id, { force = true, hours = 3 })
 --   SideEffects.update(p, dt)          -- once per step (Medication/System)
@@ -30,8 +28,7 @@ local function painOn(p, parts, id, amount)
     end
 end
 
--- Thirst that rises by `now` at once and then by `perHour`, never above `ceiling` and never lowered by this (v0.9's
--- ApplyTimedThirst lowered thirst already above its ceiling).
+-- Thirst that rises by `now` at once and then by `perHour`, never above `ceiling` and never lowered by this.
 local function timedThirst(p, s, id, now, perHour, ceiling, dt)
     local current = p.facts.norm and p.facts.norm.THIRST or 0
     local add = s.data.thirstStarted and perHour * dt / 60 or now
@@ -42,7 +39,7 @@ local function timedThirst(p, s, id, now, perHour, ceiling, dt)
     end
 end
 
--- Tendon weakness falls (v0.9 c/EHR_TendonWeakness.lua): rolled once per game minute after a 5-12 minute grace, by
+-- Tendon weakness falls: rolled once per game minute after a 5-12 minute grace, by
 -- how fast the character moves, with a 30 minute cooldown after a fall.
 SideEffects.TENDON = {
     FIRST = { 5, 12 },
@@ -102,7 +99,7 @@ SideEffects.DEFS = {
     dizziness = { hours = 3, name = "UI_SideEffect_Dizziness", update = function(p, s, dt)
         p.stats:ceilingF("ENDURANCE", src("dizziness"), 0.85)
         p.stats:floorF("DISCOMFORT", src("dizziness"), 0.45)
-        -- One blur episode of 10-20 minutes when it starts (v0.9's toxin-vision episode).
+        -- One blur episode of 10-20 minutes when it starts.
         local d = s.data
         if d.blur == nil then
             d.blur = Chance.between(p.rng, 10, 20)
@@ -116,7 +113,7 @@ SideEffects.DEFS = {
         p.stats:floorF("FATIGUE", src("fatigue"), 0.42)
         p.stats:ceilingF("ENDURANCE", src("fatigue"), 0.78)
     end },
-    -- Not the insomnia disease (maintainer, Phase 5): natural sleep is blocked while it runs.
+    -- Not the insomnia disease: natural sleep is blocked while it runs.
     insomnia = { hours = 12, name = "UI_SideEffect_Insomnia", update = function(p)
         p.fx:noSleep("medInsomnia")
     end },
@@ -139,7 +136,7 @@ SideEffects.DEFS = {
         p.body:pain("Torso_Lower", src("lower_back_pain"), 24)
         p.stats:floorF("DISCOMFORT", src("lower_back_pain"), 0.18)
     end },
-    -- Lifestyle: Hobbies' bathroom need rises 18 points per game hour (v0.9); the client adds it (Client/Lifestyle).
+    -- Lifestyle: Hobbies' bathroom need rises 18 points per game hour; the client adds it (Client/Lifestyle).
     -- Without Lifestyle it is only shown.
     diuretic_urination = { hours = 8, name = "UI_SideEffect_DiureticUrination", update = function(p)
         p.fx:bladder("diuretic_urination", 18)

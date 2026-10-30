@@ -1,7 +1,7 @@
 -- The immune system (order 395: after medication, so a dose taken this step counts; before the conditions). Every
 -- 15 game minutes it recomputes the target from six factors and the hygiene penalty, applies suppression, and moves
 -- the score. The score only matters through Conditions/Risk (catching supported diseases) and wound containment
--- (Wounds/Infection); it never changes symptoms or progression. v0.9 EHR_Immunity.lua; docs/porting/phase6/immunity.md.
+-- (Wounds/Infection); it never changes symptoms or progression.
 --
 -- state.immunity = {
 --   score       0-100, the current score
@@ -20,6 +20,7 @@
 local Data = require "ExtensiveHealthRedone/Data/Immunity"
 local KnoxData = require "ExtensiveHealthRedone/Diseases/Knox/Data"
 local Blood = require "ExtensiveHealthRedone/Blood/Blood"
+local defs = require "ExtensiveHealthRedone/Conditions/Registry"
 
 local Immunity = {}
 
@@ -53,18 +54,21 @@ function Immunity.enabled(p)
     return p.sandbox("ImmunitySystemEnabled", true) ~= false
 end
 
--- Disease pressure (0-MAX): what active illness takes off the health reserve.
+-- Disease pressure (0-MAX): what active illness takes off the health reserve. A condition's own pressure flag
+-- (false: none, "half", Conditions/Registration) overrides the data lists.
 function Immunity.pressure(state)
     local P = Data.PRESSURE
     local total = 0
     for id, c in pairs(state.conditions.active) do
+        local flag = defs[id] and defs[id].pressure
         if id == "sepsis" then
             total = total + P.SEPSIS
-        elseif not P.IGNORE[id] then
+        elseif not P.IGNORE[id] and flag ~= false then
             local pressure = P.CONDITION_BASE + P.CONDITION_PER_STAGE * clamp(tonumber(c.stage) or 1, 1, 4)
-            total = total + (P.HALF[id] and pressure / 2 or pressure)
+            total = total + ((P.HALF[id] or flag == "half") and pressure / 2 or pressure)
         end
     end
+
     for _, e in pairs(state.wounds.parts) do
         if e.phase == "infected" then
             total = total + P.WOUND_BASE + P.WOUND_PER_STAGE * (e.stage or 1)
@@ -173,8 +177,9 @@ function Immunity.recompute(p)
     if not Immunity.enabled(p) then
         im.trend = "disabled"
     else
-        local score, trend = Immunity.move(im.score, target, suppressed, rate(p, "ImmunityRecoveryRate"),
-            rate(p, "ImmunityDeclineRate"))
+        local rise = rate(p, "ImmunityRecoveryRate") * (p.mods and p.mods:get("immunityRise") or 1)
+        local score, trend = Immunity.move(im.score, target, suppressed, rise, rate(p, "ImmunityDeclineRate"))
+
         im.score, im.trend = round1(clamp(score, 0, 100)), trend
     end
     p.dirty("immunity")

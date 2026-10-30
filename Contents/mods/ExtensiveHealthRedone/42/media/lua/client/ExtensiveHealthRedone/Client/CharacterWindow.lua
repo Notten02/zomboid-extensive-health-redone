@@ -1,4 +1,4 @@
--- Our tabs in vanilla's character window (UI option B, maintainer Phase 7): "EHR Monitor" and, while
+-- Our tabs in vanilla's character window: "EHR Monitor" and, while
 -- ImmunitySystemEnabled is on, "Immune System", after vanilla's Info, Skills, Health, Protection and Temperature views.
 -- Vanilla keeps its Health tab and all wound treatment.
 --
@@ -8,6 +8,9 @@
 --
 -- The windows are rebuilt by vanilla for every local player (split screen joins, respawns), so everything is looked
 -- up through getPlayerInfoPanel(playerNum), never ISCharacterInfoWindow.instance.
+--
+-- Add-on mods add their own tabs after ours (CharacterWindow.addTab); toggle/open and the hotkey helpers take their
+-- ids like "monitor" and "immune".
 
 require "XpSystem/ISUI/ISCharacterInfoWindow"
 
@@ -19,8 +22,40 @@ local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"
 local Client = require "ExtensiveHealthRedone/Client/Client"
 local MonitorView = require "ExtensiveHealthRedone/Client/MonitorView"
 local ImmuneView = require "ExtensiveHealthRedone/Client/ImmuneView"
+local Draw = require "ExtensiveHealthRedone/Client/Draw"
 
 local CharacterWindow = {}
+
+-- Add-on tabs by id, and their ids in tab order.
+local tabs = {}
+local tabOrder = {}
+
+-- Registers an add-on tab, added to every character window built from now on (windows are built in game, after
+-- every mod has loaded). spec:
+--   id           unique id, used with toggle/open; not "monitor" or "immune"
+--   name()       the tab's title (translated text)
+--   create(playerNum) -> the view, an ISPanel-like element; it may have onOpened() and markStale() (called after a
+--                sync of the player's mirror)
+--   visible()    optional: false leaves the tab out of a window being built (a sandbox switch)
+--   order        optional: tabs sort by order (default 100), then id
+function CharacterWindow.addTab(spec)
+    if type(spec) ~= "table" or type(spec.id) ~= "string" or type(spec.name) ~= "function"
+        or type(spec.create) ~= "function" then
+        error("character window tabs need id, name() and create(playerNum)", 2)
+    end
+    if spec.id == "monitor" or spec.id == "immune" or tabs[spec.id] then
+        error("character window tab " .. spec.id .. " is already registered", 2)
+    end
+    tabs[spec.id] = spec
+    tabOrder[#tabOrder + 1] = spec.id
+    table.sort(tabOrder, function(a, b)
+        local oa, ob = tabs[a].order or 100, tabs[b].order or 100
+        if oa ~= ob then
+            return oa < ob
+        end
+        return a < b
+    end)
+end
 
 function CharacterWindow.monitorName()
     return getText("UI_EHR_Tab_EHR")
@@ -38,13 +73,14 @@ end
 
 -- Each view sets the window to its own width every frame (setWidthAndParentWidth through the tab panel), and vanilla
 -- sizes its views for its own five tabs only. With our tabs and other mods' (Antibodies' Hygiene, made at the window's
--- starting 400) a narrow view shrank the window below its tab strip and left the strip scrolled (issue #2). The tab
+-- starting 400) a narrow view shrank the window below its tab strip and left the strip scrolled. The tab
 -- panel, and so the window, is never narrower than all its tabs.
--- +1 pixel to the calculation fixes the needlesly generated scroll arrow (issue #8)
+-- Draw.TAB_SPARE pixels to spare beside the last tab: a full strip doesn't look cramped, and without at least 1 the
+-- strip shows a needless scroll arrow.
 local function keepTabsInView(panel)
     local setWidth = panel.setWidth
     function panel:setWidth(w)
-        setWidth(self, math.max(w, self:getWidthOfAllTabs()+1))
+        setWidth(self, math.max(w, self:getWidthOfAllTabs() + Draw.TAB_SPARE))
     end
 end
 
@@ -56,6 +92,13 @@ Patches.on("characterInfoCreate", {
         window.ehrMonitorView = addView(window, CharacterWindow.monitorName(), MonitorView:new(0, 8, playerNum))
         if Immune.visible(Env.sandbox) then
             window.ehrImmuneView = addView(window, CharacterWindow.immuneName(), ImmuneView:new(0, 8, playerNum))
+        end
+        window.ehrAddonViews = {}
+        for _, id in ipairs(tabOrder) do
+            local spec = tabs[id]
+            if not spec.visible or spec.visible() ~= false then
+                window.ehrAddonViews[id] = addView(window, spec.name(), spec.create(playerNum))
+            end
         end
     end,
 })
@@ -79,6 +122,8 @@ Patches.on("characterInfoToggle", {
 local function viewOf(window, which)
     if which == "immune" then
         return window.ehrImmuneView, CharacterWindow.immuneName()
+    elseif tabs[which] then
+        return window.ehrAddonViews and window.ehrAddonViews[which], tabs[which].name()
     end
     return window.ehrMonitorView, CharacterWindow.monitorName()
 end
@@ -90,7 +135,7 @@ local function focus(window, playerNum)
 end
 
 -- Toggles one of our tabs like vanilla's hotkeys do: opens the window on it, switches to it, or closes the window
--- when it is already the open tab. which: "monitor" or "immune".
+-- when it is already the open tab. which: "monitor", "immune" or an add-on tab's id.
 function CharacterWindow.toggle(playerNum, which)
     local window = getPlayerInfoPanel(playerNum)
     local view, name = viewOf(window or {}, which)
@@ -131,7 +176,14 @@ Client.onChange(function(ownerKey)
         if view then
             view:markStale()
         end
+        local addons = window and window.ehrAddonViews --[[@as table<string, table>?]]
+        for _, addon in pairs(addons or {}) do
+            if addon.markStale then
+                addon:markStale()
+            end
+        end
     end
+
 end)
 
 return CharacterWindow

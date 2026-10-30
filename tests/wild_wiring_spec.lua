@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter, missing-fields, undefined-field, duplicate-set-field, need-check-nil
 -- Server/WildSearch against the fake game: the plant search's access check, server-held board, thorn injuries and
 -- gloves, find and XP, and cooldown; the hive search's grab timing, items and stings; the debug command. The client
--- panels need the game UI and are tested in game (docs/porting/phase8/herbal-and-hive-minigames.md).
+-- panels need the game UI and are tested in game.
 
 insulate("single-player wiring: wild searches", function()
     local FakeGame = require("support/fake_game")

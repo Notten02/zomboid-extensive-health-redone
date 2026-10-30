@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter, missing-fields, undefined-field, duplicate-set-field
 -- Server/Loot against the fake game: the distribution write at OnPreDistributionMerge (with the single-player
 -- sandbox preload), the re-apply at OnInitGlobalModData when the options changed, the package fill and Knox items
--- on OnFillContainer, and zombie loot. In-game testing is still needed (docs/porting/phase8/loot-distribution.md).
+-- on OnFillContainer, and zombie loot.
 
 insulate("single-player wiring: loot", function()
     local FakeGame = require("support/fake_game")

@@ -1,7 +1,7 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- Corpse exposure illness and cadaveric aspergillosis: the two exposure meters, contraction, W15 (independent meters,
--- fresh air speeds recovery, bands 30/60/100) and the stage effects.
+-- Corpse exposure illness and cadaveric aspergillosis: the two exposure meters, contraction (independent meters, fresh
+-- air speeds recovery, bands 30/60/100) and the stage effects.
 local Engine = require("ExtensiveHealthRedone/Conditions/Engine")
 local defs = require("ExtensiveHealthRedone/Conditions/Registry")
 local Exposure = require("ExtensiveHealthRedone/Diseases/Corpse/Exposure")
@@ -111,7 +111,7 @@ describe("corpse exposure meter", function()
         assert.is_true(p.state.exposure.corpse > 0)
     end)
 
-    it("reads the display bands 30/60/100 (W15)", function()
+    it("reads the display bands 30/60/100", function()
         assert.equal("none", Exposure.band(29))
         assert.equal("low", Exposure.band(30))
         assert.equal("medium", Exposure.band(60))
@@ -137,7 +137,7 @@ describe("spore meter", function()
         assert.near(10 * 1.8 * 1.25, p.state.exposure.spores, 1e-6)
     end)
 
-    it("builds alongside the corpse meter in damp weather (W15)", function()
+    it("builds alongside the corpse meter in damp weather", function()
         local p = Sim.context()
         p.facts.env.wetness = 0.5
         corpses(p, { rotten = 2 })
@@ -158,7 +158,7 @@ describe("spore meter", function()
 end)
 
 describe("corpse illness", function()
-    it("runs twice as fast in fresh air once the incubation is over (W15)", function()
+    it("runs twice as fast in fresh air once the incubation is over", function()
         local p = Sim.context()
         local c = contract(p, "corpse_sickness", { stage = 2 })
         local left = c.left

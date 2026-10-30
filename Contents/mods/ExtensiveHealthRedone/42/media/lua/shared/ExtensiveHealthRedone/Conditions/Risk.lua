@@ -1,5 +1,5 @@
 -- The immune system's effect on catching a disease: a multiplier on the contraction chance from the immunity score,
--- the disease's sensitivity (Data/Immunity) and ImmunityEffectStrength. From v0.9 EHR_Immunity.lua:330-358.
+-- the disease's sensitivity (Data/Immunity) and ImmunityEffectStrength.
 -- Immunity never changes symptoms or progression once a disease has started. The score itself is Immunity/Immunity.
 
 local Data = require "ExtensiveHealthRedone/Data/Immunity"

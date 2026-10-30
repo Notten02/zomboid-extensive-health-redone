@@ -1,7 +1,7 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- Phase 10 compatibility checks that need no third-party mod: the original mod enabled beside ours is called out in the
--- log, and mod.info marks both spellings of the original's ids incompatible.
+-- Compatibility checks that need no third-party mod: the original mod enabled beside ours is called out in the log,
+-- and mod.info marks both spellings of the original's ids incompatible.
 local LuaSource = require("LuaSource")
 
 insulate("original mod beside the rewrite", function()

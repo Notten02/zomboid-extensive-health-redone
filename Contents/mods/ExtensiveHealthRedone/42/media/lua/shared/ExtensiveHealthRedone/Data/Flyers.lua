@@ -1,16 +1,15 @@
--- What reading each EHR leaflet teaches (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md section 1). Server/Flyers
--- looks the read item up here after vanilla's ISReadABook:complete; Knowledge/Learn applies it.
+-- What reading each EHR leaflet teaches. Server/Flyers looks the read item up here after vanilla's
+-- ISReadABook:complete; Knowledge/Learn applies it.
 --
--- From v0.9 s/EHR_DiseaseFlyers.lua:19-44 (FLYER_ITEMS) and c/EHR_FlyerHook.lua:65-111 (the Wild Plants guide). The
--- knowledge ids are ours and equal v0.9's for every flyer we keep. The Tuberculosis, Flu and Knox flyers are deleted
--- from the mod (W1-W3, decided 2026-10-14); Knox knowledge comes only from the Kentucky Herald (Server/Knox).
+-- The knowledge ids equal the original mod's for every flyer kept, so imported knowledge carries over. There are no
+-- Tuberculosis, Flu or Knox flyers; Knox knowledge comes only from the Kentucky Herald (Server/Knox).
 --
 -- Four flyers teach a self-evident condition (food poisoning, hypothermia, heat exhaustion, heat stroke): they only
--- record the id and give the XP, as in v0.9. The Blood Types flyer teaches "blood_types" (Blood/Transfusion reads it);
--- it has no handbook entry.
+-- record the id and give the XP. The Blood Types flyer teaches "blood_types" (Blood/Transfusion reads it); it has no
+-- handbook entry.
 --
 -- The recipe guides are not here: vanilla teaches their LearnedRecipes (scripts/EHR_Flyers.txt) through the read-book
--- list, and v0.9 gave no XP for them.
+-- list, and they give no XP.
 
 local Flyers = {}
 

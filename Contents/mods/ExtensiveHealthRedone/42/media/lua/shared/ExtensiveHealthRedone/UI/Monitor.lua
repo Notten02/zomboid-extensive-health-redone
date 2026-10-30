@@ -1,7 +1,5 @@
 -- The EHR Monitor's view model: what the tab shows, from the mirrored state and what the reader knows. Pure, so the
--- tests check it and the Phase 9 exam can build the same view of another player with the doctor's knowledge.
--- Spec: docs/porting/phase7/monitor-panel.md section 2; maintainer decisions in docs/parity-checklist.md section 14
--- ("Decided in Phase 7").
+-- tests check it and the exam can build the same view of another player with the doctor's knowledge.
 --
 --   Monitor.build({
 --       state = { identity, knowledge, blood, body, wounds, conditions, exposure, meds, knox },   -- mirror sections
@@ -11,6 +9,10 @@
 --   })
 --
 -- Text is UI/Text; colours are Client/Draw colour names.
+--
+-- Add-on mods add condition-column rows that aren't EHR conditions (a symptom hint, a reserve) with
+-- Monitor.addRowProvider. The exam builds the same model, so providers must gate what they show on input.state.knowledge
+-- (the reader's) and input.firstAid, and read only sections the exam copies (Core/Schema.registerSection, exam = true).
 
 local Text = require "ExtensiveHealthRedone/UI/Text"
 local BodyStatus = require "ExtensiveHealthRedone/UI/BodyStatus"
@@ -29,6 +31,46 @@ local Tables = require "ExtensiveHealthRedone/Core/Tables"
 
 local Monitor = {}
 
+local rowProviders = {}
+
+-- Errors of the last build, by provider name (a failing provider adds no rows; the Monitor still draws).
+Monitor.providerErrors = {}
+
+-- fn(input) -> a list of rows like the condition rows: { id, known, icon, name = Text, description = Text,
+-- descriptionColor, detail = Text, detailColor, progress = 0-1, progressText = Text, status = Text, statusColor }.
+-- Providers run after the condition, wound and exposure rows, by order (default 100) then name.
+function Monitor.addRowProvider(name, fn, order)
+    if type(name) ~= "string" or type(fn) ~= "function" then
+        error("Monitor row providers need a name and a function", 2)
+    end
+    for _, existing in ipairs(rowProviders) do
+        if existing.name == name then
+            error("Monitor row provider " .. name .. " is already registered", 2)
+        end
+    end
+    rowProviders[#rowProviders + 1] = { name = name, fn = fn, order = order or 100 }
+    table.sort(rowProviders, function(a, b)
+        if a.order ~= b.order then
+            return a.order < b.order
+        end
+        return a.name < b.name
+    end)
+end
+
+local function providedRows(input, conditions)
+    Monitor.providerErrors = {}
+    for _, provider in ipairs(rowProviders) do
+        local ok, rows = pcall(provider.fn, input)
+        if not ok then
+            Monitor.providerErrors[provider.name] = tostring(rows)
+        elseif type(rows) == "table" then
+            for _, row in ipairs(rows) do
+                conditions[#conditions + 1] = row
+            end
+        end
+    end
+end
+
 Monitor.TIERS = {
     [0] = "UI_EHR_MedAction_Tier_Basic",
     [1] = "UI_EHR_MedAction_Tier_OTC",
@@ -36,7 +78,7 @@ Monitor.TIERS = {
     [3] = "UI_EHR_MedAction_Tier_Clinical",
 }
 
--- Saline share of the circulating blood (legacy monitor, W23): the lethal and warning shares are Data/Blood's, with
+-- Saline share of the circulating blood: the lethal and warning shares are Data/Blood's, with
 -- "danger" half way between.
 Monitor.SALINE = {
     { from = BloodData.DILUTION_LETHAL, key = "UI_EHR_SalineStatus_Lethal", color = "red" },
@@ -87,7 +129,7 @@ local LEVEL_COLOR = { low = "yellow", medium = "orange", high = "red" }
 local LEVEL_KEY = { low = "UI_EHR_ExposureLevel_Low", medium = "UI_EHR_ExposureLevel_Medium",
     high = "UI_EHR_ExposureLevel_High" }
 
--- Knox side effects shown with the medication side effects (W33): effect -> label key.
+-- Knox side effects shown with the medication side effects: effect -> label key.
 Monitor.KNOX_EFFECTS = {
     phalanxNausea = "UI_EHR_KnoxEffect_PhalanxNausea",
     phalanxFever = "UI_EHR_KnoxEffect_PhalanxFever",
@@ -201,7 +243,14 @@ local function knoxTreated(state)
     return false
 end
 
+-- Errors of the last build's monitorRow hooks, by condition id (the row stays as EHR built it).
+Monitor.rowErrors = {}
+
+-- An add-on condition's def.monitorRow(row, c, known, input) may change its row after EHR built it: a description,
+-- the progress and status of a driven condition (which has no timers to show). known is what the reader knows
+-- (Conditions/Knowledge.of); the exam calls it with the doctor's knowledge, so gate on known like EHR's rows do.
 local function conditionRows(input, curing)
+    Monitor.rowErrors = {}
     local rows = {}
     local active = input.state.conditions and input.state.conditions.active or {}
     for _, id in ipairs(Tables.sortedKeys(active)) do
@@ -242,6 +291,12 @@ local function conditionRows(input, curing)
             if id == "knox_infection" and known.name and c.stage >= 4 then
                 row.description = Text.key("UI_EHR_KnoxNoCureDetail")
                 row.descriptionColor = "red"
+            end
+            if def.monitorRow then
+                local ok, err = pcall(def.monitorRow, row, c, known, input)
+                if not ok then
+                    Monitor.rowErrors[id] = tostring(err)
+                end
             end
             rows[#rows + 1] = row
         end
@@ -518,6 +573,8 @@ function Monitor.build(input)
     for _, row in ipairs(exposureRows(input)) do
         conditions[#conditions + 1] = row
     end
+    providedRows(input, conditions)
+
     local woundKnown = Knowledge.of(state, DiseaseInfo.WOUND_INFECTION, input.firstAid).progress
     return {
         bloodType = state.identity and state.identity.bloodType or nil,

@@ -1,10 +1,10 @@
--- Scalpel Master as pure rules on plain values (spec docs/porting/phase8/professions-and-traits.md section 3.5).
+-- Scalpel Master as pure rules on plain values.
 -- Game/Scalpel reads the item and its script and writes what plan() returns.
 --
 -- Derive, don't store: a scalpel's stats are always the script's values, multiplied while (and only while) a living
 -- Scalpel Master holds it in the main hand. Nothing is kept in item modData, so there are no saved originals to
 -- restore or migrate; a scalpel saved, dropped or looted while boosted is put right the next time it is normalized.
--- Primary hand only: only the main hand attacks, and v0.9's secondary-hand boost only changed a tooltip.
+-- Primary hand only: only the main hand attacks, so a secondary-hand boost would only change a tooltip.
 
 local Data = require "ExtensiveHealthRedone/Data/Professions"
 

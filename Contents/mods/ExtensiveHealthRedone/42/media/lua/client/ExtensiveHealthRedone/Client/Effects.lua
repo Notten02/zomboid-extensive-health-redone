@@ -50,7 +50,7 @@ Client.on("blackout", function(args)
     end
     UIManager.setFadeBeforeUI(player:getIndex(), true)
     UIManager.FadeOut(player:getIndex(), 1)
-    log:info(PlayerKey.of(player), "blacked out for", hours, "h")
+    log:debug(PlayerKey.of(player), "blacked out for", hours, "h")
 end)
 
 local function canFall(player)
@@ -75,10 +75,28 @@ Client.on("wake", function(args)
     player:setForceWakeUpTime(-1)
     UIManager.setFadeBeforeUI(player:getIndex(), false)
     UIManager.FadeIn(player:getIndex(), 1)
-    log:info(PlayerKey.of(player), "woken:", tostring(args.reason))
+    log:debug(PlayerKey.of(player), "woken:", tostring(args.reason))
+end)
+
+-- A stagger that doesn't knock the character down (a tremor, a dizzy spell): the server sends "stagger". Nothing
+-- happens while asleep, in a vehicle, on the floor, sitting or climbing.
+function Effects.stagger(player)
+    if not player or player:isDead() or player:isAsleep() or player:getVehicle() ~= nil or player:isOnFloor()
+        or player:isSitOnGround() or player:isClimbing() then
+        return false
+    end
+    player:setBumpType("stagger")
+    player:setVariable("BumpDone", false)
+    player:setVariable("BumpFall", false)
+    return true
+end
+
+Client.on("stagger", function(args)
+    Effects.stagger(owner(args))
 end)
 
 local FALL_TYPES = { pushedFront = true, pushedBehind = true }
+
 
 -- A spasm or a weak tendon throws the character to the ground (vanilla's debug "fall" recipe). fallType:
 -- "pushedFront" (default) or "pushedBehind" (falling while running).
@@ -93,8 +111,8 @@ Client.on("fall", function(args)
     player:setVariable("BumpFallType", FALL_TYPES[args.fallType] and args.fallType or "pushedFront")
 end)
 
--- Combat stimulants: the weapon in the primary hand swings faster (HandWeapon base speed x attackSpeed, v0.9's
--- method; B42 scales melee swings by a speed computed from it). The original speed is kept in the weapon's modData
+-- Combat stimulants: the weapon in the primary hand swings faster (HandWeapon base speed x attackSpeed;
+-- B42 scales melee swings by a speed computed from it). The original speed is kept in the weapon's modData
 -- so it can always be put back: on unequip or swap, when the effect ends, and on any weapon that reaches a hand still
 -- boosted (dropped or handed over mid-effect, or saved that way). Work happens only when the hands or the multiplier
 -- change. stim = { primary, secondary, multiplier, boosted } per player.
@@ -143,7 +161,48 @@ function Effects.applyAttackSpeed(stim, player, multiplier)
     stim.boosted = want
 end
 
--- Last Chance Epinephrine: extra movement on top of this frame's animation movement (v0.9's method; collision still
+-- Unsteady hands (state.effects.aim < 1, Core/ClientEffects:aim): the ranged weapon in the primary hand hits less
+-- often (HandWeapon hit chance x aim; B42's firearm aiming may not read the hit chance). Same
+-- bookkeeping as the attack speed above: the original is kept in the weapon's modData and put back on unequip, swap,
+-- when the effect ends, and on any weapon that reaches a hand still lowered.
+Effects.AIM_KEY = "EHR_AimBaseHitChance"
+
+function Effects.restoreAim(weapon)
+    local data = weapon:getModData()
+    local original = data[Effects.AIM_KEY]
+    if original ~= nil then
+        weapon:setHitChance(original)
+        data[Effects.AIM_KEY] = nil
+    end
+end
+
+local function isRanged(item)
+    return isWeapon(item) and item:isRanged()
+end
+
+function Effects.applyAim(aim, player, multiplier)
+    local primary, secondary = player:getPrimaryHandItem(), player:getSecondaryHandItem()
+    if primary == aim.primary and secondary == aim.secondary and multiplier == aim.multiplier then
+        return
+    end
+    aim.primary, aim.secondary, aim.multiplier = primary, secondary, multiplier
+    local want = multiplier < 1 and isRanged(primary) and primary or nil
+    for _, item in ipairs({ aim.lowered, primary, secondary }) do
+        if isWeapon(item) and item ~= want then
+            Effects.restoreAim(item)
+        end
+    end
+    if want then
+        local data = want:getModData()
+        if data[Effects.AIM_KEY] == nil then
+            data[Effects.AIM_KEY] = want:getHitChance()
+        end
+        want:setHitChance(math.floor(data[Effects.AIM_KEY] * multiplier + 0.5))
+    end
+    aim.lowered = want
+end
+
+-- Last Chance Epinephrine: extra movement on top of this frame's animation movement (collision still
 -- resolves afterwards). Only while walking or running on foot. getDeferredMovement and moveUnmodded aren't used by
 -- vanilla Lua, so the first error turns the boost off for the session.
 Effects.MAX_BOOST = 0.25
@@ -173,11 +232,12 @@ local function applyBoost(player, boost)
 end
 
 -- Movement: the server's resolved speed multiplier and sprint block (low blood, diseases; Core/ClientEffects). Both
--- are put back once, when nothing slows or blocks the character any more. v0.9's setCanSprint doesn't exist in
--- 42.21; setAllowSprint does. Then the attack speed and movement boost above.
+-- are put back once, when nothing slows or blocks the character any more (setAllowSprint; 42.21 has no
+-- setCanSprint). Then the attack speed and movement boost above.
 local slowed = {}
 local sprintBlocked = {}
 local stims = {}
+local aims = {}
 
 Events.OnPlayerUpdate.Add(function(player)
     local key = PlayerKey.of(player)
@@ -197,6 +257,8 @@ Events.OnPlayerUpdate.Add(function(player)
     end
     stims[key] = stims[key] or {}
     Effects.applyAttackSpeed(stims[key], player, effects and tonumber(effects.attackSpeed) or 1)
+    aims[key] = aims[key] or {}
+    Effects.applyAim(aims[key], player, effects and tonumber(effects.aim) or 1)
     applyBoost(player, effects and tonumber(effects.boost) or 1)
 end)
 

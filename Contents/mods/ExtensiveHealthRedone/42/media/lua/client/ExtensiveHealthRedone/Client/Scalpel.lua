@@ -1,6 +1,6 @@
 -- Scalpel Master on an MP client: the same main-hand tracking as the authority (Server/Scalpel, Game/Scalpel) for the
 -- local players, so the client's copy of the scalpel has the values the server computes, whichever side computes a
--- melee hit in 42.21 MP (unverified). Equip events update at once; every tick checks the main hand (one getter per
+-- melee hit in 42.21 MP. Equip events update at once; every tick checks the main hand (one getter per
 -- local player); about once a real second a full pass re-evaluates the held scalpel (a trait synced later).
 -- The swing guard also covers remote attackers' scalpels on this client.
 -- Single player has no separate client: the authority there tracks the local players itself, so this file stops.

@@ -1,6 +1,6 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- The medicine recipes, recipe learning and the clean bandage pack (Phase 8), against our recipe scripts:
+-- The medicine recipes, recipe learning and the clean bandage pack, against our recipe scripts:
 --   * the fresh-herb OnTest is our own global, every OnTest/OnCreate a script names exists, and the herbs it checks
 --     are exactly the perishable ones the herb recipes take (vanilla DaysFresh, when the game is found);
 --   * the auto-learned, supply and taught recipe sets match Crafting/Data, the Ultimate guide and the professions;
@@ -121,7 +121,7 @@ describe("medicine recipe scripts", function()
     end
 
     -- The crafting window shows getText("IGUI_CraftingCategories_" .. category with its first letter upper-cased)
-    -- (vanilla ISWidgetRecipeCategories); a category without the key shows the raw key (found in game, Phase 8).
+    -- (vanilla ISWidgetRecipeCategories); a category without the key shows the raw key.
     it("name every crafting category in every language (or use one of vanilla's)", function()
         local vanillaCategories = { Assembly = true, Carving = true, Cooking = true, Medical = true, Packing = true,
             Tools = true, Miscellaneous = true, Outdoors = true }

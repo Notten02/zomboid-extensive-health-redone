@@ -1,8 +1,8 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- Offline synthetic load (Phase 9, docs/porting/phase9/server-authority-and-load-test.md section 2.7): N fake players
--- through the real server wiring in single-player mode against tests/support/fake_game.lua, each with conditions,
--- medication, low blood, a wound infection and a transfusion, then a stretch of game time. It prints CPU time per
+-- Offline synthetic load: N fake players through the real server wiring in single-player mode against
+-- tests/support/fake_game.lua, each with conditions, medication, low blood, a wound infection and a transfusion, then
+-- a stretch of game time. It prints CPU time per
 -- game minute and sync bytes, and asserts generous budgets plus linear growth with N.
 --
 -- Tagged #load: `tools/test.sh --exclude-tags=load` skips it, `tools/test.sh --tags=load` runs only it.

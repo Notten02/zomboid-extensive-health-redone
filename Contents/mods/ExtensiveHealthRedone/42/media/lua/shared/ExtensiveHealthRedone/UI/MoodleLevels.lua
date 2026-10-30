@@ -1,9 +1,10 @@
 -- The levels (0 hidden, 1-4) of EHR's five moodles, from the client's mirrored state. Pure; Client/Moodles shows them
--- through MoodleFramework. docs/porting/phase7/tooltips-moodles-watch.md, Part B, with the Phase 7 defaults:
---   Medical Alert  the worst of: each active condition's stage (sepsis one higher, v0.9), the worst infected wound's
+-- through MoodleFramework:
+--   Medical Alert  the worst of: each active condition's stage (sepsis one higher), the worst infected wound's
 --                  stage, side effects (1 for one, 2 for several). Knox counts only once symptomatic (stage 2+) and at
---                  its stage, so the alert never reveals a fresh bite (v0.9 forced level 4 at once, bug A8).
---   Corpse         the corpse meter: 1 low, 2 medium (Exposure bands, W15), 3 from the hourly risk, 4 when certain
+--                  its stage, so the alert never reveals a fresh bite.
+--                  Conditions defined with alert = false never count (add-on conditions, Conditions/Registration).
+--   Corpse         the corpse meter: 1 low, 2 medium (Exposure bands), 3 from the hourly risk, 4 when certain
 --   Cadaveric      the spore meter: 1 from 1, 2 from 72, 3 from 102, 4 at 120 (certain); hidden once the disease runs
 --   Heat           the heat meter share: 1 from 5 %, 2 from 50 %, 3 from 85 %; 4 while heat stroke runs
 --   Cold           the cold meter: 1 from 5, 2 from 50, 3 from 85; hidden while a cold or pneumonia runs
@@ -13,6 +14,7 @@
 
 local Text = require "ExtensiveHealthRedone/UI/Text"
 local Exposure = require "ExtensiveHealthRedone/Diseases/Corpse/Exposure"
+local defs = require "ExtensiveHealthRedone/Conditions/Registry"
 
 local MoodleLevels = {}
 
@@ -57,7 +59,8 @@ function MoodleLevels.medical(conditions, wounds, meds)
     local level, diseases = 0, 0
     for id, c in pairs(conditions and conditions.active or {}) do
         local stage = tonumber(c.stage) or 1
-        if id ~= MoodleLevels.KNOX or stage >= MoodleLevels.KNOX_FROM_STAGE then
+        local silent = defs[id] ~= nil and defs[id].alert == false
+        if not silent and (id ~= MoodleLevels.KNOX or stage >= MoodleLevels.KNOX_FROM_STAGE) then
             diseases = diseases + 1
             level = math.max(level, id == "sepsis" and stage + 1 or stage)
         end

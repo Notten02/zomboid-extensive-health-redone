@@ -1,7 +1,8 @@
--- Blood numbers. Sources: docs/porting/phase3/blood.md (v0.9 EHR_Blood.lua), unless marked "ours".
+-- Blood numbers.
 --
--- Time base: v0.9 ran blood once per real second ("an update"). We run per game minute. With the default 1-hour day,
--- one real second is 0.4 game minutes, so a v0.9 per-update amount is UPDATES_PER_MINUTE times that per game minute.
+-- Time base: amounts "per update" follow the original mod, which ran blood once per real second. We run per game
+-- minute. With the default 1-hour day, one real second is 0.4 game minutes, so a per-update amount is
+-- UPDATES_PER_MINUTE times that per game minute.
 -- Sandbox options are read at run time; their defaults live in sandbox-options.txt.
 
 return {
@@ -27,10 +28,9 @@ return {
     PART_DEFAULT = 0.8,
 
     -- Stages: 4 healthy, 3 mild, 2 moderate, 1 critical. Thresholds are sandbox options (85/80/70 %).
-    -- Endurance ceiling per stage (ours: v0.9's endurance setter did not exist in B42, so it never had an effect;
-    -- the checklist asks for growing penalties with no endurance at Critical).
+    -- Endurance ceiling per stage: growing penalties, no endurance at Critical.
     ENDURANCE_CEILING = { [3] = 0.75, [2] = 0.5, [1] = 0 },
-    -- Movement speed multiplier per stage, applied by the owning client (v0.9 setSpeedMod values).
+    -- Movement speed multiplier per stage, applied by the owning client.
     SPEED = { [4] = 1.0, [3] = 1.0, [2] = 0.8, [1] = 0.5 },
     -- Random lines: "1 in N" per update, scaled by DialogueFrequency.
     LIGHTHEADED_ONE_IN = 400,
@@ -43,7 +43,7 @@ return {
     -- Blackout at Critical: forced sleep, rolled 1 in BlackoutChance per update.
     BLACKOUT_HOURS = 1,
     BLACKOUT_GATE = 0.5,        -- panic or stress above this share of the range prevents it (unless beta blocker)
-    BLACKOUT_GRACE = 3,         -- game minutes before "not asleep" counts as waking (MP latency; ours)
+    BLACKOUT_GRACE = 3,         -- game minutes before "not asleep" counts as waking (MP latency)
 
     -- Death.
     DEATH_INSTANT = 0.05,
@@ -81,12 +81,11 @@ return {
     DRAW_MINIMUM = 0.80,
     DRAW_FATIGUE = 0.15,
     DRAW_ENDURANCE = 0.2,
-    -- A lab blood sample (Zombie Virus Vaccine's syringe draw, Server/ZVirusVaccine): ours, a few mL of 5000.
+    -- A lab blood sample (Zombie Virus Vaccine's syringe draw, Server/ZVirusVaccine): a few mL of 5000.
     SAMPLE_ML = 50,
     SAMPLE_MINIMUM = 0.5,
     SALINE_THIRST = 0.1,
-    -- Incompatible blood: immediate reaction (fractions of range; v0.9 meant these on 0-1 scales and clamped
-    -- 0-100 stats to 1, so we use its intended values).
+    -- Incompatible blood: immediate reaction (fractions of range).
     INCOMPATIBLE = { SICKNESS = 0.18, FOOD_SICKNESS = 0.12, PANIC = 0.35, PAIN = 0.12, lossMl = 150 },
     -- Stale bag: spoiled-blood reaction on top of the transfusion.
     STALE = {
@@ -102,8 +101,8 @@ return {
     -- Spoilage, in warm game hours (frozen time doesn't count).
     STALE_HOURS = 1.0,
     ROTTEN_HOURS = 2.0,
-    SPOILAGE_KEY = "EHR_BloodSpoilage",     -- item modData, v0.9 format (save compatible)
-    DONOR_KEY = "EHR_DonorBloodType",       -- item modData, v0.9 wrote it; we write it too
+    SPOILAGE_KEY = "EHR_BloodSpoilage",     -- item modData, the original mod's format (save compatible)
+    DONOR_KEY = "EHR_DonorBloodType",       -- item modData, as the original mod wrote it
 
     -- Blood type knowledge for compatibility hints: the flyer's knowledge ID, or First Aid at least this level.
     KNOWLEDGE_ID = "blood_types",

@@ -1,4 +1,4 @@
--- The Phase 4 disease groups, in a fixed order. Each returns { conditions = { [id] = def }, systems = { ... } }.
+-- The disease groups, in a fixed order. Each returns { conditions = { [id] = def }, systems = { ... } }.
 
 return {
     require "ExtensiveHealthRedone/Diseases/Shared/Group",

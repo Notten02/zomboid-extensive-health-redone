@@ -19,15 +19,15 @@ require "ExtensiveHealthRedone/Server/Weather"
 require "ExtensiveHealthRedone/Server/Corpse"
 require "ExtensiveHealthRedone/Server/Mind"
 require "ExtensiveHealthRedone/Server/Knox"
-require "ExtensiveHealthRedone/Server/ZVirusVaccine"    -- Phase 10: Zombie Virus Vaccine ties (blood sample, Knox test)
+require "ExtensiveHealthRedone/Server/ZVirusVaccine"    -- Zombie Virus Vaccine ties (blood sample, Knox test)
 require "ExtensiveHealthRedone/Server/Medication"
 require "ExtensiveHealthRedone/Server/Immunity"
 require "ExtensiveHealthRedone/Server/Temperature"
 require "ExtensiveHealthRedone/Server/IndoorClimate"
-require "ExtensiveHealthRedone/Server/Lifestyle"        -- Phase 10: Lifestyle: Hobbies recovery pace and bathing
+require "ExtensiveHealthRedone/Server/Lifestyle"        -- Lifestyle: Hobbies recovery pace and bathing
 require "ExtensiveHealthRedone/Server/Watch"
 require "ExtensiveHealthRedone/Server/DebugItems"
--- Phase 8: world content.
+-- World content.
 require "ExtensiveHealthRedone/Server/Loot"
 require "ExtensiveHealthRedone/Server/Flyers"
 require "ExtensiveHealthRedone/Server/Radio"
@@ -35,17 +35,16 @@ require "ExtensiveHealthRedone/Server/Recipes"
 require "ExtensiveHealthRedone/Server/WildSearch"
 require "ExtensiveHealthRedone/Server/Professions"
 require "ExtensiveHealthRedone/Server/Scalpel"
--- Phase 9: load-test commands (debug.perf, debug.perfReport, debug.perfLoad).
+-- Load-test commands (debug.perf, debug.perfReport, debug.perfLoad).
 require "ExtensiveHealthRedone/Server/Perf"
-require "ExtensiveHealthRedone/Server/TemperatureProbe"   -- Phase 6 diagnostic, temporary
--- Phase 9: admin commands (/ehrfullheal, /ehrreset, /ehrinspect) and the debug menu's full heal.
+-- Admin commands (/ehrfullheal, /ehrreset, /ehrinspect) and the debug menu's full heal.
 require "ExtensiveHealthRedone/Server/Admin"
 
 local log = Env.logger("Server")
 
 local Main = {}
 
--- Sync: a client asks for a full snapshot when it joins or when its mirror is stale. 2 per 10 s (SA-12): the client
+-- Sync: a client asks for a full snapshot when it joins or when its mirror is stale. 2 per 10 s: the client
 -- asks at most every 3 s, and a refused hello is simply asked again on the next delta.
 Runtime.registry:register("sync.hello", {
     args = { v = { type = "number" } },
@@ -60,7 +59,7 @@ Runtime.registry:register("sync.hello", {
 })
 
 -- Debug commands: sandbox DebugMode plus the medicalAdmin permission (see Game/Permissions).
--- skipTime runs its steps synchronously, so one call is capped at 24 h (1440 steps; SA-13): send it again for more.
+-- skipTime runs its steps synchronously, so one call is capped at 24 h (1440 steps): send it again for more.
 Runtime.registry:register("debug.skipTime", {
     args = { minutes = { type = "number", min = 1, max = 24 * 60, integer = true } },
     access = "medicalAdmin",

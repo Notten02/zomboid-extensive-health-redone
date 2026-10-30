@@ -3,10 +3,9 @@
 -- a bee or spider, and grab, within 48 s. The server rolled and keeps what the tree holds; it only answers with the
 -- counts (the scene here is cosmetic, Wild/HiveScene), gives an item per accepted grab, and hurts the hand when this
 -- client reports a touch (Server/WildSearch).
--- From v0.9 c/EHR_HiveWebSearch.lua (docs/porting/phase8/herbal-and-hive-minigames.md sections 5, 7, 13.3, 13.8).
--- Changes: touches are tested along the hand's path (H18); the menu answers the controller's test pass and a
--- controller plays with the left stick (hand at a fixed speed), A to start or grab and B to cancel (H19); result and
--- injury lines are spoken here (H10).
+-- Touches are tested along the hand's path; the menu answers the controller's test pass and a controller plays with
+-- the left stick (hand at a fixed speed), A to start or grab and B to cancel; result and injury lines are spoken here
+-- (a server-side Say doesn't reach the player in MP).
 
 require "ISUI/ISPanel"
 require "ISUI/ISButton"

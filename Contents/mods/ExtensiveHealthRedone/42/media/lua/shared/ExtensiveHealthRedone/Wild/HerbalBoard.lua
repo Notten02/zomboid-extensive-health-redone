@@ -1,9 +1,7 @@
 -- Medicinal plant search rules: the hidden board, picks, quality, and what a finished search finds. Pure: the random
 -- source (rng.int(lo, hi), rng.float()) and item existence are passed in. Server/WildSearch keeps the board, so a
 -- client only learns a cell's kind when it picks it.
--- From v0.9 c/EHR_HerbalSearch.lua:328-407 and sv/EHR_HerbalSearchServer.lua:272-555 (docs/porting/phase8/
--- herbal-and-hive-minigames.md sections 2-3). Changes: quality comes from the server's own counts and is not latched
--- to the best value seen (H2, H8); an Excellent run finds two herbs; the pools are weighted (H20).
+-- Quality comes from the server's own counts; an Excellent run finds two herbs; the pools are weighted.
 
 local Data = require("ExtensiveHealthRedone/Data/WildSearch").herb
 

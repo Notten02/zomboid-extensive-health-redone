@@ -1,10 +1,9 @@
 -- The heat-stroke cold bath: a "Take Cold Bath" option on a bathtub while the character has heat stroke, and a timed
 -- action that sits in the tub until the server says the 3 hours are done (or the heat stroke is gone). The server
 -- checks the tub, the water and the distance, and decides the cure (Server/Weather, Diseases/Weather/Exposure).
--- From v0.9 EHR_HeatStrokeBath.lua (docs/porting/phase4/environmental.md, section 4.7). With Lifestyle: Hobbies the
--- character climbs into the tub with Lifestyle's own animations (Bob_Tub_Enter, then Bob_Tub_Base after 8 % of the
--- bath), stands at Lifestyle's tub positions and is put back where it stood afterwards; the bath also counts as
--- Lifestyle's cold bath (Phase 10). Without Lifestyle, the plain "Loot" animation facing the tub.
+-- With Lifestyle: Hobbies the character climbs into the tub with Lifestyle's own animations (Bob_Tub_Enter, then
+-- Bob_Tub_Base after 8 % of the bath), stands at Lifestyle's tub positions and is put back where it stood afterwards;
+-- the bath also counts as Lifestyle's cold bath. Without Lifestyle, the plain "Loot" animation facing the tub.
 
 require "TimedActions/ISBaseTimedAction"
 
@@ -25,7 +24,7 @@ local SUB = {
     fixtures_bathroom_01_53 = true, fixtures_bathroom_01_54 = true,
 }
 local HEARTBEAT_MINUTES = 5
--- Share of the bath after which the character settles from climbing in to sitting (v0.9).
+-- Share of the bath after which the character settles from climbing in to sitting.
 local SETTLE_AT = 0.08
 
 local function spriteName(object)

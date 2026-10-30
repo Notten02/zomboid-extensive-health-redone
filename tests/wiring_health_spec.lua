@@ -172,7 +172,7 @@ insulate("single-player wiring: blood and wounds", function()
         state(doctor).conditions.active.tetanus = nil
     end)
 
-    describe("stitching (Phase 9: SA-1 to SA-3)", function()
+    describe("stitching", function()
         local Exam = require("ExtensiveHealthRedone/Server/Exam")
         local Runtime = require("ExtensiveHealthRedone/Server/Runtime")
         local needle

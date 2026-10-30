@@ -1,6 +1,4 @@
--- The medication database: every medication defined once, by item full type. Reconciled from v0.9's Database,
--- DosingSchedules, per-disease treatment lists and item scripts (docs/porting/phase5/medication-database.md) with the
--- maintainer's Phase 5 decisions (docs/parity-checklist.md section 14). Hours are game hours.
+-- The medication database: every medication defined once, by item full type. Hours are game hours.
 --
 -- An entry:
 --   id          short name, used in state (state.meds) and logs
@@ -22,18 +20,21 @@
 --   side        side effects applied by every dose (Medication/SideEffects)
 --   now         { [STAT] = fraction of its range } added once at the dose (antidepressant mood relief)
 --   early       what a dose does while the previous one is active and not due: "refuse" or "waste". Course doses
---               taken before their interval are always wasted (maintainer, Phase 5)
+--               taken before their interval are always wasted
 --   earlyLine   what the character says then
 --   overdose    an early dose overdoses (Medication/Overdose)
 --   supply      "syringe" or "ivKit": one is used from the giver's inventory
 --   needsWound  only with an open wound; needs = condition that must be active (ice pack: heat stroke)
 --   option      a sandbox option that must not be false (refused otherwise, Medication/Doses)
---   addiction   counts toward painkiller addiction (W18: Base.Pills only)
+--   addiction   counts toward painkiller addiction (Base.Pills only)
 --   category    for drug interactions (Medication/Interactions); by item, so homemade twins and IV drugs count
 --   remote      false: can't be given to another player (of vanilla-route items only Data.giveVanilla can be)
 --   silent      no line and no First Aid XP (everyday drinks: tea, water)
 --   line        what the character says on a dose
 --   woundStep   vanilla antibiotics: infected wounds drop one stage per dose (Wounds/Infection.antibiotics)
+--   course      true: doses run as a course (interval, waste, abandon) even without cures (add-on supplements)
+
+local Tables = require "ExtensiveHealthRedone/Core/Tables"
 
 local Data = {}
 
@@ -44,7 +45,7 @@ Data.TIER_RELIEF = { [0] = 0.15, [1] = 0.40, [2] = 0.60, [3] = 0.80 }
 Data.GENERAL_KEY = { food_poisoning = true, gastroenteritis = true, toxin_poisoning = true, trichinosis = true,
     dysentery = true }
 
--- Module conditions v0.9 gave no tier relief (they never read its multiplier).
+-- Module conditions that get no tier relief.
 Data.NO_TIER = { woundInfection = true, sepsis = true }
 
 -- Action length in ticks by route, the animation, and the tooltip route name (UI_EHR_MedAction_AdminType_*).
@@ -59,10 +60,10 @@ Data.ROUTES = {
     emergency = { ticks = 60, anim = "loot" },
 }
 
--- A course dose counts from this share of its interval on (ours, Phase 5: v0.9's 3 game minutes were about 7 real
--- seconds at the default day length). Earlier, it is wasted, and on the overdose list it overdoses.
+-- A course dose counts from this share of its interval on. Earlier, it is wasted, and on the overdose list it
+-- overdoses.
 Data.DUE_SHARE = 0.9
--- A course whose next dose is this late (past due) is abandoned: max(24, min(72, 3 x interval)) hours (v0.9).
+-- A course whose next dose is this late (past due) is abandoned: max(24, min(72, 3 x interval)) hours.
 function Data.abandonHours(interval)
     return math.max(24, math.min(72, 3 * interval))
 end
@@ -97,13 +98,13 @@ M["Base.PillsAntiDep"] = {
     early = "refuse", earlyLine = T .. "TheAntidepressantDoseIsStillActive", overdose = true,
     category = "antidepressant", line = T .. "YouTakeAntidepressantsTheEdgeSoftensALittle",
 }
--- W8: no medicine helps hypothermia. The low-blood penalty is Phase 3's (Blood/Blood.lua).
+-- No medicine helps hypothermia. The low-blood penalty is in Blood/Blood.lua.
 M["Base.PillsBeta"] = {
     id = "BetaBlockers", name = "UI_EHR_Med_BetaBlockers", route = "pill", vanilla = "pill", tier = 0,
     active = 2, flags = { "betaBlocker" }, category = "betaBlocker",
     line = T .. "YouTakeBetaBlockersYourHeartRateStabilizes",
 }
--- Vanilla's single-dose food item (maintainer, Phase 5): one wound-infection stage per dose and minor help for
+-- Vanilla's single-dose food item: one wound-infection stage per dose and minor help for
 -- sepsis and pneumonia.
 M["Base.Antibiotics"] = {
     id = "Antibiotics", name = "UI_EHR_Med_Antibiotics", route = "pill", vanilla = "eat", tier = 0,
@@ -118,8 +119,8 @@ M["Base.HotDrinkTea"] = {
 M["Base.HotDrinkTeaCeramic"] = {
     id = "TeaCeramic", route = "liquid", vanilla = "eat", tier = 0, active = 3, flags = { "sleepTea" }, silent = true,
 }
--- Drinking water (any container, or a world source: see Server/Medication) helps heat exhaustion a little
--- (maintainer, Phase 5). Not an item: keyed by the fluid.
+-- Drinking water (any container, or a world source: see Server/Medication) helps heat exhaustion a little. Not an
+-- item: keyed by the fluid.
 M["Fluid.Water"] = {
     id = "Water", route = "liquid", vanilla = "drink", tier = 0, active = 1,
     reliefFor = { heat_exhaustion = { dehydration = 0.10 } }, silent = true,
@@ -176,7 +177,7 @@ M["ExtensiveHealth.CoughSuppressant"] = {
     active = 6, treats = COUGHS, relief = { coughing = 0.45 }, category = "coughSuppressant",
     line = T .. "YouTakeCoughSuppressantTheUrgeToCoughFades",
 }
--- Heat exhaustion relief is ours (W9: the guide says electrolytes and rehydration help it).
+-- Heat exhaustion relief: the guide says electrolytes and rehydration help it.
 M["ExtensiveHealth.ElectrolytePowder"] = {
     id = "ElectrolytePowder", name = "UI_EHR_Med_ElectrolytePowder", route = "liquid", tier = 1,
     active = 0.5, treats = { "dysentery", "food_poisoning", "gastroenteritis", "toxin_poisoning", "heat_stroke",
@@ -205,7 +206,7 @@ M["ExtensiveHealth.AntiInflammatory"] = {
     relief = { inflammation = 0.50, pain = 0.55, fever = 0.30 }, category = "antiInflammatory",
     line = T .. "YouTakeAntiInflammatoryPillsSwellingBeginsTo",
 }
--- W30: relief never lifts dysentery's caps. v0.9's x0.35 thirst drain is kept as dehydration relief.
+-- Relief never lifts dysentery's caps. The x0.35 thirst drain counts as dehydration relief.
 M["ExtensiveHealth.AntiDiarrheal"] = {
     id = "AntiDiarrheal", name = "UI_EHR_Med_AntiDiarrhealTablets", route = "pill", tier = 1,
     active = 6, treats = { "dysentery" }, relief = { diarrhea = 0.85, dehydration = 0.65, bathroomNeed = 0.85 },
@@ -221,7 +222,7 @@ M["ExtensiveHealth.HomemadeMuscleRelaxant"] = {
     active = 8, treats = { "tetanus", "trichinosis" }, relief = { muscleSpasms = 0.40, pain = 0.30 },
     category = "muscleRelaxant", line = T .. "YouTakeTheHomemadeMuscleRelaxantTheCrampingEases",
 }
--- W18: herbal, so no addiction. Behaves like vanilla painkillers: pain to zero over 30 minutes, none for 3 h.
+-- Herbal, so no addiction. Behaves like vanilla painkillers: pain to zero over 30 minutes, none for 3 h.
 M["ExtensiveHealth.HomemadePainkillers"] = {
     id = "HomemadePainkillers", name = "UI_EHR_Med_HomemadePainkillers", route = "pill", tier = 0,
     active = 3, flags = { "analgesic" }, effects = { { id = "painkiller", hours = 3, fadeMinutes = 30 } },
@@ -270,7 +271,7 @@ M["ExtensiveHealth.LastChanceEpinephrine"] = {
     effects = { { id = "lastChance", hours = 1 } }, category = "epinephrine",
     line = T .. "YouTriggerTheAutoInjectorAdrenalineFloodsYour",
 }
--- W6: a stimulant that wakes the character, also from a blackout (so it is mostly given by another player).
+-- A stimulant that wakes the character, also from a blackout (so it is mostly given by another player).
 M["ExtensiveHealth.Epinephrine"] = {
     id = "Epinephrine", name = "UI_EHR_Med_EpinephrineAutoInjector", route = "emergency", tier = 3,
     active = 6, effects = { { id = "epinephrine", hours = 0 } }, side = { "headache", "insomnia" },
@@ -285,7 +286,7 @@ M["ExtensiveHealth.InstantIcePack"] = {
     line = T .. "YouCrackAnInstantIcePackAndStartCoolingDown",
 }
 
--- Warming Pack: toward 37 deg C at 3.2 deg C/h for 2 h, never above (Body/Temperature, v0.9 M:799-816). Refused
+-- Warming Pack: toward 37 deg C at 3.2 deg C/h for 2 h, never above (Body/Temperature). Refused
 -- while BodyTemperatureEnabled is off, since it would do nothing.
 M["ExtensiveHealth.WarmingPack"] = {
     id = "WarmingPack", name = "UI_EHR_Med_WarmingPack", route = "emergency", tier = 1,
@@ -447,7 +448,7 @@ M["ExtensiveHealth.IVAmphotericin"] = {
     side = { "fever", "kidney_stress", "fatigue" }, category = "ivAntifungal",
     line = T .. "YouAdministerIVAmphotericinThisAntifungalIs",
 }
--- W7: a toxin-poisoning cure.
+-- A toxin-poisoning cure.
 M["ExtensiveHealth.ChelationKit"] = {
     id = "ChelationKit", name = "UI_EHR_Med_ChelationTherapyKit", route = "iv", tier = 3,
     active = 4, cures = { toxin_poisoning = 24 }, supply = "ivKit", side = { "headache", "fatigue", "nausea" },
@@ -486,7 +487,13 @@ M["ExtensiveHealth.EmergencySepsisKit"] = {
 -- Indexes ----------------------------------------------------------------------------------------------------------------
 
 Data.byId = {}
-for fullType, med in pairs(M) do
+-- Items our own inventory option takes (not consumed by a vanilla action), as a set for the command registry.
+Data.ownRoute = {}
+-- Items a vanilla action consumes, by action: { pill = { [fullType] = true }, eat = { ... } }.
+Data.vanillaRoute = { pill = {}, eat = {}, drink = {} }
+
+-- Fills in the derived fields of one entry and adds it to every index.
+local function index(fullType, med)
     med.fullType = fullType
     med.doses = med.doses or 1
     med.interval = med.interval or 0
@@ -516,13 +523,6 @@ for fullType, med in pairs(M) do
         error("duplicate medication id " .. med.id)
     end
     Data.byId[med.id] = med
-end
-
--- Items our own inventory option takes (not consumed by a vanilla action), as a set for the command registry.
-Data.ownRoute = {}
--- Items a vanilla action consumes, by action: { pill = { [fullType] = true }, eat = { ... } }.
-Data.vanillaRoute = { pill = {}, eat = {}, drink = {} }
-for fullType, med in pairs(M) do
     if med.vanilla then
         Data.vanillaRoute[med.vanilla][fullType] = true
     else
@@ -530,7 +530,36 @@ for fullType, med in pairs(M) do
     end
 end
 
--- Vanilla-route items a doctor may give another player (Phase 9 decision; v0.9 could): our action gives the dose
+for _, fullType in ipairs(Tables.sortedKeys(M)) do
+    index(fullType, M[fullType])
+end
+
+-- Adds an add-on mod's medication (an entry as described at the top) for its own item. Call it from the add-on's
+-- shared code at load, so the client's inventory option knows it too. Errors on a known item or id, or a vanilla
+-- route other than pill, eat or drink. An add-on supplement that only tracks its doses sets course = true (a course
+-- without cures, Medication/Doses) and reacts to each dose with Doses.onDose.
+function Data.register(fullType, med)
+    if type(fullType) ~= "string" or not fullType:match("^[%w_]+%.[%w_]+$") then
+        error("medications are registered by item full type: " .. tostring(fullType), 2)
+    end
+    if M[fullType] then
+        error("medication for " .. fullType .. " is already registered", 2)
+    end
+    if type(med) ~= "table" or type(med.id) ~= "string" or not Data.ROUTES[med.route] then
+        error("medication " .. fullType .. " needs an id and a known route", 2)
+    end
+    if med.vanilla and not Data.vanillaRoute[med.vanilla] then
+        error("medication " .. fullType .. ": vanilla must be pill, eat or drink", 2)
+    end
+    if Data.byId[med.id] then
+        error("duplicate medication id " .. med.id, 2)
+    end
+    M[fullType] = med
+    index(fullType, med)
+    return med
+end
+
+-- Vanilla-route items a doctor may give another player: our action gives the dose
 -- (medication.give) with vanilla's own effect. Teas and water stay excluded.
 Data.giveVanilla = {
     ["Base.Pills"] = true,
@@ -551,6 +580,12 @@ function Data.curesAnything(med)
         return true
     end
     return false
+end
+
+-- Doses are tracked as a course (count, elapsed; Medication/Doses): drugs that cure something, and add-on drugs
+-- registered with course = true.
+function Data.tracksCourse(med)
+    return med.course == true or Data.curesAnything(med)
 end
 
 return Data

@@ -2,7 +2,7 @@
 ---@diagnostic disable: redundant-parameter
 -- The adapter wiring in single-player mode, end to end against tests/support/fake_game.lua: transport, presence,
 -- the scheduler, the simulation pipeline, the stat writer, sync to the client mirror, the importer on first load,
--- and the debug command gates. In-game testing is still needed; this catches wiring mistakes early.
+-- and the debug command gates. It catches wiring mistakes before the game does.
 
 insulate("single-player wiring", function()
     local FakeGame = require("support/fake_game")
@@ -81,7 +81,7 @@ insulate("single-player wiring", function()
         assert.same({ "debug_only", "unknown_command", "bad_args" }, rejected)
     end)
 
-    it("logs rejections at most once per 10 s per sender, with long command names cut (SA-11 to SA-13)", function()
+    it("logs rejections at most once per 10 s per sender, with long command names cut", function()
         game.realMs = game.realMs + 11000
         local before = #game.printed
         local long = string.rep("x", 300)

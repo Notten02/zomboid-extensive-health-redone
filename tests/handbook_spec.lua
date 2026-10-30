@@ -71,7 +71,7 @@ local function render(t)
 end
 
 describe("handbook", function()
-    it("lists the 23 in-scope diseases in v0.9's order, without tuberculosis", function()
+    it("lists the 23 diseases in v0.9's order, without tuberculosis", function()
         local model = Handbook.build(knowledge(), 0, defs, sandbox())
         assert.equal(23, model.total)
         assert.equal(23, #model.entries)
@@ -104,7 +104,7 @@ describe("handbook", function()
         assert.is_nil(e.sections)
     end)
 
-    it("unlocks a disease from its flyer, including the Phase 3 conditions and wound infection", function()
+    it("unlocks a disease from its flyer, including cellulitis, sepsis, tetanus, AHTR and wound infection", function()
         local k = knowledge({ diseases = { sepsis = true, cellulitis = true, tetanus = true, ahtr = true,
             wound_infection = true, trichinosis = true } })
         local model = byId(Handbook.build(k, 0, defs, sandbox()))

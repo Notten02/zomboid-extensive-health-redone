@@ -1,6 +1,5 @@
--- The look of our panels (EHR Monitor, Immune System, handbook): v0.9's "worn medical device" palette and drawing
+-- The look of our panels (EHR Monitor, Immune System, handbook): a "worn medical device" palette and drawing
 -- helpers, on any ISUIElement. Colour names are also what the view models (UI/*) use.
--- From docs/porting/phase7/monitor-panel.md section 4 and immune-tab-and-journal.md 1.5.
 
 local Draw = {}
 
@@ -145,12 +144,16 @@ function Draw.swatch(ui, x, y, color)
     ui:drawRect(x, y, 8, 8, 1, c[1], c[2], c[3])
 end
 
--- The width of every tab of the tab panel a view sits in (vanilla's character window), so our views never make the
--- tab strip scroll; 0 outside a tab panel.
+-- Room left beside the last tab of vanilla's character window, so a full tab strip doesn't look cramped (and at
+-- least 1 pixel, or the strip shows a needless scroll arrow).
+Draw.TAB_SPARE = 16
+
+-- The width of every tab of the tab panel a view sits in (vanilla's character window) plus TAB_SPARE, so our views
+-- never make the tab strip scroll; 0 outside a tab panel.
 function Draw.tabsWidth(view)
     local panel = view.parent --[[@as ISTabPanel?]]
     if panel and panel.getWidthOfAllTabs then
-        return panel:getWidthOfAllTabs()
+        return panel:getWidthOfAllTabs() + Draw.TAB_SPARE
     end
     return 0
 end

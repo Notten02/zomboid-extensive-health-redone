@@ -30,6 +30,8 @@ local IndoorClimate = require "ExtensiveHealthRedone/Game/IndoorClimate"
 local BodyFacts = require "ExtensiveHealthRedone/Game/BodyFacts"
 local BodyParts = require "ExtensiveHealthRedone/Data/BodyParts"
 local defs = require "ExtensiveHealthRedone/Conditions/Registry"
+local Schema = require "ExtensiveHealthRedone/Core/Schema"
+
 local Monitor = require "ExtensiveHealthRedone/UI/Monitor"
 local BodyStatus = require "ExtensiveHealthRedone/UI/BodyStatus"
 local Client = require "ExtensiveHealthRedone/Client/Client"
@@ -104,7 +106,8 @@ local MonitorView = ISPanelJoypad:derive("ExtensiveHealthRedoneMonitorView")
 
 -- Reading the game ------------------------------------------------------------------------------------------------
 
--- The mirror sections, or nil before the first snapshot.
+-- The mirror sections, or nil before the first snapshot. Add-on sections shown in the exam (exam = true) come along
+-- for their row providers when the mirror has them.
 local function mirrored(player)
     local state = {}
     for _, name in ipairs(SECTIONS) do
@@ -113,8 +116,14 @@ local function mirrored(player)
             return nil
         end
     end
+    for name, spec in pairs(Schema.ADDONS) do
+        if spec.exam then
+            state[name] = Client.section(player, name)
+        end
+    end
     return state
 end
+
 
 -- Construction ----------------------------------------------------------------------------------------------------------
 
@@ -187,7 +196,7 @@ function MonitorView:openHandbook()
     Handbook.toggle(self.playerNum, self)
 end
 
--- Vanilla's Health tab (treatment lives there; option B). Not from an exam: that would be the doctor's own.
+-- Vanilla's Health tab (treatment lives there). Not from an exam: that would be the doctor's own.
 function MonitorView:openHealth()
     if self.source then
         return
@@ -426,12 +435,29 @@ function MonitorView:drawBody(x, y, w)
     return y + height + 8
 end
 
+local DESCRIPTION_LINES = 2
+
 -- One condition row; returns its height.
 function MonitorView:drawCondition(row, x, y, w)
     local iconS = 48
     local tx = x + PAD + iconS + PAD
     local tw = w - (tx - x) - PAD
-    local h = PAD + Draw.MEDIUM + (Draw.SMALL + 2) * (row.description and 2 or 1) + 16
+    -- The description wraps to at most DESCRIPTION_LINES lines; the last one is cut to fit.
+    local description = {}
+    if row.description then
+        local lines = Draw.wrap(t(row.description), UIFont.Small, tw)
+        for i = 1, math.min(#lines, DESCRIPTION_LINES) do
+            description[i] = lines[i]
+        end
+        if #lines > DESCRIPTION_LINES then
+            local rest = lines[DESCRIPTION_LINES]
+            for i = DESCRIPTION_LINES + 1, #lines do
+                rest = rest .. " " .. lines[i]
+            end
+            description[DESCRIPTION_LINES] = Draw.fit(rest, UIFont.Small, tw)
+        end
+    end
+    local h = PAD + Draw.MEDIUM + (Draw.SMALL + 2) * (1 + #description) + 16
     Draw.rect(self, x, y, w, h, C.panelSoft, 0.48)
     Draw.border(self, x, y, w, h, C.borderDim)
     local icon = Draw.texture(row.icon)
@@ -452,9 +478,9 @@ function MonitorView:drawCondition(row, x, y, w)
     if row.progressText then
         Draw.text(self, t(row.progressText), x + w - PAD, ly, "dim", UIFont.Small, nil, "right")
     end
-    if row.description then
+    for _, line in ipairs(description) do
         ly = ly + Draw.SMALL + 2
-        Draw.text(self, t(row.description), tx, ly, row.descriptionColor or "dim", UIFont.Small, tw)
+        Draw.text(self, line, tx, ly, row.descriptionColor or "dim", UIFont.Small, tw)
     end
     Draw.bar(self, tx, y + h - 10, tw, 5, row.progress or 0, row.exposure and (row.detailColor or "yellow") or "green")
     return h
@@ -546,7 +572,7 @@ end
 function MonitorView:draw()
     local w = math.max(self.expanded and (LEFT_W + RIGHT_W + PAD) or LEFT_W, Draw.tabsWidth(self))
     -- At least HEIGHT, and tall enough for the left column as last drawn: its boxes grow with the font sizes and the
-    -- overview's lines, and a fixed height cut off the bottom of the body diagram (issue #14).
+    -- overview's lines, and a fixed height cut off the bottom of the body diagram.
     local h = math.max(HEIGHT, self.leftH or 0)
     self:setWidthAndParentWidth(w)
     self:setHeightAndParentHeight(h)

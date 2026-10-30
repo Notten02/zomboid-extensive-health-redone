@@ -1,6 +1,6 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
--- The Phase 4 disease engine features, on synthetic definitions: switches, stage schedules, reverse and driven
+-- The disease engine features, on synthetic definitions: switches, stage schedules, reverse and driven
 -- conditions, persistence and holds, the shared cleanup path, complications, speech pools, knowledge, immunity risk
 -- and the client effects.
 local Engine = require("ExtensiveHealthRedone/Conditions/Engine")
@@ -141,6 +141,19 @@ describe("disease engine", function()
         assert.equal("UI_Stage2", p.said[1])
         assert.equal("UI_Random", p.said[2])
     end)
+
+    it("takes the random line rate by stage when every is a table", function()
+        local function said(every)
+            local defs = { s = { stages = { [1] = { 1, 1 }, [2] = { 100, 100 } }, persistsAt = 2,
+                lines = { random = { [2] = { "UI_Random" } }, every = every } } }
+            local p = Sim.context({ sandbox = { DialogueFrequency = 3 }, float = 0 })
+            contract(p, defs, "s")
+            run(p, defs, 60)
+            return #p.said
+        end
+        assert.is_true(said({ [1] = 60, [2] = 60 }) > 0)
+        assert.equal(0, said({ [1] = 60, [2] = 0 }))
+    end)
 end)
 
 describe("knowledge gating", function()
@@ -208,7 +221,8 @@ describe("client effects", function()
         local section = ClientEffects.defaults()
         assert.is_true(fx:writeTo(section))
         assert.same({ speed = 0.5, noSprint = true, blur = 0.4, tint = 0, noSleep = false, sleepBy = false,
-            attackSpeed = 1, boost = 1, bladder = 0 }, section)
+            attackSpeed = 1, boost = 1, bladder = 0, night = 0, aim = 1 }, section)
+
         assert.is_false(fx:writeTo(section))
         assert.is_true(ClientEffects.new():writeTo(section))
         assert.equal(1, section.speed)

@@ -1,5 +1,5 @@
--- Every condition definition, by id. Phase 3 conditions are Data/Conditions timings merged with their behaviour
--- module; Phase 4 disease groups (Diseases/<Group>/Group.lua) bring complete definitions.
+-- Every condition definition, by id. The wound and blood conditions are Data/Conditions timings merged with their
+-- behaviour module; the disease groups (Diseases/<Group>/Group.lua) bring complete definitions.
 
 local data = require "ExtensiveHealthRedone/Data/Conditions"
 local Groups = require "ExtensiveHealthRedone/Diseases/Groups"

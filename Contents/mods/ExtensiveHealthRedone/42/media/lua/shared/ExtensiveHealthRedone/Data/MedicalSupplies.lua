@@ -1,4 +1,4 @@
--- Item types by role. Homemade supplies work wherever the standard ones do (v0.9 MedicalSupplyTypes).
+-- Item types by role. Homemade supplies work wherever the standard ones do.
 
 local function set(list)
     local s = {}

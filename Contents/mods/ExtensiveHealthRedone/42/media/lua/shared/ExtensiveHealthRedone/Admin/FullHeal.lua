@@ -2,16 +2,19 @@
 -- here and applied by Server/Admin inside Runtime.applyNow. Pure: it changes the state and states its wishes through
 -- p.stats and p.body like any system, so the stat and body writers do the vanilla side.
 --
--- Decision W36 (docs/porting/phase9/README.md), "two commands":
---   "heal"   every health row of the state inventory (docs/porting/phase9/admin-commands.md 5.4) back to normal, the
---            identity kept: blood type, knowledge, permanent Knox immunity and its source, Knox item history (last
---            test, survivor, immunobooster protection and cooldown, Phalanx doses), the immunity score (recomputed on
---            the next step), First Aid XP cooldowns and the re-catch blocks.
+-- Two commands:
+--   "heal"   every health part of the state back to normal, the identity kept: blood type, knowledge, permanent
+--            Knox immunity and its source, Knox item history (last test, survivor, immunobooster protection and
+--            cooldown, Phalanx doses), the immunity score (recomputed on the next step), First Aid XP cooldowns and the
+--            re-catch blocks.
 --   "reset"  the whole state back to a new character's, keeping only meta, blood type, knowledge and permanent Knox
 --            immunity with its source. The vanilla side is the same as a full heal.
 -- Both: an active Knox infection is cured, every condition ends through the engine with the reason "admin" (no First
 -- Aid XP, the normal re-catch blocks), wound infections are cured, every body part is restored, and the needs and
--- health stats are zeroed (v0.9 parity, plus vanilla's Knox infection stats).
+-- health stats are zeroed (with vanilla's Knox infection stats).
+-- Add-on sections (Core/Schema.registerSection): a reset puts them back to their defaults; a heal only those
+-- registered with resetOnHeal. Listeners (FullHeal.onHeal) run last, inside the same step, for anything else an
+-- add-on keeps.
 
 local Schema = require "ExtensiveHealthRedone/Core/Schema"
 local Tables = require "ExtensiveHealthRedone/Core/Tables"
@@ -21,11 +24,23 @@ local KnoxItems = require "ExtensiveHealthRedone/Diseases/Knox/Items"
 
 local FullHeal = {}
 
+local healListeners = {}
+
+-- fn(p, mode) after a full heal or reset ("heal" or "reset") changed the state, before the writers run.
+function FullHeal.onHeal(fn)
+    healListeners[#healListeners + 1] = fn
+end
+
+local function healsAddon(name)
+    local spec = Schema.ADDONS[name]
+    return spec ~= nil and spec.resetOnHeal
+end
+
 -- The source of every wish and the reason conditions end with.
 FullHeal.SOURCE = "admin"
 FullHeal.REASON = "admin"
 
--- Stats driven to the bottom of their range: v0.9's list (needs and health) plus vanilla's Knox infection.
+-- Stats driven to the bottom of their range: needs and health, plus vanilla's Knox infection.
 FullHeal.ZEROED_STATS = {
     "HUNGER", "THIRST", "FATIGUE", "BOREDOM", "UNHAPPINESS", "PAIN", "PANIC", "STRESS", "SICKNESS", "FOOD_SICKNESS",
     "POISON", "ZOMBIE_INFECTION", "ZOMBIE_FEVER",
@@ -84,6 +99,11 @@ local function resetHealth(p)
     for _, name in ipairs(FullHeal.HEAL_SECTIONS) do
         state[name] = Schema.sectionDefaults(name)
     end
+    for _, name in ipairs(Schema.SECTIONS) do
+        if healsAddon(name) then
+            state[name] = Schema.sectionDefaults(name)
+        end
+    end
     local xpCooldown = state.meds.xpCooldown
     state.meds = Schema.sectionDefaults("meds")
     state.meds.xpCooldown = xpCooldown or {}
@@ -114,7 +134,8 @@ function FullHeal.touched(mode)
             if not FullHeal.RESET_KEEPS[name] then
                 list[#list + 1] = name
             end
-        elseif name ~= "meta" and name ~= "identity" and name ~= "knowledge" then
+        elseif name ~= "meta" and name ~= "identity" and name ~= "knowledge"
+            and (not Schema.ADDONS[name] or healsAddon(name)) then
             list[#list + 1] = name
         end
     end
@@ -137,6 +158,10 @@ function FullHeal.apply(p, defs, mode)
     end
     zeroStats(p)
     p.body:fullRestore(FullHeal.SOURCE)
+    for _, fn in ipairs(healListeners) do
+        fn(p, mode)
+    end
+
     for _, name in ipairs(FullHeal.touched(mode)) do
         p.dirty(name)
     end

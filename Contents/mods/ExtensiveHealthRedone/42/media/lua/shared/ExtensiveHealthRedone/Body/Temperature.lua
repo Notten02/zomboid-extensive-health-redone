@@ -3,15 +3,15 @@
 -- inside them on every tick.
 --
 -- Why a hold: in 42.21 TEMPERATURE is the thermoregulator's own core temperature. A single write is half kept on the
--- next tick and then pulled back toward 37 deg C within minutes; writing every tick holds it (the Phase 6 fever probe,
--- phase6-result.md). Vanilla still decides how the air, clothes and wetness heat or cool the body; we only bound it.
+-- next tick and then pulled back toward 37 deg C within minutes; writing every tick holds it. Vanilla still decides
+-- how the air, clothes and wetness heat or cool the body; we only bound it.
 --
 -- Floor, the highest of:
 --   fever        Diseases, side effects and Knox items ask through the stat aggregator (Conditions/Symptoms.applyFever:
 --                p.stats:raise("TEMPERATURE", source, target, step); heat stroke cooling: p.stats:lower). This system
 --                takes those contributions each step and turns them into one fever that rises by the asked step,
---                breaks by DECAY_PER_HOUR toward a lower target or toward normal (maintainer: a visible break, not
---                vanilla's half hour), and ends at NORMAL. A fever isn't started when the body is already that hot.
+--                breaks by DECAY_PER_HOUR toward a lower target or toward normal (a visible break, not vanilla's
+--                half hour), and ends at NORMAL. A fever isn't started when the body is already that hot.
 --   warm         the Warming Pack (Medication/Data, effect "warming"): toward 37 deg C at WARMING_PER_HOUR, never above.
 --   hot food     a hot meal or drink (Temperature.eat): up to +0.4 deg C over the body at the time, never above 37.
 -- Ceiling (only without a fever: a fever beats food cooling):
@@ -32,10 +32,9 @@ local Temperature = {}
 
 Temperature.NORMAL = 37.0           -- deg C; at or below this a fever ends, and the pack and hot food warm to here
 Temperature.DECAY_PER_HOUR = 1.0    -- deg C per game hour while a fever breaks
-Temperature.WARMING_PER_HOUR = 3.2  -- the Warming Pack (v0.9)
+Temperature.WARMING_PER_HOUR = 3.2  -- the Warming Pack
 
--- Food temperature (W25, maintainer: warm and cool; v0.9 EHR_FoodTemperature.lua numbers, classified by vanilla's
--- heat value instead of a temperature 42.21 doesn't have).
+-- Food temperature, warm and cool: classified by vanilla's heat value instead of a temperature 42.21 doesn't have.
 Temperature.FOOD = {
     HOT_HEAT = 1.3,                 -- vanilla's "hot enough" (ISInventoryPaneContextMenu "better hot")
     MAX = 0.4,                      -- deg C from one item

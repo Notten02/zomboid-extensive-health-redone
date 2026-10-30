@@ -2,14 +2,12 @@
 -- and with doses taken less than 3 h apart. At 100 the character is addicted: stage 1, stage 2 a day later, stage 3 a
 -- day after that, which persists until a buprenorphine course cures it. Withdrawal brings cravings, stress,
 -- unhappiness (to the maximum at stage 3) and thirst; an active painkiller or buprenorphine dose suppresses it.
--- From v0.9 EHR_PainkillerAddiction.lua and EHR_Disease.lua:2949-3003 (docs/porting/phase4/mental-knox-sounds.md,
--- section 3). W29: PainkillerAddictionEnabled turns it off. W18: homemade (herbal)
--- painkillers don't count.
+-- PainkillerAddictionEnabled turns it off. Homemade (herbal) painkillers don't count.
 --
 -- Doses come from the medication rules (Medication/Doses: Base.Pills, med.addiction): Addiction.recordDose(p, defs,
 -- fullType).
 --
--- Phase 5 treatment hooks:
+-- Treatment hooks:
 --   p.treatment:active("analgesic")        a painkiller dose is active (also tracked here from recorded doses: 3 h)
 --   p.treatment:active("buprenorphine")    a buprenorphine dose is active: withdrawal suppressed
 --   p.treatment:relief("painkiller_addiction", "withdrawal")   0-1 relief of stress, unhappiness and thirst
@@ -106,7 +104,7 @@ function Addiction.effects(p, c, dt)
     end
 end
 
--- Cured (or debug-cleared): the dependency starts from nothing again, as v0.9's ClearAfterCure did.
+-- Cured (or debug-cleared): the dependency starts from nothing again.
 function Addiction.onEnd(p)
     local pk = p.state.mind.painkiller
     pk.risk = 0
@@ -120,7 +118,7 @@ Addiction.def = {
     selfEvident = true,
     name = "UI_EHR_Disease_painkiller_addiction",
     baseSeverity = Data.BASE_SEVERITY,
-    -- Not scaled by DiseaseSpeed, as in v0.9.
+    -- Not scaled by DiseaseSpeed.
     stages = { [1] = { 24, 24 }, [2] = { 24, 24 } },
     persistsAt = 3,
     effectsInStage1 = true,

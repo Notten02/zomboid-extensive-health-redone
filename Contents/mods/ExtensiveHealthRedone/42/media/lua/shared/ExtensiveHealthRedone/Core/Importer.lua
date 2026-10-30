@@ -1,10 +1,10 @@
--- One-time import from the original mod's player modData (docs/porting/old-moddata-keys.md).
+-- One-time import from the original mod's player modData (the keys are in Data/LegacyEHR).
 --
 -- Carries over permanent identity only: blood type, disease knowledge (flyers, profession, journal discoveries, the
 -- Knox Herald), radio broadcasts heard, wild-plant knowledge, the immunity score and the Knox gene-therapy and
 -- Patient Zero flags. Everything else is active state and is reset: illnesses, treatments, infections, blood loss,
--- cooldowns, and the borderline keys the maintainer chose not to import (W41: painkiller addiction, Knox usage
--- counters, disease history, XP bookkeeping).
+-- cooldowns, and a few borderline keys (painkiller addiction, Knox usage counters, disease history, XP
+-- bookkeeping).
 --
 -- Then every EHR_* key is removed, so the import can't run twice: the caller only imports into a brand-new state,
 -- and afterwards there is nothing left to detect. A dead character's data (EHR_DeadCharacter) imports nothing.

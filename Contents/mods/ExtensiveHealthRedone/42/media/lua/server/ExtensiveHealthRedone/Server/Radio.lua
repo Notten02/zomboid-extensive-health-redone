@@ -1,16 +1,13 @@
--- Airs The Last Prescription on 47.0 MHz from the authority (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md
--- Part C) and rewards its listeners. The rules are Radio/Station and Knowledge/Learn, the constants Data/Radio; this
--- file only translates. An MP client loads this file too and stops at the first line.
+-- Airs The Last Prescription on 47.0 MHz from the authority and rewards its listeners. The rules are Radio/Station and
+-- Knowledge/Learn, the constants Data/Radio; this file only translates. An MP client loads this file too and stops at
+-- the first line.
 --
--- Fixed against v0.9 (sv/EHR_Radio.lua, s/EHR_RadioInteractions.lua):
---   - It airs on a dedicated server: our scheduler (game time, driven by Server/Main in SP and on a server) replaces
---     v0.9's EveryHours hook, which was only added from the client-only OnGameStart.
+--   - It airs on a dedicated server too: our scheduler (game time, driven by Server/Main) runs it.
 --   - The channel is registered once, by us, at OnLoadRadioScripts; DynamicRadio.channels and .cache are left alone
---     (v0.9 inserted it there too, risking a double registration that depended on load order). It is not registered
---     when TheLastPrescriptionEnabled is off and the sandbox is readable then (otherwise registered and silent).
---   - Who heard it is decided here, from the server's view of each player's devices, when the final line airs; v0.9's
---     OnDeviceText handler ran on server and client alike and rewarded everyone for lines sent with -1,-1,-1.
---   - Lines have no interaction codes (v0.9's EHX+4 / EHK=<id>): nothing on the client acts on them.
+--     (inserting it there as well would register it twice, depending on load order). It is not registered when
+--     TheLastPrescriptionEnabled is off and the sandbox is readable then (otherwise registered and silent).
+--   - Who heard it is decided here, from the server's view of each player's devices, when the final line airs.
+--   - Lines have no interaction codes: nothing on the client acts on them.
 --
 -- World state: { lastSlot, story } in global ModData under Data/Radio.WORLD_KEY, written on the authority only and saved
 -- with the world, so the story index and the last slot survive a restart. The server never transmits it and clients
@@ -18,9 +15,7 @@
 -- client might transmit is overwritten at once (if the server reports it) or at the next airing, and Station.clean
 -- repairs whatever is loaded.
 --
--- Uncertain until tested in game (spec 4.1): that the server sees inventory radios' on/channel/volume state, that it
--- advances the broadcast's line number (otherwise Station's fallback window applies), and whether a channel registered
--- while the station was on stays on the dial after it is switched off.
+-- Where the server doesn't advance the broadcast's line number, Station's fallback window decides when it has aired.
 
 if isClient() then
     return
@@ -134,7 +129,7 @@ local function air(slot, day, now, forced)
     end
     saveWorld()
     watching = b.heard and Station.watch(b, now) or nil
-    log:info("aired", slot, "day", day, "tip", tostring(b.tip), "story", tostring(b.story), "file", tostring(b.file),
+    log:debug("aired", slot, "day", day, "tip", tostring(b.tip), "story", tostring(b.story), "file", tostring(b.file),
         forced and "(debug)" or "")
     return b
 end
@@ -225,7 +220,7 @@ local function judge(watch)
             return Learn.radio(p, watch.heard, watch.reward, watch.day)
         end)
         if rewarded then
-            log:info(key, "heard", watch.heard)
+            log:debug(key, "heard", watch.heard)
         end
     end)
 end

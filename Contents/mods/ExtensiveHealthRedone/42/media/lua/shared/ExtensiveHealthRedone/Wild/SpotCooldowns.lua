@@ -4,8 +4,7 @@
 --   store.herb[key] = untilHour
 --   store.tree[key] = { hive = bool, webs = n, untilHour = h|nil, seenHour = h|nil }
 --   (untilHour only on an empty tree; seenHour: the last search started there)
--- From docs/porting/phase8/herbal-and-hive-minigames.md section 13.6. v0.9 kept these in square modData and never
--- synced them (H1, H21); old square keys are ignored.
+-- Square modData keys the original mod left are ignored.
 
 local Tables = require "ExtensiveHealthRedone/Core/Tables"
 

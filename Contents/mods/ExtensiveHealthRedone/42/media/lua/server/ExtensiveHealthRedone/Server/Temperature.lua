@@ -2,9 +2,8 @@
 -- and drink actions. An MP client loads this file too and stops at the first line.
 --
 -- The hold: vanilla's thermoregulator pulls TEMPERATURE back toward 37 deg C between our once-a-minute simulation
--- steps, and keeps only half of a single write (the Phase 6 fever probe). So every tick, TEMPERATURE is put back
--- inside the floor and ceiling the simulation keeps. Unverified in MP: whether the dedicated server or the client runs
--- the thermoregulator. If the client does, this hold has to move there (reading the synced temperature section).
+-- steps, and keeps only half of a single write. So every tick, TEMPERATURE is put back inside the floor and ceiling
+-- the simulation keeps.
 
 if isClient() then
     return

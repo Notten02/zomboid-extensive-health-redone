@@ -29,8 +29,9 @@ Gameplay matches the original; the code does not.
 
 ## Installing, running the tests, building art
 
-**Players:** subscribe on the Steam Workshop once it is published (this page will link to it), enable
-*Extensive Health Redone* in the mod list, and disable the original. Needs Build 42.21 or newer. Optional:
+**Players:** subscribe on the
+[Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3824731938), enable *Extensive Health Redone*
+in the mod list, and disable the original. Needs Build 42.21 or newer. Optional:
 MoodleFramework, Indoor Climate Redone, Lifestyle: Hobbies.
 
 **From source:** `tools/deploy-dev.sh` copies `Contents/` into `~/Zomboid/Workshop/ExtensiveHealthRedone/` (the game
@@ -39,7 +40,7 @@ change.
 
 **Tests:** `tools/test.sh` (needs Lua 5.1 and busted, see Development below).
 
-**''Art'':** `python3 tools/make-release-art.py` (needs Python 3 and Pillow) regenerates `42/icon.png` (256x256),
+**Art:** `python3 tools/make-release-art.py` (needs Python 3 and Pillow) regenerates `42/icon.png` (256x256),
 `42/poster.png` (512x512) and `preview.png` (256x256, the Workshop thumbnail; the in-game uploader insists on exactly
 that size). The art is original: a blood drop with a pulse line.
 
@@ -57,6 +58,7 @@ tests/                                 busted specs (offline, never shipped)
 tests/e2e/                             dev-only test mods for multiplayer end-to-end runs (never shipped)
 tools/                                 dev scripts (tools/lib: helpers shared by tools and tests)
 preview.png                            Workshop thumbnail (256x256), copied next to Contents/ when uploading
+docs/addon-api.md                      extension points for mods that build on this one
 docs/original-author-guides/           the original author's guides: the behaviour spec
 docs/guides/                           player guides reworked from those, matching what Redone does today
 docs/competability/, docs/incompetable/   one note per other mod we work with, or clash with

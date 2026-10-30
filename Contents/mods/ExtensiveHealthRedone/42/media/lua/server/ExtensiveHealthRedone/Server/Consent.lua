@@ -3,7 +3,7 @@
 --   consent.ask    { target, purpose, item? }            doctor -> server -> "consentAsk" to the patient
 --   consent.answer { from, purpose, item?, accepted }    patient -> server -> "consentResult" to the doctor
 --
--- Purposes (Phase 9 decisions):
+-- Purposes:
 --   medicate, transfuse  per dose: the ask names the item in the doctor's inventory, the prompt shows it, and the
 --                        permit ("medicate:<item id>") covers that one item, used up by the command that applies it.
 --   stitch               stitching another player: one permit for PERMIT_SECONDS, any wound.
@@ -36,8 +36,8 @@ for name in pairs(Consent.PURPOSES) do
     PURPOSE_NAMES[name] = true
 end
 
-Consent.ASK_SECONDS = 45        -- an unanswered request expires (v0.9)
-Consent.PERMIT_SECONDS = 180    -- how long a yes lasts (v0.9 action permit)
+Consent.ASK_SECONDS = 45        -- an unanswered request expires
+Consent.PERMIT_SECONDS = 180    -- how long a yes lasts
 Consent.RANGE = 3
 Consent.REFUSED_COOLDOWN = 30   -- after a "no", the same doctor can't ask that patient again for this long
 
@@ -54,7 +54,7 @@ local asked = {}
 local refused = {}
 
 -- One open prompt per doctor and patient, and none during the cooldown after a refusal, so a nearby player can't
--- bury someone in dialogs (review finding, Phase 9).
+-- bury someone in dialogs.
 local function mayAsk(patientKey, doctorKey, now)
     local untilWhen = refused[patientKey] and refused[patientKey][doctorKey]
     if untilWhen and now < untilWhen then
@@ -93,7 +93,7 @@ Runtime.registry:register("consent.ask", {
         end
         local now = Env.realSeconds()
         if not mayAsk(patient.key, ctx.actor.key, now) then
-            log:info(ctx.actor.key, "consent ask to", patient.key, "dropped: one is open or was just refused")
+            log:debug(ctx.actor.key, "consent ask to", patient.key, "dropped: one is open or was just refused")
             return
         end
         local purpose = CommandRegistry.permitPurpose(args.purpose, args.item and args.item.id)
@@ -145,7 +145,7 @@ Runtime.registry:register("consent.answer", {
                 Runtime.permits:grant(ctx.actor.key, doctor.key, purpose, Env.realSeconds(), Consent.PERMIT_SECONDS)
             end
         end
-        log:info(ctx.actor.key, args.accepted and "allowed" or "refused", doctor.key, purpose)
+        log:debug(ctx.actor.key, args.accepted and "allowed" or "refused", doctor.key, purpose)
         Transport.toClient(doctor.player, "consentResult", {
             target = PlayerKey.ref(ctx.actor.player),
             name = ctx.actor.player:getUsername(),

@@ -1,4 +1,4 @@
--- Wires Phase 3 (blood and wounds) to the authority: the simulation systems, the client commands for transfusion,
+-- Wires blood and wounds to the authority: the simulation systems, the client commands for transfusion,
 -- blood draw and the stitch minigame, the vanilla treatment hooks, the blood bag spoilage scan, and debug commands.
 -- An MP client loads this file too and stops at the first line.
 
@@ -56,7 +56,7 @@ Runtime.registry:register("blood.transfuse", {
     proximity = { arg = "target", tiles = StitchData.RANGE },
     -- Per bag: the patient said yes to this one bag (Server/Consent), used up by this attempt.
     consent = { arg = "target", purpose = "transfuse", detail = "bag", once = true },
-    -- Only Actions/Blood's EHRTransfusionAction runs it, when its time is up (SA-6).
+    -- Only Actions/Blood's EHRTransfusionAction runs it, when its time is up.
     action = true,
     rate = { count = 2, seconds = 5 },
     handler = function(ctx, args)
@@ -83,7 +83,7 @@ Runtime.registry:register("blood.transfuse", {
             return Transfusion.apply(p, defs, fullType, spoilage)
         end)
         Xp.award(doctor, fullType == Supplies.saline and "saline" or "transfusion")
-        log:info(ctx.actor.key, "gave", fullType, "(" .. spoilage .. ") to", patient.key, "->", outcome)
+        log:debug(ctx.actor.key, "gave", fullType, "(" .. spoilage .. ") to", patient.key, "->", outcome)
     end,
 })
 
@@ -104,7 +104,7 @@ Runtime.registry:register("blood.draw", {
         if item then
             Items.markDrawn(player, item, state.identity.bloodType)
         end
-        log:info(ctx.actor.key, "drew blood into", filled)
+        log:debug(ctx.actor.key, "drew blood into", filled)
     end,
 })
 
@@ -153,7 +153,7 @@ Patches.on("bandageComplete", {
 })
 
 -- Tetanus lockjaw: the server refuses food too, so a modified client can't eat through it. Drinks (no hunger
--- change) are allowed, as in v0.9. This is one of the two intercepts allowed by Core/PatchPoints.
+-- change) are allowed. This is one of the two intercepts allowed by Core/PatchPoints.
 Patches.on("eatComplete", {
     name = "tetanusLockjaw",
     intercept = function(action)
@@ -169,7 +169,7 @@ Patches.on("eatComplete", {
 -- Stitch minigame --------------------------------------------------------------------------------------------------
 -- The client plays the minigame, then the vanilla stitch runs. The server keeps one session per doctor (so one
 -- minigame gives at most one roll), then a pending result that the vanilla ISStitch:complete picks up.
--- Phase 9 authority (SA-1 to SA-3):
+-- What the server checks:
 --   stitch.begin   another patient needs a "stitch" permit (Server/Consent) or an exam session by this doctor
 --                  (Server/Exam); the doctor must carry what vanilla's stitch menu needs. Refusals go back to the doctor
 --                  as "stitchDenied" { part, reason = no_consent | no_needle | nothing }, so the client can ask.
@@ -256,12 +256,12 @@ Runtime.registry:register("stitch.begin", {
             return denied(ctx, args.part, "no_consent")
         end
         if not hasStitchingItem(ctx.actor.player) then
-            log:info(ctx.actor.key, "stitch session refused: no needle")
+            log:debug(ctx.actor.key, "stitch session refused: no needle")
             return denied(ctx, args.part, "no_needle")
         end
         local part = Facts.bodyPart(patient.player, name)
         if not (part and part:deepWounded() and not part:haveGlass() and not part:stitched()) then
-            log:info(ctx.actor.key, "stitch session refused: nothing to stitch on", patient.key, name)
+            log:debug(ctx.actor.key, "stitch session refused: nothing to stitch on", patient.key, name)
             return denied(ctx, args.part, "nothing")
         end
         nextSession = nextSession + 1
@@ -309,7 +309,7 @@ Runtime.registry:register("stitch.result", {
             return
         end
         -- A failed or cancelled stitch on someone else harms them once per part per consent window; repeating the
-        -- begin/fail loop can't stack pain or reroll cellulitis (review finding, Phase 9).
+        -- begin/fail loop can't stack pain or reroll cellulitis.
         local abortId = ctx.actor.key .. "|" .. s.patient .. "|" .. s.part
         if ctx.actor.key ~= s.patient and aborted[abortId] and now <= aborted[abortId] then
             log:info(ctx.actor.key, "repeated stitch", args.outcome, "on", s.patient, s.part, "ignored")
@@ -321,7 +321,7 @@ Runtime.registry:register("stitch.result", {
         local result = Runtime.applyNow(s.patient, function(p)
             return Stitch.applyAbort(p, defs, s.part, args.misses, args.started, args.outcome == "failed")
         end)
-        log:info(ctx.actor.key, "stitch", args.outcome, "on", s.patient, s.part, "cellulitis:",
+        log:debug(ctx.actor.key, "stitch", args.outcome, "on", s.patient, s.part, "cellulitis:",
             result and result.cellulitis)
     end,
 })
@@ -365,7 +365,7 @@ Patches.on("stitchComplete", {
             return Stitch.applyBand(p, defs, name, band, action.ehrWasInfected)
         end)
         if outcome then
-            log:info(doctorKey, "stitched", patientKey, name, outcome.band, "cellulitis:", outcome.cellulitis,
+            log:debug(doctorKey, "stitched", patientKey, name, outcome.band, "cellulitis:", outcome.cellulitis,
                 "infected:", outcome.infected)
         end
     end,
@@ -404,10 +404,9 @@ end, { coalesce = true })
 
 -- Debug ----------------------------------------------------------------------------------------------------------------
 
-local CONDITION_IDS = {}
-for id in pairs(defs) do
-    CONDITION_IDS[id] = true
-end
+-- Looked up when a command arrives, so conditions add-ons register later count too.
+local CONDITION_IDS = setmetatable({}, { __index = function(_, id) return defs[id] ~= nil end })
+
 
 Runtime.registry:register("debug.setBlood", {
     args = { percent = { type = "number", min = 0, max = 100 }, saline = { type = "number", min = 0, max = 5000,

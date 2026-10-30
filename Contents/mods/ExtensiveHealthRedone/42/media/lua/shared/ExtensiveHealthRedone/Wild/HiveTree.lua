@@ -1,6 +1,5 @@
 -- Hive and spiderweb search rules: what a tree holds and taking from it. Pure; the random source is passed in.
--- From v0.9 sv/EHR_HiveWebSearchServer.lua:133-167, :526-546 (docs/porting/phase8/herbal-and-hive-minigames.md
--- section 6). A tree's contents never expire; an empty or emptied tree gets a cooldown (Wild/SpotCooldowns).
+-- A tree's contents never expire; an empty or emptied tree gets a cooldown (Wild/SpotCooldowns).
 
 local Data = require("ExtensiveHealthRedone/Data/WildSearch").hive
 

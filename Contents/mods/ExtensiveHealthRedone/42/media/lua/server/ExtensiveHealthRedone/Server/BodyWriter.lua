@@ -1,6 +1,6 @@
 -- The only code that changes body parts: health (damage, rescue and an admin's full restore), healing caps, extra
--- pain, the vanilla wound-infection flag, vanilla's cold, vanilla's Knox infection, and death. tests/layout_spec.lua
--- checks that no other file does.
+-- pain, wound and fracture healing speed, new and reopened wounds, the vanilla wound-infection flag, vanilla's cold,
+-- vanilla's Knox infection, and death. tests/layout_spec.lua checks that no other file does.
 --
 -- After the systems have run (or a command has applied an effect), apply() resolves the BodyAggregator against the
 -- body once: a full restore first, then damage, then healing caps (so damage lowers them), then pain, then infection
@@ -34,6 +34,39 @@ local function addPain(part, extra)
     end
     part:setAdditionalPain(math.max(0, math.min(100, part:getAdditionalPain() + extra)))
     return true
+end
+
+-- Wound and fracture healing slowed (simulation steps only): each timer may only fall by factor x what vanilla took
+-- off since the last step (BodyAggregator.resolveTimer). The timers we last wrote are kept in state.body.woundLock.
+-- The opaque per-part speed modifiers vanilla also has are left alone.
+local TIMERS = {
+    { key = "scratch", get = "getScratchTime", set = "setScratchTime", speed = "woundSpeeds" },
+    { key = "cut", get = "getCutTime", set = "setCutTime", speed = "woundSpeeds" },
+    { key = "deep", get = "getDeepWoundTime", set = "setDeepWoundTime", speed = "woundSpeeds" },
+    { key = "burn", get = "getBurnTime", set = "setBurnTime", speed = "woundSpeeds" },
+    { key = "fracture", get = "getFractureTime", set = "setFractureTime", speed = "fractureSpeeds" },
+}
+
+local function slowTimers(part, name, body, bodyState)
+    bodyState.woundLock = bodyState.woundLock or {}
+    local locks = bodyState.woundLock[name]
+    if not locks and not (body.woundSpeeds and body.woundSpeeds[name])
+        and not (body.fractureSpeeds and body.fractureSpeeds[name]) then
+        return false
+    end
+    local touched = false
+    locks = locks or {}
+    for _, t in ipairs(TIMERS) do
+        local speeds = body[t.speed]
+        local value, lock = BodyAggregator.resolveTimer(speeds and speeds[name], part[t.get](part), locks[t.key])
+        locks[t.key] = lock
+        if value then
+            part[t.set](part, value)
+            touched = true
+        end
+    end
+    bodyState.woundLock[name] = not Tables.isEmpty(locks) and locks or nil
+    return touched
 end
 
 -- Healing cap and tracked pain for one part (simulation steps only).
@@ -72,33 +105,50 @@ local function setInfection(part, infection)
     return false
 end
 
--- Scratches (scabies): a normal vanilla scratch with Knox forced off, plus a check afterwards that nothing made the
--- player Knox-infected (forceNoInfection's Java behaviour isn't visible to us). Returns the part indexes changed.
-local SCRATCH_TIME = 16     -- v0.9 raised scratchTime to 16-21
+-- Scratches (scabies) and reopened wounds (BodyAggregator:reopen): a normal vanilla wound with Knox forced off where
+-- vanilla lets us, plus a check afterwards that nothing made the player Knox-infected (forceNoInfection's Java
+-- behaviour isn't visible to us). A deep wound is vanilla's own generateDeepWound (the health cheat's call).
+local SCRATCH_TIME = 16     -- scratchTime raised to 16-21
 local SCRATCH_PAIN = 8      -- and additional pain to at least 8
 
-local function scratches(damage, list, wanted, changed)
-    if not wanted or Tables.isEmpty(wanted) then
+local function scratch(part)
+    part:setScratched(true, true)
+    if part:getScratchTime() < SCRATCH_TIME then
+        part:setScratchTime(SCRATCH_TIME + ZombRand(6))
+    end
+    if part:getAdditionalPain() < SCRATCH_PAIN then
+        part:setAdditionalPain(SCRATCH_PAIN)
+    end
+end
+
+local OPEN = {
+    scratch = scratch,
+    cut = function(part) part:setCut(true, true) end,
+    deep = function(part) part:generateDeepWound() end,
+}
+
+local function newWounds(damage, list, scratches, reopened, changed)
+    local wanted = {}
+    for name in pairs(scratches or {}) do
+        wanted[name] = "scratch"
+    end
+    for name, wish in pairs(reopened or {}) do
+        wanted[name] = wish.kind
+    end
+    if Tables.isEmpty(wanted) then
         return
     end
     local wasInfected = damage:IsInfected()
     for _, name in ipairs(Tables.sortedKeys(wanted)) do
         for i, n in ipairs(BodyParts.names) do
             if n == name then
-                local part = list:get(i - 1)
-                part:setScratched(true, true)
-                if part:getScratchTime() < SCRATCH_TIME then
-                    part:setScratchTime(SCRATCH_TIME + ZombRand(6))
-                end
-                if part:getAdditionalPain() < SCRATCH_PAIN then
-                    part:setAdditionalPain(SCRATCH_PAIN)
-                end
+                OPEN[wanted[name]](list:get(i - 1))
                 changed[i] = true
             end
         end
     end
     if not wasInfected and damage:IsInfected() then
-        log:warn("a scabies scratch Knox-infected the player; clearing it")
+        log:warn("a new or reopened wound Knox-infected the player; clearing it")
         damage:setInfected(false)
         damage:setInfectionTime(-1)
         damage:setInfectionMortalityDuration(-1)
@@ -114,7 +164,7 @@ local function scratches(damage, list, wanted, changed)
 end
 
 -- Overall health raised to at least restore.target: every part below the target is healed to it, then the overall
--- value is set (unverified in game: whether vanilla's recalculation keeps it). The healing caps accept the new values,
+-- value is set. The healing caps accept the new values,
 -- so conditional healing doesn't undo the rescue.
 local function restore(damage, list, wanted, bodyState, changed)
     if not wanted or damage:getOverallBodyHealth() >= wanted.target then
@@ -136,9 +186,9 @@ end
 
 -- An admin's full heal (BodyAggregator:fullRestore): vanilla's own health cheat per part ("healthFullBody" in
 -- ISHealthPanel and server/ClientCommands.lua: RestoreToFullHealth, then stiffness 0 and the fitness record removed),
--- after BodyDamage:RestoreToFullHealth for the body-wide values (v0.9's call; what it clears beyond the parts is Java,
--- unverified in game). Vanilla's cold is switched off and our part bookkeeping dropped, since the values it tracked
--- are gone. Every part counts as changed, so a dedicated server syncs all of them.
+-- after BodyDamage:RestoreToFullHealth for the body-wide values. Vanilla's cold is switched off and our part
+-- bookkeeping dropped, since the values it tracked are gone. Every part counts as changed, so a dedicated server
+-- syncs all of them.
 local function fullRestore(player, damage, list, wanted, bodyState, changed)
     if not wanted then
         return
@@ -158,6 +208,8 @@ local function fullRestore(player, damage, list, wanted, bodyState, changed)
     damage:setColdStrength(0)
     damage:setHasACold(false)
     bodyState.healLock = {}
+    bodyState.woundLock = {}
+
     bodyState.painApplied = {}
     bodyState.coldApplied = nil
     log:info(player:getUsername(), "body fully restored by", wanted.source)
@@ -165,8 +217,8 @@ end
 
 -- Vanilla's Knox infection (Diseases/Knox): cured (flags and timers cleared, bite wounds kept) or rewound so its
 -- progress reads rewindTo. Progress = (hours survived - infectionTime) / mortalityDuration: the hours the character
--- has survived, not the world's age (Antibodies and Zombie Virus Vaccine both stamp and read it that way; checked
--- in their code, Phase 10). The ZOMBIE_INFECTION stat itself is set through the stat writer in the same step.
+-- has survived, not the world's age (Antibodies and Zombie Virus Vaccine both stamp and read it that way). The
+-- ZOMBIE_INFECTION stat itself is set through the stat writer in the same step.
 local function applyKnox(player, damage, list, knox, changed)
     if not knox then
         return
@@ -230,7 +282,7 @@ function BodyWriter.apply(player, body, bodyState, oneOff)
     end
 
     restore(damage, list, body.restore, bodyState, changed)
-    scratches(damage, list, body.scratches, changed)
+    newWounds(damage, list, body.scratches, body.reopened, changed)
     applyKnox(player, damage, list, body.knox, changed)
 
     local targets = body:painTargets()
@@ -242,7 +294,9 @@ function BodyWriter.apply(player, body, bodyState, oneOff)
             touched = addPain(part, extra)
         else
             touched = capAndPain(part, name, body, bodyState, targets[name], extra)
+            touched = slowTimers(part, name, body, bodyState) or touched
         end
+
         if setInfection(part, body.infection[name]) or touched then
             changed[i] = true
         end

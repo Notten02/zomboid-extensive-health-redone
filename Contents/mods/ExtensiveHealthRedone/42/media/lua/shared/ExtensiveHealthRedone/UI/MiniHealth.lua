@@ -1,7 +1,6 @@
--- The companion panel docked beside Mini Health Panel (Phase 10, W44): blood, infected wounds, sepsis and the worst
--- illness at a glance. Pure view model, built from the mirrored state with what the reader knows, like the Monitor
--- (UI/Monitor), so it never tells more than the Monitor does. From v0.9 EHR_MiniHealthCompat.lua, whose values were
--- unconditional and whose labels were hard-coded English.
+-- The companion panel docked beside Mini Health Panel: blood, infected wounds, sepsis and the worst illness at a
+-- glance. Pure view model, built from the mirrored state with what the reader knows, like the Monitor (UI/Monitor),
+-- so it never tells more than the Monitor does.
 --
 --   MiniHealth.build({ state = mirror sections, firstAid = 0-10, defs = Conditions/Registry, watch = true when a
 --                      powered Medical Monitor Watch is worn, sandbox = function(name, default) })
@@ -17,7 +16,7 @@ local Tables = require "ExtensiveHealthRedone/Core/Tables"
 
 local MiniHealth = {}
 
--- Blood colour by share of full volume (v0.9: above 70 green, 50 yellow, 30 orange, else red).
+-- Blood colour by share of full volume: above 70 green, 50 yellow, 30 orange, else red.
 MiniHealth.BLOOD = { { 70, "green" }, { 50, "yellow" }, { 30, "orange" }, { 0, "red" } }
 
 local NONE = "--"

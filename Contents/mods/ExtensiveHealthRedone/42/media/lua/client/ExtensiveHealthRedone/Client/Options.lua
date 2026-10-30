@@ -6,10 +6,10 @@
 --   Options.key("JournalKey")          -- a Keyboard key code, or 0 when unbound
 --
 -- Keys (Client/Keys.lua): the Monitor key is unbound by default, because with PrimaryHealthPanel on vanilla's own
--- Health key (H) and the heart button open the EHR Monitor (Client/CharacterWindow.lua). J opens the handbook
--- (maintainer, Phase 7). The debug key only works with the sandbox DebugMode option.
--- The page has its own id: v0.9's id ("ExtensiveHealthRework") would carry over a saved H for the Monitor key, which
--- now belongs to vanilla.
+-- Health key (H) and the heart button open the EHR Monitor (Client/CharacterWindow.lua). J opens the handbook.
+-- The debug key only works with the sandbox DebugMode option.
+-- The page has its own id: the original mod's id ("ExtensiveHealthRework") would carry over a saved H for the Monitor
+-- key, which now belongs to vanilla.
 
 local Options = {}
 

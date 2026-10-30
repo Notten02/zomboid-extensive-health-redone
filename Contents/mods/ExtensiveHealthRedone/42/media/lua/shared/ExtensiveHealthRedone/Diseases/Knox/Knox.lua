@@ -3,7 +3,7 @@
 -- Vanilla owns the Knox infection itself (bites, progress, death). What we add:
 --   * permanent immunity (gene therapy survivors, the Patient Zero trait) and 24 h immunobooster protection, enforced
 --     every simulation step by clearing vanilla's infection (bite wounds stay);
---   * the four Knox items (Diseases/Knox/Items) and their side effects (W33);
+--   * the four Knox items (Diseases/Knox/Items) and their side effects;
 --   * a display condition that mirrors vanilla's infection for the monitor (Diseases/Knox/Infection).
 --
 -- p.facts.knox (Server/Knox reads it): { infected, partInfected, bitten, level 0-1 (ZOMBIE_INFECTION share of its
@@ -28,7 +28,7 @@ end
 
 -- Infection progress 0-1 from the facts: the stat, or the timers when the stat hasn't moved yet. followTimer (Server/Knox,
 -- set while Zombie Virus Vaccine is on) trusts the timers alone: the vaccine and its albumin pills delay the infection by
--- moving the infection time, and whether vanilla pulls the stat back with it is unverified (docs/porting/phase10).
+-- moving the infection time, and vanilla may not pull the stat back with it.
 function Knox.progress(k)
     if not k then
         return 0

@@ -1,4 +1,4 @@
--- Wires Knox (plan step 7) to the authority: the Knox facts reader, the four item commands, the Kentucky Herald hook,
+-- Wires Knox to the authority: the Knox facts reader, the four item commands, the Kentucky Herald hook,
 -- the Patient Zero trait grant and debug commands. The rules are Diseases/Knox; this file only translates.
 -- An MP client loads this file too and stops at the first line.
 
@@ -104,7 +104,7 @@ end
 
 -- Registers one item command: the rules run on the actor (Knox items are used on yourself), then the item is used up
 -- as the rules say. Phalanx is a 3-dose drainable; the others are single items. Only Actions/Knox's EHRKnoxAction
--- runs it, when its time is up (`action = true`, SA-6).
+-- runs it, when its time is up (`action = true`).
 local function itemCommand(name, fullType, rule, after)
     Runtime.registry:register("knox." .. name, {
         args = { item = { type = "item", types = { [fullType] = true } } },
@@ -119,7 +119,7 @@ local function itemCommand(name, fullType, rule, after)
             if result.consume > 0 then
                 Items.useOne(args.item.item)
             end
-            log:info(key, "used", fullType, "->", result.outcome, result.chance and ("chance " .. result.chance) or "")
+            log:debug(key, "used", fullType, "->", result.outcome, result.chance and ("chance " .. result.chance) or "")
             if after then
                 after(ctx, result)
             end

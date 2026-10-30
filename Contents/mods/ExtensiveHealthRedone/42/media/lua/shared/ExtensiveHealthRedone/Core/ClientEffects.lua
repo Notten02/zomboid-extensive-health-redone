@@ -11,6 +11,9 @@
 --   p.fx:boost("med:lastChance", 1.2)  -- movement boost above normal speed: the highest wins
 --   p.fx:bladder("dysentery", 14)      -- Lifestyle: Hobbies bathroom need, points per game hour: the sum of all sources
 --                                      -- (negative eases it); the client adds it to Lifestyle's own number
+--   p.fx:nightVision("myaddon:vitA", 0.7)  -- vision in the dark 0-1: dims and blurs only where it is dark (Client/Vision);
+--                                          -- the highest wins
+--   p.fx:aim("myaddon:tremor", 0.8)    -- ranged weapon hit chance multiplier (Client/Effects): the lowest wins
 
 local ClientEffects = {}
 ClientEffects.__index = ClientEffects
@@ -21,10 +24,11 @@ end
 
 function ClientEffects.defaults()
     return { speed = 1, noSprint = false, blur = 0, tint = 0, noSleep = false, sleepBy = false, attackSpeed = 1,
-        boost = 1, bladder = 0 }
+        boost = 1, bladder = 0, night = 0, aim = 1 }
 end
 
--- When several sources block sleep, the message names the first of these (the stimulants say so themselves).
+-- When several sources block sleep, the message names the first of these (the stimulants say so themselves). Add-on
+-- sources not listed come after these (Client/Sleep.registerReason gives them their own line).
 ClientEffects.SLEEP_ORDER = { caffeine = 1, betaBlocker = 2, medInsomnia = 3, insomnia = 4 }
 
 local function note(self, field, source)
@@ -82,7 +86,22 @@ function ClientEffects:boost(source, multiplier)
     note(self, "boost", source)
 end
 
+function ClientEffects:nightVision(source, level)
+    if level > self.values.night then
+        self.values.night = math.min(1, level)
+    end
+    note(self, "night", source)
+end
+
+function ClientEffects:aim(source, multiplier)
+    if multiplier < self.values.aim then
+        self.values.aim = math.max(0, multiplier)
+    end
+    note(self, "aim", source)
+end
+
 function ClientEffects:bladder(source, pointsPerHour)
+
     self.values.bladder = self.values.bladder + pointsPerHour
     note(self, "bladder", source)
 end

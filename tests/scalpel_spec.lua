@@ -2,8 +2,7 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake items and players are deliberately partial.
 ---@diagnostic disable: missing-fields
--- Scalpel Master (Phase 8, docs/porting/phase8/professions-and-traits.md section 3): the pure rule, the shared tracker
--- on fake objects, and the authority's wiring against the fake game.
+-- Scalpel Master: the pure rule, the shared tracker on fake objects, and the authority's wiring against the fake game.
 local Rules = require("ExtensiveHealthRedone/Items/Scalpel")
 local Data = require("ExtensiveHealthRedone/Data/Professions")
 

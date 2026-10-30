@@ -1,4 +1,4 @@
--- The medication timed action (decision SA-6): one dose of a medication (Medication/Data) on yourself, or given to
+-- The medication timed action: one dose of a medication (Medication/Data) on yourself, or given to
 -- another player within reach with their consent for that item (Client/Give).
 --
 --   EHRMedicationAction:new(character, item, target)   target: another IsoPlayer, or nil for yourself

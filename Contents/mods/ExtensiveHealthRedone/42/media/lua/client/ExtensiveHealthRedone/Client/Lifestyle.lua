@@ -1,4 +1,4 @@
--- Lifestyle: Hobbies, the client's two jobs (Phase 10):
+-- Lifestyle: Hobbies, the client's two jobs:
 --  1. MP only: report the local players' Lifestyle reading (hygiene, bathing, sitting, yoga) to the server, which can't
 --     see Lifestyle's client-side data (Server/Lifestyle). Sent when it changes or appears or goes away, and at least
 --     every HEARTBEAT_S while it lasts; checked every CHECK_S real seconds. In SP the server reads it directly.

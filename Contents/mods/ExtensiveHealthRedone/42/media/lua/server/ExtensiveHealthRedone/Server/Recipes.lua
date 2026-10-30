@@ -1,9 +1,9 @@
 -- Recipe learning on the authority: a safety net for the 17 auto-learned medicine recipes, and a debug command.
 -- The scripts' AutoLearnAll (First Aid 6 plus Foraging 4) only fires on a level-up, so a character who already has
--- the levels (an existing save, a profession's starting skills) would wait for the next level-up, and where that
--- learning happens in MP is unverified. Here the authority checks each attached player when they attach and whenever
--- either level changes, learns what is missing and syncs the known recipes to the client. Literature and professions
--- teach through the scripts (LearnedRecipes, GrantedRecipes) and need nothing here.
+-- the levels (an existing save, a profession's starting skills) would wait for the next level-up. Here the authority
+-- checks each attached player when they attach and whenever either level changes, learns what is missing and syncs
+-- the known recipes to the client. Literature and professions teach through the scripts (LearnedRecipes,
+-- GrantedRecipes) and need nothing here.
 -- An MP client loads this file too and stops at the first line.
 
 if isClient() then

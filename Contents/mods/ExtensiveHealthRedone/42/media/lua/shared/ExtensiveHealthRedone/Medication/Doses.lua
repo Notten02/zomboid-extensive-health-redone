@@ -8,14 +8,17 @@
 --   effects, side, overdose, pairs   (Medication/Effects, SideEffects, Overdose, Interactions)
 --   xpCooldown[medId] = minutes until taking it gives First Aid XP again
 --
--- Rules (v0.9 with the maintainer's Phase 5 decisions, docs/porting/phase5/medication-database.md section 4):
+-- Rules:
 --   * A course (doses > 1) counts a dose once 90 % of its interval has passed since the last one (Data.DUE_SHARE).
---     An earlier dose is wasted (consumed, no effect); on the overdose list it also overdoses. Some drugs refuse a dose while the last one is active instead
---     (med.early = "refuse"); a dose a vanilla action already consumed can't be refused, so it is wasted.
+--     An earlier dose is wasted (consumed, no effect); on the overdose list it also overdoses. Some drugs refuse a
+--     dose while the last one is active instead (med.early = "refuse"); a dose a vanilla action already consumed
+--     can't be refused, so it is wasted.
 --   * A course cures once every dose is taken and its cure time has passed since the first dose; a single-dose cure
 --     cures that long after the dose. Meanwhile the condition holds its stage (p.treatment:curing, Conditions/Engine).
 --   * A course whose next dose is more than max(24, min(72, 3 x interval)) hours overdue is abandoned.
 --   * While a cure is running with every dose taken, more doses of that drug are refused ("already working").
+--   * A drug registered with course = true (add-on supplements) runs as a course without curing anything: the course
+--     ends once every dose is in. Doses.onDose listeners hear every dose that counted.
 
 local Data = require "ExtensiveHealthRedone/Medication/Data"
 local Effects = require "ExtensiveHealthRedone/Medication/Effects"
@@ -27,6 +30,21 @@ local Addiction = require "ExtensiveHealthRedone/Diseases/Mind/Addiction"
 local Tables = require "ExtensiveHealthRedone/Core/Tables"
 
 local Doses = {}
+
+local doseListeners = {}
+
+-- fn(p, med, outcome) after a dose was taken (outcome.result == "taken"), inside the same step: an add-on reacts to
+-- its own medications here (a supplement refilling a reserve). Listeners run in registration order.
+function Doses.onDose(fn)
+    doseListeners[#doseListeners + 1] = fn
+end
+
+local function taken(p, med, outcome)
+    for _, fn in ipairs(doseListeners) do
+        fn(p, med, outcome)
+    end
+    return outcome
+end
 
 Doses.XP_COOLDOWN = 30          -- minutes; at least the medication's interval
 
@@ -173,7 +191,7 @@ function Doses.take(p, defs, med, opts)
     end
     local treated = anyTargetActive(state, med)
     meds.doses[med.id] = { since = 0 }
-    if Data.curesAnything(med) then
+    if Data.tracksCourse(med) then
         local c = meds.courses[med.id]
         if c then
             c.count = c.count + 1
@@ -200,7 +218,7 @@ function Doses.take(p, defs, med, opts)
 
     local xp = {}
     if med.silent then
-        return { result = "taken", consume = true, supply = false, xp = xp }
+        return taken(p, med, { result = "taken", consume = true, supply = false, xp = xp })
     end
     if (meds.xpCooldown[med.id] or 0) <= 0 then
         xp[#xp + 1] = "take"
@@ -209,7 +227,7 @@ function Doses.take(p, defs, med, opts)
     if treated then
         xp[#xp + 1] = "treat"
     end
-    return { result = "taken", consume = true, supply = med.supply ~= nil, xp = xp }
+    return taken(p, med, { result = "taken", consume = true, supply = med.supply ~= nil, xp = xp })
 end
 
 local function cure(p, defs, id)
@@ -248,7 +266,7 @@ function Doses.update(p, defs, dt)
             local finished = true
             local curedAny = false
             if c.count >= med.doses then
-                for _, cond in ipairs(Tables.sortedKeys(med.cures)) do
+                for _, cond in ipairs(Tables.sortedKeys(med.cures or {})) do
                     if not c.cured[cond] then
                         if c.elapsed >= minutes(med.cures[cond]) then
                             c.cured[cond] = true
@@ -294,7 +312,8 @@ function Doses.curing(state)
     for id, c in pairs(state.meds.courses) do
         local med = Data.byId[id]
         if med then
-            for cond in pairs(med.cures) do
+            for cond in pairs(med.cures or {}) do
+
                 if not c.cured[cond] then
                     set[cond] = true
                 end

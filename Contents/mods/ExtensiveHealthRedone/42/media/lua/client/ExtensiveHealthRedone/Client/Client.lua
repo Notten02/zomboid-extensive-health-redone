@@ -29,9 +29,14 @@ function Client.onChange(fn)
     changeListeners[#changeListeners + 1] = fn
 end
 
+-- One handler per message name: add-on mods prefix theirs, since a second handler replaces the first.
 function Client.on(command, fn)
+    if messageHandlers[command] then
+        log:warn("handler for server message", command, "replaced")
+    end
     messageHandlers[command] = fn
 end
+
 
 function Client.send(player, command, args)
     Transport.toServer(player, command, args)

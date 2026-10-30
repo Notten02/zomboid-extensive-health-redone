@@ -86,7 +86,7 @@ insulate("client files", function()
         _G.Events[name] = { Add = function(fn) table.insert(handlers, fn) end, handlers = handlers }
     end
 
-    -- Item tooltips and moodles (Phase 7): fonts, Mod Options, mods, and a tooltip panel that renders its item.
+    -- Item tooltips and moodles: fonts, Mod Options, mods, and a tooltip panel that renders its item.
     -- Filled in a loop: LuaLS would otherwise take these strings as the type of UIFont's fields everywhere.
     local fonts = rawget(_G, "UIFont") or {}
     for _, name in ipairs({ "Small", "Medium", "Large" }) do

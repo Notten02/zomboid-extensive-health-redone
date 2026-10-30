@@ -5,7 +5,6 @@
 --   audioOption    sandbox option that mutes only the voice sound, never the world noise
 --   muffled        { male, female, radius, volume } when the character holds a tissue (ItemTag.MUFFLE_SNEEZE); one
 --                  use of the tissue is consumed
--- Numbers from v0.9 EHR_EnvironmentalDiseases.lua:83-104 (docs/porting/phase4/environmental.md, section 5).
 
 return {
     cough = {
@@ -18,19 +17,19 @@ return {
         audioOption = "CoughSoundsEnabled",
         muffled = { male = "VoiceMaleMuffledCough", female = "VoiceFemaleMuffledCough", radius = 4, volume = 3 },
     },
-    -- v0.9 sneezes ignored CoughSoundsEnabled and tissues; the option's tooltip covers "cough voice sounds", and a
-    -- tissue muffling a sneeze is what vanilla's own MuffleSneeze tag is for, so both apply here.
+    -- Sneezes follow CoughSoundsEnabled (its tooltip covers "cough voice sounds"), and a held tissue muffles them, as
+    -- vanilla's own MuffleSneeze tag intends.
     sneeze = {
         male = "EHRSneezeMale", female = "EHRSneezeFemale", radius = 8, volume = 5,
         audioOption = "CoughSoundsEnabled",
         muffled = { male = "VoiceMaleMuffledCough", female = "VoiceFemaleMuffledCough", radius = 2, volume = 1 },
     },
-    -- Pain cries (Diseases/Mind/PainSounds, W5): vanilla pain voices. The radius and volume come from
+    -- Pain cries (Diseases/Mind/PainSounds): vanilla pain voices. The radius and volume come from
     -- ZombieAttractionRadius and the pain level (args.radius, args.volume); the numbers here are the defaults.
     pain = { male = "VoiceMalePainMoodle", female = "VoiceFemalePainMoodle", radius = 30, volume = 18 },
     painSevere = { male = "VoiceMalePainFromLacerate", female = "VoiceFemalePainFromLacerate", radius = 40, volume = 24 },
-    -- Vomiting (Diseases/Food): v0.9's 15/10 world noise (ENV TriggerVomit), with vanilla's vomit voices.
+    -- Vomiting (Diseases/Food): a 15/10 world noise, with vanilla's vomit voices.
     vomit = { male = "VoiceMaleVomit", female = "VoiceFemaleVomit", radius = 15, volume = 10 },
-    -- Delirium's shout impulse: v0.9 called Callout() plus a 45/45 world sound.
+    -- Delirium's shout impulse: a 45/45 world sound.
     deliriumShout = { male = "VoiceMaleShoutHey", female = "VoiceFemaleShoutHey", radius = 45, volume = 45 },
 }

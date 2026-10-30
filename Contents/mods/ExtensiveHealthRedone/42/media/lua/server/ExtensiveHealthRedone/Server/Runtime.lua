@@ -28,6 +28,9 @@ local ClientEffects = require "ExtensiveHealthRedone/Core/ClientEffects"
 local Treatments = require "ExtensiveHealthRedone/Core/Treatments"
 local Facts = require "ExtensiveHealthRedone/Server/Facts"
 local BodyWriter = require "ExtensiveHealthRedone/Server/BodyWriter"
+local PerkWriter = require "ExtensiveHealthRedone/Server/PerkWriter"
+local Modifiers = require "ExtensiveHealthRedone/Core/Modifiers"
+local PerkAggregator = require "ExtensiveHealthRedone/Core/PerkAggregator"
 local Noise = require "ExtensiveHealthRedone/Server/Noise"
 local Xp = require "ExtensiveHealthRedone/Server/Xp"
 local Authority = require "ExtensiveHealthRedone/Actions/Authority"
@@ -41,6 +44,14 @@ Runtime.STEP = 1
 
 -- The epoch only has to differ between server runs; the random part guards against coarse timestamp formatting.
 Runtime.store = StateStore.new(Schema.SECTIONS, tostring(getTimestampMs()) .. "-" .. tostring(ZombRand(1000000)))
+-- An add-on section registered after this file loaded: the store learns it, and attached states get its defaults.
+Schema.onSection(function(name)
+    Runtime.store:addSection(name)
+    for _, key in ipairs(Runtime.store:keys()) do
+        Schema.fillDefaults(Runtime.store:get(key))
+    end
+end)
+
 Runtime.registry = CommandRegistry.new(Env.realSeconds)
 Runtime.permits = Permits.new()
 -- Load-test counters (Core/Perf), off until debug.perf turns them on (Server/Perf).
@@ -124,7 +135,7 @@ function Runtime.eachAttached(fn)
 end
 
 -- Attaches players who came online and detaches those who left or died. Offline players are simply not simulated,
--- so their timers pause (decision W39).
+-- so their timers pause.
 function Runtime.refreshPresence()
     local seen = {}
     for _, player in ipairs(Players.online()) do
@@ -196,6 +207,8 @@ local function newContext(key)
         stats = StatAggregator.new(ranges),
         body = BodyAggregator.new(),
         fx = ClientEffects.new(),
+        mods = Modifiers.new(),
+        perks = PerkAggregator.new(),
         rng = Env.rng,
         sandbox = Env.sandbox,
         facts = Facts.read(player, ranges),
@@ -221,9 +234,14 @@ local function newContext(key)
     return p, player, outbox
 end
 
-local function finish(p, player, outbox, oneOff)
+-- dt: the step's game minutes, or nil for a one-off effect.
+local function finish(p, player, outbox, oneOff, dt)
     StatWriter.apply(player, p.stats)
     BodyWriter.apply(player, p.body, p.state.body, oneOff)
+    if not oneOff then
+        PerkWriter.apply(player, p.perks, p.state.body, dt)
+    end
+
     -- A one-off effect states no continuous wishes; the next step does.
     if not oneOff and p.fx:writeTo(p.state.effects) then
         p.dirty("effects")
@@ -245,7 +263,8 @@ function Runtime.simulate(key, dt)
     local p, player, outbox = newContext(key)
     Runtime.sim:run(p, dt)
     fresh[key] = nil
-    finish(p, player, outbox, false)
+    finish(p, player, outbox, false, dt)
+
 end
 
 -- Applies a one-off effect to an attached player between simulation steps (a transfusion, a disinfected wound).
@@ -295,7 +314,7 @@ local function context(player, key)
     }
 end
 
--- Rejections (SA-11): the command name is cut to COMMAND_CHARS in the log and the reply, and each sender gets at most
+-- Rejections: the command name is cut to COMMAND_CHARS in the log and the reply, and each sender gets at most
 -- one log line per REJECT_LOG_SECONDS (with the count of the ones left out), so junk commands can't flood the log.
 Runtime.COMMAND_CHARS = 64
 Runtime.REJECT_LOG_SECONDS = 10

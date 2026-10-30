@@ -1,4 +1,4 @@
--- Examining another player, the doctor's side (Phase 9; the server half is Server/Exam).
+-- Examining another player, the doctor's side (the server half is Server/Exam).
 --
 -- "Examine Health (<name>)" sits right after vanilla's Medical Check on the world context menu of another player (MP,
 -- or a split-screen player in single player); vanilla's Medical Check stays untouched. It is greyed out with the

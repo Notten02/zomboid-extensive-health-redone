@@ -1,12 +1,10 @@
 -- Hyperkeratotic scabies: mites from sitting still on natural ground (dirt, grass). Stage 1 (1-2 h): an itching bite;
 -- stage 2: fever, health held at 60 at most, a scratch wound every 3 h; stage 3: high fever, health held at 30, a
--- scratch every hour; stage 4 untreated: a health drain with no floor (lethal, as in v0.9). Scratches never hit the
+-- scratch every hour; stage 4 untreated: a health drain with no floor (lethal). Scratches never hit the
 -- head or neck and never carry Knox (Core/BodyAggregator scratch). A curative course stops the drain, the cap and
--- the scratches, and softens pain and fever.
--- From v0.9 EHR_HyperkeratoticScabies.lua and EHR_Disease.lua:223-249, :2776-2877
--- (docs/porting/phase4/corpse-scabies-concussion.md, section 3). The stage-1 bite pain v0.9 never applied is on.
+-- the scratches, and softens pain and fever. The stage-1 bite hurts.
 --
--- Treatment (Phase 5): cure - Topical Permethrin (normal or homemade), Antiparasitic Pills. Relief - Antipyretic
+-- Treatment: cure - Topical Permethrin (normal or homemade), Antiparasitic Pills. Relief - Antipyretic
 -- ("fever"); also read: "pain", "inflammation", "healthDrain".
 
 local Engine = require "ExtensiveHealthRedone/Conditions/Engine"

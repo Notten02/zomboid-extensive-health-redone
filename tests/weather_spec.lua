@@ -40,7 +40,7 @@ end
 
 describe("weather", function()
     describe("cold meter and common cold", function()
-        it("builds outdoors when wet at 5 deg C or below (W13), not at 6, and rolls once per hour", function()
+        it("builds outdoors when wet at 5 deg C or below, not at 6, and rolls once per hour", function()
             local p = Sim.context()
             p.facts.env.wetness, p.facts.env.airC = 0.5, 6
             run(p, 120)
@@ -280,7 +280,7 @@ describe("weather", function()
             return c
         end
 
-        it("drains only from stage 2 (W11)", function()
+        it("drains only from stage 2", function()
             local p = Sim.context()
             local c = stroke(p)
             c.left = 1e6
@@ -292,7 +292,7 @@ describe("weather", function()
             assert.near(15, p.body.damages[1].hp, 1e-6)
         end)
 
-        it("holds at stage 3 while hot (W32) and recovers once cooled", function()
+        it("holds at stage 3 while hot and recovers once cooled", function()
             local p = Sim.context()
             local c = stroke(p)
             run(p, 9 * 60)

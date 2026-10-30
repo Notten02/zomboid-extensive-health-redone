@@ -1,7 +1,7 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
 -- The immune system: factors, hygiene, target, the 15-minute movement, suppression, the Phalanx debuff, the sandbox
--- switches, and wound containment (docs/porting/phase6/immunity.md).
+-- switches, and wound containment.
 local Immunity = require("ExtensiveHealthRedone/Immunity/Immunity")
 local Data = require("ExtensiveHealthRedone/Data/Immunity")
 local Risk = require("ExtensiveHealthRedone/Conditions/Risk")
@@ -238,7 +238,7 @@ insulate("immunity hygiene reader", function()
     local game = FakeGame.install()
     local ServerImmunity = require("ExtensiveHealthRedone/Server/Immunity")
 
-    it("averages the worst of skin and worn clothing over every body part (W17: clothing counts)", function()
+    it("averages the worst of skin and worn clothing over every body part (clothing counts)", function()
         local player = game.addPlayer({})
         player.visual.dirt.Hand_L = 0.9
         player.visual.blood.Torso_Upper = 0.2

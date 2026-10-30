@@ -2,10 +2,11 @@
 -- adapter (Server/Food) turns the item and the water source into the plain descriptions used here.
 --
 -- A food description: { fullType, type (lower-case item type), name (lower-case display name), rotten, fresh, burnt,
---   cooked, cookable, dangerousUncooked, hideUncooked, poisonPower, toxinType ("mushroom", "berry", "toxin") }
--- Hands: { blood = 0-1, dirt = 0-1 } averaged over both hands (W26: visible soil only).
+--   cooked, cookable, dangerousUncooked, hideUncooked, poisonPower, toxinType ("mushroom", "berry", "toxin"), heat
+--   (vanilla's multiplier, 1.0 room temperature), frozen }
+-- Hands: { blood = 0-1, dirt = 0-1 } averaged over both hands (visible soil only).
 --
--- Accumulator (v0.9 D:846-855, :4737-4829): state.exposure.data.food[id] = risk 0-1. A risky bite adds to it; it decays
+-- Accumulator: state.exposure.data.food[id] = risk 0-1. A risky bite adds to it; it decays
 -- by DECAY_PER_HOUR; the roll uses the total (guaranteed at GUARANTEED, immunity still applies); a contraction clears
 -- it, a failed roll keeps it. Before any food disease exists, a pending risk makes the character queasy.
 
@@ -56,6 +57,35 @@ function Risk.trichinosis(food)
     return Data.FOOD.TRICHINOSIS, pork and "uncooked pork" or "uncooked wild game"
 end
 
+-- Add-on rules that lift the risk of stale food for a bite (a nutrition add-on: stale leftovers eaten reheated). None
+-- by default, so EHR alone always counts stale food. In registration order.
+local staleExemptions = {}
+
+-- Registers a rule: exempt(food) -> true when this stale food carries no stale risk. Rotten, burnt and uncooked food
+-- keep their risks whatever the rules say. name: unique, prefixed with the add-on's own prefix.
+function Risk.exemptStale(name, exempt)
+    if type(name) ~= "string" or type(exempt) ~= "function" then
+        error("stale exemptions need a name and exempt(food)", 2)
+    end
+    for _, rule in ipairs(staleExemptions) do
+        if rule.name == name then
+            error("stale exemption " .. name .. " is already registered", 2)
+        end
+    end
+    staleExemptions[#staleExemptions + 1] = { name = name, exempt = exempt }
+end
+
+-- The rule that lifts the stale risk of this food, or nil.
+function Risk.staleExemption(food)
+    for _, rule in ipairs(staleExemptions) do
+        local ok, exempt = pcall(rule.exempt, food)
+        if ok and exempt == true then
+            return rule.name
+        end
+    end
+    return nil
+end
+
 local function combine(a, b)
     return 1 - (1 - a) * (1 - b)
 end
@@ -75,7 +105,7 @@ function Risk.foodPoisoning(food, trichinosisRisk)
             chance, reasons[1] = Data.FOOD.UNCOOKED, "uncooked"
         end
     end
-    if not food.burnt and food.fresh == false then
+    if not food.burnt and food.fresh == false and not Risk.staleExemption(food) then
         chance = combine(chance, Data.FOOD.STALE)
         reasons[#reasons + 1] = "stale"
     end
@@ -165,7 +195,7 @@ function Risk.applyToxin(p, defs, power, toxinType, portion)
     return c
 end
 
--- The source of a world water object (v0.9 FoodHook getWorldWaterSourceType, first match wins). w: { customName,
+-- The source of a world water object (first match wins). w: { customName,
 -- name, sprite (lower-case strings or nil), rainCatcher (bool), tainted (bool) }. Returns a Data.WATER key.
 function Risk.waterSource(w)
     local custom, name, sprite = w.customName or "", w.name or "", w.sprite or ""

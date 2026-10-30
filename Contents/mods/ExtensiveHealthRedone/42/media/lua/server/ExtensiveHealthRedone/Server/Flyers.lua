@@ -1,14 +1,11 @@
--- Wires disease flyers and the Wild Plants guide to the authority (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md
--- section 1). The rules are Knowledge/Learn and the item table Data/Flyers; this file only translates.
+-- Wires disease flyers and the Wild Plants guide to the authority. The rules are Knowledge/Learn and the item table
+-- Data/Flyers; this file only translates.
 -- An MP client loads this file too and stops at the first line.
 --
--- Decisions:
---   - Flyers are read with vanilla's ISReadABook like any literature (maintainer default 2026-10-14): vanilla's reading
---     time (pages x MinutesPerPage), its darkness, driving and Illiterate checks, resuming, multi-select, and the
---     script's mood values. v0.9 replaced the action with a client-only one (c/EHR_FlyerHook.lua:321-372) that skipped
---     all of that and never applied the mood values.
+--   - Flyers are read with vanilla's ISReadABook like any literature: vanilla's reading time (pages x MinutesPerPage),
+--     its darkness, driving and Illiterate checks, resuming, multi-select, and the script's mood values.
 --   - Knowledge is decided here, on the authority, from the real item in the finished action: no client command can
---     teach anything (v0.9's UnlockDisease and HerbalSearch/UnlockKnowledge trusted the client).
+--     teach anything.
 --   - The recipe guides need nothing here: vanilla teaches their LearnedRecipes.
 
 if isClient() then

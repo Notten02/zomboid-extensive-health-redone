@@ -1,11 +1,11 @@
 -- Blood volume: bleeding, regeneration, saline dilution, blood-loss stages, blackouts and death.
--- Numbers in Data/Blood (v0.9 values converted to game minutes; see its header). Sandbox options keep their v0.9
--- names and defaults. Differences from v0.9, all deliberate:
---   * game time throughout (decided 2026-10-06); regeneration never "catches up" after a pause
---   * blackouts honour BlackoutCooldownHours (W27) and don't stop the death checks; BlackoutEnabled=false no longer
---     makes blood loss harmless
+-- Numbers in Data/Blood (see its header for the time base). Sandbox options keep the original mod's names and
+-- defaults, so existing server configs carry over.
+--   * game time throughout; regeneration never "catches up" after a pause
+--   * blackouts honour BlackoutCooldownHours and don't stop the death checks; BlackoutEnabled=false doesn't make blood
+--     loss harmless
 --   * saline only counts the volume it actually added
---   * endurance penalties exist (v0.9's setter didn't in B42); the speed penalty is lifted on recovery
+--   * blood loss brings endurance penalties; the speed penalty is lifted on recovery
 
 local Data = require "ExtensiveHealthRedone/Data/Blood"
 local BodyParts = require "ExtensiveHealthRedone/Data/BodyParts"
@@ -40,7 +40,7 @@ function Blood.woundRate(part)
     return Data.WOUND.other
 end
 
--- mL lost per v0.9 update from one part (before BloodLossMultiplier). 0 unless bleeding and unbandaged.
+-- mL lost per update (Data/Blood) from one part (before BloodLossMultiplier). 0 unless bleeding and unbandaged.
 function Blood.partLoss(name, part)
     if not part.bleeding or part.bandaged then
         return 0
@@ -125,7 +125,9 @@ local function regenerate(p, b, dt)
         return 0
     end
     local bonus = Healing.check(p) and Data.REGEN_BONUS or 1
-    return Blood.change(b, p.sandbox("BloodRegenRatePerHour", 50) / 60 * bonus * dt)
+    local factor = p.mods and p.mods:get("bloodRegen") or 1
+    return Blood.change(b, p.sandbox("BloodRegenRatePerHour", 50) / 60 * bonus * factor * dt)
+
 end
 
 local function dilution(p, b, dt)
@@ -155,7 +157,7 @@ local function blackoutGate(p, beta)
     return (s.PANIC or 0) <= Data.BLACKOUT_GATE and (s.STRESS or 0) <= Data.BLACKOUT_GATE
 end
 
--- Waking from a blackout halves fatigue (v0.9).
+-- Waking from a blackout halves fatigue.
 local function blackoutWake(p, b, dt)
     if not b.blackout then
         return
@@ -173,7 +175,7 @@ local function blackoutWake(p, b, dt)
 end
 
 local function critical(p, b, dt, beta)
-    -- Death first: a blackout never shields from it (v0.9 skipped these checks on blackout).
+    -- Death first: a blackout never shields from it.
     local actual = Blood.percent(b)
     if actual <= Data.DEATH_INSTANT then
         Speech.stage(p, "UI_EHR_Dialogue_Blood_Collapse")

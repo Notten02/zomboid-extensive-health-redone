@@ -1,8 +1,7 @@
 -- AHTR, the acute hemolytic transfusion reaction: from incompatible blood (Blood/Transfusion). Effects start in stage
 -- 1. Untreated, stage 2 drains health down to 50 and stages 3 and 4 drain it without a floor. A curative course (IV
--- fluids, furosemide; Phase 5) stops the damage and softens the symptoms.
--- Effects from v0.9 EHR_Disease.lua (docs/porting/phase3/transfusion-ahtr-supplies.md, part 10). Back pain goes on
--- the lower torso (v0.9 used stiffness and a general pain stat, which B42 derives from the body parts).
+-- fluids, furosemide) stops the damage and softens the symptoms. Back pain goes on the lower torso (B42 derives the
+-- general pain stat from the body parts).
 
 local Symptoms = require "ExtensiveHealthRedone/Conditions/Symptoms"
 local Speech = require "ExtensiveHealthRedone/Core/Speech"

@@ -3,8 +3,8 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake game and UI objects are deliberately partial.
 ---@diagnostic disable: missing-fields, duplicate-set-field
--- The Mini Health Panel companion (Phase 10, W44): the pure view model and the docking, then the panel following a fake
--- host panel (the mod's `mhpHandle`).
+-- The Mini Health Panel companion: the pure view model and the docking, then the panel following a fake host panel
+-- (the mod's `mhpHandle`).
 local MiniHealth = require("ExtensiveHealthRedone/UI/MiniHealth")
 local defs = require("ExtensiveHealthRedone/Conditions/Registry")
 local Sim = require("support/sim")

@@ -1,4 +1,4 @@
--- The blood timed actions (decision SA-6): a transfusion of a blood bag or saline, on yourself or on another player
+-- The blood timed actions: a transfusion of a blood bag or saline, on yourself or on another player
 -- within reach (with their consent for that bag), and drawing your own blood into an empty bag.
 --
 --   EHRTransfusionAction:new(character, item, target)   target: another IsoPlayer, or nil for yourself

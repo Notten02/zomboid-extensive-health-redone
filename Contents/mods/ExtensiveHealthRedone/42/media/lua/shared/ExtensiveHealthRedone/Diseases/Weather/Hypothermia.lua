@@ -1,12 +1,10 @@
 -- Hypothermia: follows body temperature, with no roll and no timer (a driven condition). Stage 1-4 at or below the
 -- HypothermiaStage1..4Temp options; warming steps back one stage at a time with 0.25 deg C of slack, and it clears
 -- above HypothermiaClearTemp. Slowdown, no sprint from stage 2, an endurance cap, fatigue, a health drain from stage 2,
--- confusion, dizziness and (stage 4) collapse. Warmth is the only treatment (W8: no medicine).
--- From v0.9 EHR_BodyTemperature.lua:349-370, :660-768 and EHR_EnvironmentalDiseases.lua:2574-2619, :3302-3367
--- (docs/porting/phase4/environmental.md, section 3).
+-- confusion, dizziness and (stage 4) collapse. Warmth is the only treatment (no medicine).
 --
--- Body temperature is vanilla's CharacterStat.TEMPERATURE (deg C), bounded by Body/Temperature; BodyTemperatureEnabled=false
--- turns hypothermia off (checklist section 6). Fixed from v0.9: the stage-4 lines no longer talk about warming up.
+-- Body temperature is vanilla's CharacterStat.TEMPERATURE (deg C), bounded by Body/Temperature;
+-- BodyTemperatureEnabled=false turns hypothermia off.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Weather/Data"
 local Episodes = require "ExtensiveHealthRedone/Diseases/Weather/Episodes"
@@ -23,7 +21,7 @@ local DIZZY = { "UI_EHR_Text_DizzyWorldsSpinning", "UI_EHR_Weather_Stumbles", "U
 local COLLAPSE = { "UI_EHR_Weather_SlurredCantStayAwake", "UI_EHR_Weather_CollapsesSoCold",
     "UI_EHR_Weather_DazedEverythingIsFading", "UI_EHR_Weather_MumblesNeedWarmth" }
 
--- Spoken only when the stage gets worse (v0.9); warming steps back quietly.
+-- Spoken only when the stage gets worse; warming steps back quietly.
 local STAGE_LINES = {
     [1] = "UI_EHR_Text_SSoColdCantStopShivering",
     [2] = "UI_EHR_Text_ICCantFeelMyFingersNeedWarmth",
@@ -48,7 +46,7 @@ local Hypothermia = {
                 "EHR_Dialogue_Hypothermia_S4_Inter_1" },
         },
         every = 168,
-        -- v0.9: no shivering talk while warming up at a heat source
+        -- No shivering talk while warming up at a heat source
         quiet = function(p)
             return p.facts.weather ~= nil and p.facts.weather.nearHeat == true
         end,

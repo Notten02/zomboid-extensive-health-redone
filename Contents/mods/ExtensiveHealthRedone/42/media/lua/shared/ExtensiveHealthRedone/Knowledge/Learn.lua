@@ -1,12 +1,11 @@
--- Learning medical knowledge from the world: disease flyers, the Wild Plants guide and the 47.0 MHz radio (Phase 8;
--- docs/porting/phase8/flyers-knowledge-radio.md sections 1.4-1.6 and 4.2 step 5). Pure rules on a player context
--- (Core/Simulation); Server/Flyers and Server/Radio call them inside Runtime.applyNow.
+-- Learning medical knowledge from the world: disease flyers, the Wild Plants guide and the 47.0 MHz radio. Pure rules
+-- on a player context (Core/Simulation); Server/Flyers and Server/Radio call them inside Runtime.applyNow.
 --
--- Only these rules (and Knox.learnFromHerald and Knox.learnFromBloodTest) write state.knowledge.diseases, and nothing a client sends reaches them:
--- the server sees the real item in vanilla's ISReadABook:complete, or decides itself who heard the radio. This closes
--- v0.9's UnlockDisease and HerbalSearch/UnlockKnowledge commands, which trusted the client (checklist section 13).
+-- Only these rules (and Knox.learnFromHerald and Knox.learnFromBloodTest) write state.knowledge.diseases, and nothing
+-- a client sends reaches them: the server sees the real item in vanilla's ISReadABook:complete, or decides itself who
+-- heard the radio. No client command can unlock knowledge.
 --
--- XP (Data/Xp, maintainer default 2026-10-14, v0.9 parity): 50 for a flyer id learned for the first time (from any
+-- XP (Data/Xp): 50 for a flyer id learned for the first time (from any
 -- source: a flyer for an id the radio already taught gives none), 50 for the first Wild Plants read, 4 for each 09:00
 -- tip heard. Nothing for the 21:00 file, the recipe guides or a re-read.
 -- Lines: "Medical knowledge acquired: %1" goes to the client as knowledgeLearned (Client/RadioKnowledge), because
@@ -32,11 +31,31 @@ function Learn.disease(p, id)
     return "learned"
 end
 
+-- Raises the character's level in an add-on knowledge strand (Conditions/Knowledge). Levels never go down. nameKey:
+-- optional translation key for the "Medical knowledge acquired" line. Returns "learned" (raised) or "known".
+function Learn.strand(p, id, level, nameKey)
+    if type(id) ~= "string" or type(level) ~= "number" then
+        error("Learn.strand needs a strand id and a level", 2)
+    end
+    local knowledge = p.state.knowledge
+    knowledge.strands = knowledge.strands or {}
+    if (tonumber(knowledge.strands[id]) or 0) >= level then
+        return "known"
+    end
+    knowledge.strands[id] = level
+    p.dirty("knowledge")
+    if nameKey then
+        p.client("knowledgeLearned", { name = nameKey })
+    end
+    return "learned"
+end
+
 local function sayLearned(p, nameKey)
+
     p.client("knowledgeLearned", { name = nameKey })
 end
 
--- The Wild Medicinal Plants guide: opens the medicinal plant search regardless of skill (v0.9 c/EHR_FlyerHook.lua:65-104).
+-- The Wild Medicinal Plants guide: opens the medicinal plant search regardless of skill.
 function Learn.wildPlants(p)
     local knowledge = p.state.knowledge
     if knowledge.wildPlants then
@@ -71,7 +90,7 @@ function Learn.heardDay(key)
     return day and tonumber(day) or nil
 end
 
--- Drops radioHeard keys from before today - keepDays (v0.9 kept them forever). Keys without a day are left alone.
+-- Drops radioHeard keys from before today - keepDays. Keys without a day are left alone.
 function Learn.prune(heard, today, keepDays)
     local old = {}
     for key in pairs(heard) do
@@ -86,8 +105,8 @@ function Learn.prune(heard, today, keepDays)
     return #old
 end
 
--- A listener heard a broadcast to the end. heard: the slot key in v0.9's format ("<day>:9:XP:4",
--- "<day>:21:KNOW:<id>"), so keys imported from v0.9 still count. reward: { kind = "xp" } or { kind = "know", id, name }.
+-- A listener heard a broadcast to the end. heard: the slot key in the original mod's format ("<day>:9:XP:4",
+-- "<day>:21:KNOW:<id>"), so imported keys still count. reward: { kind = "xp" } or { kind = "know", id, name }.
 -- today: the broadcast's day. Returns true when this rewarded the listener (once per slot).
 function Learn.radio(p, heard, reward, today)
     local knowledge = p.state.knowledge
@@ -100,7 +119,7 @@ function Learn.radio(p, heard, reward, today)
     if reward.kind == "xp" then
         p.xp("radioTip")
     elseif reward.kind == "know" then
-        -- The Knox file is recorded as heard but teaches nothing (v0.9 DF:309-313).
+        -- The Knox file is recorded as heard but teaches nothing.
         if Learn.disease(p, reward.id) == "learned" then
             sayLearned(p, reward.name)
         end

@@ -2,9 +2,8 @@
 ---@diagnostic disable: redundant-parameter
 -- The fake radio API is deliberately partial.
 ---@diagnostic disable: missing-fields
--- The Last Prescription on 47.0 MHz (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md Part C): the text keys,
--- the schedule and story rules, the listener rule, the judging window and the rewards, then the server wiring against
--- the fake game with a fake radio.
+-- The Last Prescription on 47.0 MHz: the text keys, the schedule and story rules, the listener rule, the judging
+-- window and the rewards, then the server wiring against the fake game with a fake radio.
 local Data = require("ExtensiveHealthRedone/Data/Radio")
 local Station = require("ExtensiveHealthRedone/Radio/Station")
 local Learn = require("ExtensiveHealthRedone/Knowledge/Learn")
@@ -90,7 +89,7 @@ describe("radio text", function()
         assert.is_nil(texts["UI_EHR_Radio_Story_" .. (#Data.STORY_LINES + 1) .. "_1"])
     end)
 
-    it("calls corpse illness by its name (W4), keeps tip 5's swear word and loses v0.9's typos (W35)", function()
+    it("calls corpse illness by its name, keeps tip 5's swear word and loses v0.9's typos", function()
         local texts = uiTexts("EN")
         local evening = build("evening", 6, { story = 0 })
         assert.equal("corpse_sickness", evening.reward.id)

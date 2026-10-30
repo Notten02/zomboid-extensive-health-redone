@@ -304,7 +304,7 @@ describe("monitor: overview and body", function()
         assert.equal("UI_EHR_BodyStatus_Injury", injury.statuses[2].label.key)
     end)
 
-    it("gives the W21 hint only to a reader who knows wound infection at First Aid 6", function()
+    it("gives the wound infection hint only to a reader who knows wound infection at First Aid 6", function()
         local s = state()
         s.wounds.parts.Hand_L = { phase = "infected", stage = 3, left = 100 }
         s.wounds.parts.Foot_L = { phase = "incubating", left = 100 }

@@ -1,26 +1,24 @@
--- The Last Prescription's rules (Phase 8; docs/porting/phase8/flyers-knowledge-radio.md Part C): when a slot airs, what
--- it says, how the story advances, who counts as a listener and when to judge it. Pure: the clock, the world state and
+-- The Last Prescription's rules: when a slot airs, what it says, how the story advances, who counts as a listener and
+-- when to judge it. Pure: the clock, the world state and
 -- plain device tables are passed in. Server/Radio does the game work.
 --
--- Schedule (v0.9 sv/EHR_Radio.lua:145-201, sv/EHR_RadioMessages.lua:558-636), day = nights survived + 1:
+-- Schedule, day = nights survived + 1:
 --   09:00  tip ((day mod 21) + 1); a listener gets 4 First Aid XP once (radioHeard "<day>:9:XP:4")
 --   15:00  the next story episode; no reward
 --   21:00  disease file (((day - 1) mod 20) + 1); a listener learns the id once ("<day>:21:KNOW:<id>"), never Knox
--- Fixed against v0.9 (decided 2026-10-14): the story is a stored world-wide index that advances only when an episode
--- airs, so a missed 15:00 skips nothing; after episode 22 the loop recording (22) replays daily. v0.9 derived it from the
--- day and wrapped to episode 1 on day 23. Tips and files stay on the day rotation.
+-- The story is a stored world-wide index that advances only when an episode airs, so a missed 15:00 skips nothing;
+-- after episode 22 the loop recording (22) replays daily. Tips and files follow the day rotation.
 --
 -- World state ({ lastSlot = "<day>:<hour>", story = last episode aired }) is a plain table the server keeps in global
 -- ModData; clean() repairs anything a save or a client could have put there.
 --
--- Listeners (maintainer default: vanilla's rule; v0.9 s/EHR_RadioInteractions.lua:37-55, vanilla
--- ISRadioInteractions.playerInRange/checkPlayer): alive, awake, and a device that is on, tuned to 47.0, powered and not
--- muted is carried, is the radio of the vehicle they sit in, or stands within 5 tiles on their floor and their side of
--- inside/outside. A world device with headphones plugged in counts for nobody.
+-- Listeners (vanilla's rule, ISRadioInteractions.playerInRange/checkPlayer): alive, awake, and a device that is on,
+-- tuned to 47.0, powered and not muted is carried, is the radio of the vehicle they sit in, or stands within 5 tiles on
+-- their floor and their side of inside/outside. A world device with headphones plugged in counts for nobody.
 --
--- Judging (maintainer default): when the final line airs. Server/Radio reads the channel's progress each game minute and
--- calls check(); if the server never shows line progress, the fallback rewards anyone listening at any check from 5 to
--- 15 minutes after the start.
+-- Judging: when the final line airs. Server/Radio reads the channel's progress each game minute and calls check(); if
+-- the server never shows line progress, the fallback rewards anyone listening at any check from 5 to 15 minutes after
+-- the start.
 
 local Data = require "ExtensiveHealthRedone/Data/Radio"
 
@@ -34,12 +32,12 @@ function Station.slotKey(day, hour)
     return tostring(day) .. ":" .. tostring(hour)
 end
 
--- Tip number for a day (v0.9 pick(morningTips, day, 1): day 1 airs tip 2).
+-- Tip number for a day (day 1 airs tip 2).
 function Station.tipFor(day)
     return (day % #Data.TIP_LINES) + 1
 end
 
--- File number for a day (v0.9 pick(diseaseEpisodes, day, 0)).
+-- File number for a day.
 function Station.fileFor(day)
     return ((day - 1) % #Data.FILES) + 1
 end

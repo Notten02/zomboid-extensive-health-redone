@@ -1,12 +1,11 @@
 -- The lines EHR adds under an item's vanilla tooltip (Client/ItemTooltip), and the medication facts the context menu
--- shares (Client/MedicationMenu). docs/porting/phase7/tooltips-moodles-watch.md, Part A.
+-- shares (Client/MedicationMenu).
 --
--- Mechanical facts come from the data the simulation uses, so a tooltip can't drift from the mechanics again (v0.9's
--- did, section 6.3): tier, cures and their times, the course, the syringe or IV kit, side effects (Medication/Data),
--- blood bag compatibility (Blood/Transfusion) and freshness (Blood/Spoilage). The authored text stays translated
--- keys, read by the item's name: Tooltip_EHR_<Item>_Category, _Description, _Effect_<i>, _Relief_<i>, _Warning, and
--- for items outside the medication data (supplies, bags, Knox items) also _Requirement_<i>, _Cure_<i>,
--- _TreatmentTime and _SideEffect_<i>.
+-- Mechanical facts come from the data the simulation uses, so a tooltip can't drift from the mechanics: tier, cures
+-- and their times, the course, the syringe or IV kit, side effects (Medication/Data), blood bag compatibility
+-- (Blood/Transfusion) and freshness (Blood/Spoilage). The authored text stays translated keys, read by the item's
+-- name: Tooltip_EHR_<Item>_Category, _Description, _Effect_<i>, _Relief_<i>, _Warning, and for items outside the
+-- medication data (supplies, bags, Knox items) also _Requirement_<i>, _Cure_<i>, _TreatmentTime and _SideEffect_<i>.
 --
 --   ItemInfo.lines(fullType, ctx) -> { { label = Text, value = Text?, color = Draw colour, progress = 0-1?,
 --                                        wrap = bool? }, ... } or nil for items we don't annotate
@@ -60,7 +59,7 @@ end
 -- Condition names that the registry doesn't hold (wound infection is per body part).
 local EXTRA_NAMES = { woundInfection = "UI_EHR_Disease_WoundInfection" }
 
--- The key name of an item: the part after the module, non-word characters as "_" (v0.9 TS:29-32).
+-- The key name of an item: the part after the module, non-word characters as "_".
 function ItemInfo.textName(fullType)
     local name = tostring(fullType):match("^[^%.]*%.(.+)$") or tostring(fullType)
     return (name:gsub("[^%w]", "_"))

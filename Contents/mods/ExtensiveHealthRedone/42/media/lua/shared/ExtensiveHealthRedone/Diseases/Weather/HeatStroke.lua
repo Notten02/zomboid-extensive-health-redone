@@ -1,13 +1,11 @@
 -- Heat stroke: from a high heat meter (Diseases/Weather/Exposure). It starts at once and runs 4-8 h: very high fever,
--- confusion, dizziness and blur, collapses into a forced sleep, thirst and a health drain from stage 2 (W11). W32:
--- it holds at stage 3 (the peak) until the character is cooled, so it never ends on its own in the heat.
--- Cures: the Instant Ice Pack course (Phase 5), a 3 h cold bath (Server/Weather + Client/ColdBath), or 3 h in air
+-- confusion, dizziness and blur, collapses into a forced sleep, thirst and a health drain from stage 2. It holds at
+-- stage 3 (the peak) until the character is cooled, so it never ends on its own in the heat.
+-- Cures: the Instant Ice Pack course, a 3 h cold bath (Server/Weather + Client/ColdBath), or 3 h in air
 -- at or below 10 deg C (a car with the AC on counts). While a bath or that cold air is cooling the character, the
 -- drain, thirst, collapses and episodes stop and the fever falls.
--- From v0.9 EHR_EnvironmentalDiseases.lua:2129-2202, :3214-3424, :3933-3978 and EHR_DiseaseDefinitions.lua:652-769
--- (docs/porting/phase4/environmental.md, sections 4.4-4.7).
 --
--- Treatment (Phase 5, through p.treatment): cure course Instant Ice Pack (4 doses, 1 h apart); relief: the ice pack
+-- Treatment (through p.treatment): cure course Instant Ice Pack (4 doses, 1 h apart); relief: the ice pack
 -- ("fever", "dehydration", "dizziness", "confusion", "collapse", "healthDrain"), Electrolyte Powder ("dehydration").
 
 local Data = require "ExtensiveHealthRedone/Diseases/Weather/Data"
@@ -50,11 +48,11 @@ local HeatStroke = {
             [4] = { "UI_EHR_Weather_StillBurning", "UI_EHR_Weather_KeepCoolingDown",
                 "UI_EHR_Weather_CantStayOnMyFeet" },
         },
-        every = 100,    -- v0.9: 1 in 80-110 per check, with a 0.35 h cooldown
+        every = 100,    -- about 1 in 80-110 per check, with a 0.35 h cooldown
     },
 }
 
--- W32: the peak doesn't give way to recovery while the character is still hot.
+-- The peak doesn't give way to recovery while the character is still hot.
 function HeatStroke.hold(p, c)
     if c.stage == 3 and not Meters.cooled(p) then
         if not c.data.heldLine then
@@ -99,7 +97,7 @@ function HeatStroke.effects(p, c, dt, curing, defs)
     Episodes.blur(p, c, "heat_stroke", dt)
     Episodes.collapseCooldown(p, c, dt)
     if coolingNow(p) then
-        -- A cold bath or cold air: the fever falls and nothing else happens (v0.9 :3222-3230).
+        -- A cold bath or cold air: the fever falls and nothing else happens.
         p.stats:lower("TEMPERATURE", "heat_stroke", D.COOLING_FEVER, D.COOLING_STEP * K * dt)
         return
     end
@@ -135,7 +133,7 @@ function HeatStroke.onEnd(p, c, reason)
     end
 end
 
--- Contracting: a line, and the meter resets (v0.9).
+-- Contracting: a line, and the meter resets.
 function HeatStroke.start(p, defs)
     local c = Engine.contract(p, defs, "heat_stroke", { source = "heat" })
     if c then
