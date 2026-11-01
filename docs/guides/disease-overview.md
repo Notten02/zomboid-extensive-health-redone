@@ -168,7 +168,6 @@ food is poisonous you get it, and mushrooms are the worst (severity up to 1.0, v
 - 2: thirst and hunger rising (capped near half), abdominal pain, a little blood loss, rare vomiting.
 - 3 (peak): thirst and hunger rise with no cap, frequent vomiting, stronger pain, **movement at 70%**.
 - 4: back to mild levels.
-- With Lifestyle: Hobbies, it raises your bladder need.
 
 **Treatment:**
 - Cures: **Oral Rehydration Kit** (8 doses, 6 hours apart; cures 48 hours after the first), **Broad Spectrum** or

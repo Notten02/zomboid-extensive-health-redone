@@ -24,7 +24,6 @@ require "ExtensiveHealthRedone/Server/Medication"
 require "ExtensiveHealthRedone/Server/Immunity"
 require "ExtensiveHealthRedone/Server/Temperature"
 require "ExtensiveHealthRedone/Server/IndoorClimate"
-require "ExtensiveHealthRedone/Server/Lifestyle"        -- Lifestyle: Hobbies recovery pace and bathing
 require "ExtensiveHealthRedone/Server/Watch"
 require "ExtensiveHealthRedone/Server/DebugItems"
 -- World content.

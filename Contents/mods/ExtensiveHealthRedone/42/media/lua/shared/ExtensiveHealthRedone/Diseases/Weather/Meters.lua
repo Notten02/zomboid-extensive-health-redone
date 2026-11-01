@@ -42,15 +42,10 @@ function Meters.cooled(p)
     return air < Meters.threshold(p) or (p.facts.env.shade and air < Data.heat.SHADE_MAX_C)
 end
 
--- Our cold bath, or a Lifestyle: Hobbies shower or tub (facts.lifestyle.showering, Server/Lifestyle: only believed to a
--- character standing still outside a vehicle).
+-- Our cold bath.
 function Meters.bathing(p)
     local bath = Meters.weather(p).bath
-    if bath ~= nil and bath.left > 0 then
-        return true
-    end
-    local lifestyle = p.facts and p.facts.lifestyle
-    return lifestyle ~= nil and lifestyle.showering == true
+    return bath ~= nil and bath.left > 0
 end
 
 return Meters

@@ -136,11 +136,8 @@ SideEffects.DEFS = {
         p.body:pain("Torso_Lower", src("lower_back_pain"), 24)
         p.stats:floorF("DISCOMFORT", src("lower_back_pain"), 0.18)
     end },
-    -- Lifestyle: Hobbies' bathroom need rises 18 points per game hour; the client adds it (Client/Lifestyle).
-    -- Without Lifestyle it is only shown.
-    diuretic_urination = { hours = 8, name = "UI_SideEffect_DiureticUrination", update = function(p)
-        p.fx:bladder("diuretic_urination", 18)
-    end },
+    -- Only shown: vanilla has no bladder to fill.
+    diuretic_urination = { hours = 8, name = "UI_SideEffect_DiureticUrination", update = function() end },
     fever = { hours = 6, name = "UI_SideEffect_Fever", update = function(p, _, dt)
         p.stats:raise("TEMPERATURE", src("fever"), 38.2, 0.01 * dt)
         p.stats:floorF("FATIGUE", src("fever"), 0.32)

@@ -213,7 +213,7 @@ The Knox infection is never taught by radio.
 |---|---|
 | **MoodleFramework** (optional, recommended) | The five EHR moodles show only with it. Worked in single player on 42.21. |
 | **Indoor Climate Redone** (optional) | Room air feeds the heat and cold meters, also on a dedicated server. The original Indoor Climate (EHR Addon) works in single player only. |
-| **Lifestyle: Hobbies** (optional) | A clean, rested, bathed character recovers up to about 50% faster, a dirty one slower. |
+| **Lifestyle: Hobbies** | Not supported, and cannot be enabled together with EHR: it overwrites the saved health state about once per game hour. |
 | **Mini Health Panel** | A small "EHR Status" panel docks beside it. |
 | **Antibodies** | Works beside Redone. |
 | **Zombie Virus Vaccine** (B42 port) | Works beside Redone, with three ties. |

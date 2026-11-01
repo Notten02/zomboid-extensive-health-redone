@@ -37,7 +37,6 @@ local Chance = require "ExtensiveHealthRedone/Core/Chance"
 local Timers = require "ExtensiveHealthRedone/Core/Timers"
 local Speech = require "ExtensiveHealthRedone/Core/Speech"
 local Risk = require "ExtensiveHealthRedone/Conditions/Risk"
-local Pace = require "ExtensiveHealthRedone/Lifestyle/Pace"
 
 local Engine = {}
 
@@ -217,22 +216,11 @@ function Engine.enterStage(p, defs, id, c, stage)
     complications(p, defs, id, c, stage)
 end
 
--- Lifestyle: Hobbies (facts.lifestyle, Server/Lifestyle): a clean, rested, bathed character gets over an illness
--- faster, a filthy one slower. The incubation (stage 1) never moves.
-local function pace(p, c, id)
-    local lifestyle = p.facts and p.facts.lifestyle
-    if not lifestyle or c.stage < 2 then
-        return 1
-    end
-    return Pace.forCondition(lifestyle, id)
-end
-
 -- Advances one condition by dt minutes. Returns "recovered" when it ended, or the last stage it entered.
-local function advance(p, def, c, dt, id)
+local function advance(p, def, c, dt)
     if def.rate then
         dt = dt * def.rate(p, c)
     end
-    dt = dt * pace(p, c, id)
     c.left = c.left - dt
     local entered
     while c.left <= 0 do
@@ -283,7 +271,7 @@ function Engine.step(p, defs, dt)
                 end
             elseif not curing then
                 -- Only stage changes are synced; the client's remaining times are as of the last change.
-                result = advance(p, def, c, dt, id)
+                result = advance(p, def, c, dt)
             end
             if result == "recovered" then
                 Engine.finish(p, defs, id, "recovered")

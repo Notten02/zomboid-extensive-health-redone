@@ -209,7 +209,7 @@ M["ExtensiveHealth.AntiInflammatory"] = {
 -- Relief never lifts dysentery's caps. The x0.35 thirst drain counts as dehydration relief.
 M["ExtensiveHealth.AntiDiarrheal"] = {
     id = "AntiDiarrheal", name = "UI_EHR_Med_AntiDiarrhealTablets", route = "pill", tier = 1,
-    active = 6, treats = { "dysentery" }, relief = { diarrhea = 0.85, dehydration = 0.65, bathroomNeed = 0.85 },
+    active = 6, treats = { "dysentery" }, relief = { diarrhea = 0.85, dehydration = 0.65 },
     category = "antiDiarrheal", line = T .. "YouTakeAntiDiarrhealTabletsTheCrampsAndUrgency",
 }
 M["ExtensiveHealth.MuscleRelaxants"] = {

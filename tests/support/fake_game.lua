@@ -480,7 +480,7 @@ function FakeGame.install(opts)
     _G.ZombRandFloat = function(lo, hi) return lo + (hi - lo) * (game.float or 0.5) end
     ---@diagnostic disable-next-line: missing-fields
     _G.SandboxVars = { ExtensiveHealthRework = { DebugMode = false } }
-    -- Enabled mods: game.mods["LifestyleHobbies"] = true.
+    -- Enabled mods: game.mods["MoodleFramework"] = true.
     game.mods = {}
     ---@diagnostic disable-next-line: duplicate-set-field
     _G.getActivatedMods = function()

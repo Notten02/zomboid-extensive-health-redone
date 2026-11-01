@@ -6,10 +6,7 @@
 --
 -- Treatment: cure Oral Rehydration Kit (48 h, 8 doses), Broad Spectrum or Plant-Based Antibiotics,
 -- IV Antibiotics, IV Metronidazole, IV Ciprofloxacin.
--- Relief: Anti-Diarrheal (diarrhea .85, bathroomNeed .85), Electrolyte Powder (dehydration), Anti-Nausea (vomiting).
--- Lifestyle: Hobbies: dysentery raises its bathroom need (BLADDER_RATE points per game hour by stage), less with
--- relief; an anti-diarrheal also drains the need that is there. The client
--- adds it to Lifestyle's own number (Client/Lifestyle); without Lifestyle nobody reads it.
+-- Relief: Anti-Diarrheal (diarrhea .85), Electrolyte Powder (dehydration), Anti-Nausea (vomiting).
 
 local Data = require "ExtensiveHealthRedone/Diseases/Food/Data"
 local Common = require "ExtensiveHealthRedone/Diseases/Food/Common"
@@ -27,8 +24,6 @@ local ROWS = {
     [4] = { thirst = 0.0003, thirstCap = 0.10, hunger = 0.0002, hungerCap = 0.10, vomit = 0 },
 }
 local VOMIT_HUNGER, VOMIT_THIRST = 0.06, 0.08
-local BLADDER_RATE = { [1] = 2, [2] = 14, [3] = 26, [4] = 2 }
-local BLADDER_RELIEF_DRAIN = 35     -- points per game hour taken off by full bathroom relief
 local BLOOD_SYNC_ML = 10        -- sync the blood section when the loss since the last sync reaches this
 
 local def = {
@@ -86,10 +81,6 @@ function def.effects(p, c, dt)
     local hydration = clamp(1 - t:relief(ID, "dehydration"))
     local vomitMult = clamp(sm * (1 - t:relief(ID, "vomiting")))
     local k = Data.DYS_TICK * dt
-
-    local bathRelief = t:relief(ID, "bathroomNeed")
-    local pressure = BLADDER_RATE[c.stage] * clamp(diarrhea * math.max(0.05, 1 - bathRelief))
-    p.fx:bladder(ID, pressure - BLADDER_RELIEF_DRAIN * bathRelief)
 
     local thirst = row.thirst * diarrhea * hydration * k
     local hunger = row.hunger * diarrhea * k

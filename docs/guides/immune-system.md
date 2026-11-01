@@ -126,8 +126,6 @@ infection is worth it. Antibiotics "just in case" make the next cold more likely
   during the incubation.
 - Do not stack antibiotics. Use ointments for a mild wound infection; save systemic antibiotics for when you need them.
 - Rest while you are ill. A sick character also loses score through disease pressure, so illnesses feed each other.
-- With **Lifestyle: Hobbies**, hygiene, a comfortable seat, a recent shower and yoga make you recover faster from
-  illnesses already underway. That is a separate system from the immune score.
 
 ## What it does not do
 
