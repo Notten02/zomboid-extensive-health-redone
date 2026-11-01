@@ -62,6 +62,26 @@ function ColdBath.tubOf(object)
     return nil
 end
 
+-- The tub on any clicked object's square, or nil. By square: a right-click hands over only the object under the
+-- cursor, which may be the floor or a wall on the tub's square rather than the tub (see Game/WaterSource).
+function ColdBath.find(worldobjects)
+    local seen = {}
+    for _, clicked in ipairs(worldobjects or {}) do
+        local square = clicked:getSquare()
+        if square and not seen[square] then
+            seen[square] = true
+            local objects = square:getObjects()
+            for i = 0, objects:size() - 1 do
+                local tub = ColdBath.tubOf(objects:get(i))
+                if tub then
+                    return tub
+                end
+            end
+        end
+    end
+    return nil
+end
+
 local function hasHeatStroke(player)
     local conditions = Client.section(player, "conditions")
     return conditions ~= nil and conditions.active ~= nil and conditions.active.heat_stroke ~= nil
@@ -192,20 +212,18 @@ Events.OnFillWorldObjectContextMenu.Add(function(playerNum, context, worldobject
     if test or not player or player:getVehicle() or not hasHeatStroke(player) then
         return
     end
-    for _, object in ipairs(worldobjects) do
-        local tub = ColdBath.tubOf(object)
-        if tub then
-            local option = context:addOptionOnTop(getText("UI_EHR_Context_TakeColdBath"), player, onBath, tub)
-            local tooltip = ISWorldObjectContextMenu.addToolTip()
-            tooltip.description = getText("UI_EHR_Context_TakeColdBathDesc")
-            if not hasWater(tub) then
-                option.notAvailable = true
-                tooltip.description = getText("UI_EHR_Context_TakeColdBathNoWater")
-            end
-            option.toolTip = tooltip
-            return
-        end
+    local tub = ColdBath.find(worldobjects)
+    if not tub then
+        return
     end
+    local option = context:addOptionOnTop(getText("UI_EHR_Context_TakeColdBath"), player, onBath, tub)
+    local tooltip = ISWorldObjectContextMenu.addToolTip()
+    tooltip.description = getText("UI_EHR_Context_TakeColdBathDesc")
+    if not hasWater(tub) then
+        option.notAvailable = true
+        tooltip.description = getText("UI_EHR_Context_TakeColdBathNoWater")
+    end
+    option.toolTip = tooltip
 end)
 
 return ColdBath
