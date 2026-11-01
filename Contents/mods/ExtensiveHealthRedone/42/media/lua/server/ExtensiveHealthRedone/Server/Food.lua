@@ -11,6 +11,7 @@ local Env = require "ExtensiveHealthRedone/Game/Env"
 local Transport = require "ExtensiveHealthRedone/Game/Transport"
 local Patches = require "ExtensiveHealthRedone/Game/Patches"
 local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"
+local WaterSource = require "ExtensiveHealthRedone/Game/WaterSource"
 local Runtime = require "ExtensiveHealthRedone/Server/Runtime"
 local Facts = require "ExtensiveHealthRedone/Server/Facts"
 local defs = require "ExtensiveHealthRedone/Conditions/Registry"
@@ -281,20 +282,8 @@ local function notice(player, key)
     Transport.toClient(player, "notice", { key = key, owner = PlayerKey.of(player) })
 end
 
--- A usable water source on a square: not a puddle, with water in it.
-function Food.waterSourceAt(square)
-    if not square then
-        return nil
-    end
-    local objects = square:getObjects()
-    for i = 0, objects:size() - 1 do
-        local object = objects:get(i)
-        if object:getFluidAmount() > 0 and not instanceof(object, "IsoWorldInventoryObject") then
-            return object
-        end
-    end
-    return nil
-end
+-- A usable water source on a square: not a puddle, with water in it. Shared with the menu (Game/WaterSource).
+Food.waterSourceAt = WaterSource.at
 
 local function soapOf(player)
     local soaps = player:getInventory():getSoapList(nil, false)

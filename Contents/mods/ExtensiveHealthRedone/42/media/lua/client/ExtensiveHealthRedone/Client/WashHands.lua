@@ -6,21 +6,13 @@
 require "ISUI/ISWorldObjectContextMenu"
 
 local WashAction = require "ExtensiveHealthRedone/Actions/WashHands"
+local WaterSource = require "ExtensiveHealthRedone/Game/WaterSource"
 
 local WashHands = {}
 
 WashHands.Action = WashAction
 
 -- Context menu -----------------------------------------------------------------------------------------------------------
-
-local function waterSource(worldobjects)
-    for _, object in ipairs(worldobjects) do
-        if not instanceof(object, "IsoWorldInventoryObject") and object:getFluidAmount() > 0 then
-            return object
-        end
-    end
-    return nil
-end
 
 function WashHands.onWash(player, sink)
     if luautils.walkAdjObject(player, sink, true, true) then
@@ -33,7 +25,8 @@ local function fill(playerIndex, context, worldobjects, test)
     if not player or player:getVehicle() then
         return
     end
-    local sink = waterSource(worldobjects)
+    -- By square: the click may have landed on the sink's cabinet rather than its tap (Game/WaterSource).
+    local sink = WaterSource.near(worldobjects)
     if not sink then
         return
     end

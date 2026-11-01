@@ -30,7 +30,7 @@ insulate("client files", function()
         return c
     end
     for _, name in ipairs({ "TimedActions/ISBaseTimedAction", "ISUI/ISInventoryPaneContextMenu", "ISUI/ISPanel",
-        "ISUI/ISButton", "ISUI/ISModalDialog" }) do
+        "ISUI/ISButton", "ISUI/ISModalDialog", "ISUI/ISWorldObjectContextMenu" }) do
         package.preload[name] = function() return true end
     end
     _G.ISBaseTimedAction = class()
@@ -145,6 +145,8 @@ insulate("client files", function()
     local ItemTooltip = require("ExtensiveHealthRedone/Client/ItemTooltip")
     local Moodles = require("ExtensiveHealthRedone/Client/Moodles")
     local Sleep = require("ExtensiveHealthRedone/Client/Sleep")
+    require("ExtensiveHealthRedone/Client/WashHands")
+    local ColdBath = require("ExtensiveHealthRedone/Client/ColdBath")
     local PlayerKey = require("ExtensiveHealthRedone/Game/PlayerKey")
     local player = game.addPlayer({})
     game.events.OnCreatePlayer.trigger(0, player)
@@ -650,6 +652,61 @@ insulate("client files", function()
             rawset(Options, "get", get)
             player.modData.ExtensiveHealthRedone.conditions.active.tetanus = nil
             game.advance(1)
+        end)
+    end)
+
+    -- A right-click hands over only the object under the cursor; the fixture may be another object on its square.
+    describe("world menu fixtures by square", function()
+        local function object(square, props)
+            local o = { square = square, fluid = props.fluid or 0, sprite = props.sprite }
+            function o:getSquare() return self.square end
+            function o:getFluidAmount() return self.fluid end
+            function o:getSprite()
+                local name = self.sprite
+                return name and { getName = function() return name end } or nil
+            end
+            square.objects[#square.objects + 1] = o
+            return o
+        end
+        local function worldMenu(objects)
+            local menu = newContext()
+            function menu:addOptionOnTop(name, target, onSelect, param1)
+                local option = { name = name, target = target, onSelect = onSelect, param1 = param1 }
+                table.insert(self.options, 1, option)
+                return option
+            end
+            for _, handler in ipairs(game.events.OnFillWorldObjectContextMenu.handlers) do
+                handler(0, menu, objects, false)
+            end
+            return menu:getOptionFromName("UI_EHR_Context_WashHands")
+        end
+
+        it("offers Wash Hands when the click lands on the sink's cabinet rather than its tap", function()
+            local square = FakeGame.newSquare(100, 101, 0)
+            local cabinet = object(square, { sprite = "fixtures_counters_01_0" })
+            local tap = object(square, { sprite = "fixtures_sinks_01_0", fluid = 10 })
+            function player.inventory:getSoapList() return { size = function() return 0 end } end
+            player.visual.blood.Hand_L = 0.5
+
+            local option = worldMenu({ cabinet })
+            assert.truthy(option)
+            assert.equal(tap, option.param1)
+            assert.is_nil(option.notAvailable)
+            -- A gamepad hands over a square's floor.
+            local floor = { getSquare = function() return square end }
+            assert.equal(tap, worldMenu({ floor }).param1)
+
+            tap.fluid = 0
+            assert.is_nil(worldMenu({ cabinet }))
+            player.visual.blood.Hand_L = nil
+        end)
+
+        it("finds the bathtub when the click lands on another object on its square", function()
+            local square = FakeGame.newSquare(100, 102, 0)
+            local wall = object(square, { sprite = "walls_interior_bathroom_01_0" })
+            local tub = object(square, { sprite = "fixtures_bathroom_01_25" })
+            assert.equal(tub, ColdBath.find({ wall }))
+            assert.is_nil(ColdBath.find({ { getSquare = function() return FakeGame.newSquare(0, 0, 0) end } }))
         end)
     end)
 end)
