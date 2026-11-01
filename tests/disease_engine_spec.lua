@@ -221,7 +221,7 @@ describe("client effects", function()
         local section = ClientEffects.defaults()
         assert.is_true(fx:writeTo(section))
         assert.same({ speed = 0.5, noSprint = true, blur = 0.4, tint = 0, noSleep = false, sleepBy = false,
-            attackSpeed = 1, boost = 1, bladder = 0, night = 0, aim = 1 }, section)
+            attackSpeed = 1, boost = 1, night = 0, aim = 1 }, section)
 
         assert.is_false(fx:writeTo(section))
         assert.is_true(ClientEffects.new():writeTo(section))

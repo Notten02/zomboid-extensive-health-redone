@@ -1,16 +1,13 @@
 -- The heat-stroke cold bath: a "Take Cold Bath" option on a bathtub while the character has heat stroke, and a timed
 -- action that sits in the tub until the server says the 3 hours are done (or the heat stroke is gone). The server
 -- checks the tub, the water and the distance, and decides the cure (Server/Weather, Diseases/Weather/Exposure).
--- With Lifestyle: Hobbies the character climbs into the tub with Lifestyle's own animations (Bob_Tub_Enter, then
--- Bob_Tub_Base after 8 % of the bath), stands at Lifestyle's tub positions and is put back where it stood afterwards;
--- the bath also counts as Lifestyle's cold bath. Without Lifestyle, the plain "Loot" animation facing the tub.
+-- The character crouches facing the tub (the plain "Loot" animation).
 
 require "TimedActions/ISBaseTimedAction"
 
 local Env = require "ExtensiveHealthRedone/Game/Env"
 local Client = require "ExtensiveHealthRedone/Client/Client"
 local Data = require "ExtensiveHealthRedone/Diseases/Weather/Data"
-local Lifestyle = require "ExtensiveHealthRedone/Game/Lifestyle"
 
 local ColdBath = {}
 
@@ -24,8 +21,6 @@ local SUB = {
     fixtures_bathroom_01_53 = true, fixtures_bathroom_01_54 = true,
 }
 local HEARTBEAT_MINUTES = 5
--- Share of the bath after which the character settles from climbing in to sitting.
-local SETTLE_AT = 0.08
 
 local function spriteName(object)
     local sprite = object and object:getSprite()
@@ -121,36 +116,10 @@ local function tubArgs(tub)
     return { x = square:getX(), y = square:getY(), z = square:getZ() }
 end
 
-local function place(character, tub, offsets)
-    local square = tub:getSquare()
-    character:setX(square:getX() + offsets[1])
-    character:setY(square:getY() + offsets[2])
-end
-
--- The character leaves the tub: back to where it stood, with the splash Lifestyle plays.
-local function climbOut(action)
-    if action.inTub then
-        action.inTub = nil
-        action.character:setX(action.startX)
-        action.character:setY(action.startY)
-        action.character:getEmitter():playSound("Tub_End")
-    end
-end
-
 function ColdBathAction:start()
-    local facing = Lifestyle.active() and Lifestyle.TUB_FACING[spriteName(self.tub)] or nil
-    if facing then
-        self.facing = facing
-        self.inTub = true
-        self.startX, self.startY = self.character:getX(), self.character:getY()
-        place(self.character, self.tub, Lifestyle.TUB_ENTER[facing])
-        self:setActionAnim(Lifestyle.TUB_ANIM_ENTER)
-        self.character:getEmitter():playSound("Tub_Splash1")
-    else
-        self:setActionAnim("Loot")
-        self.character:SetVariable("LootPosition", "Low")
-        self.character:faceThisObject(self.tub)
-    end
+    self:setActionAnim("Loot")
+    self.character:SetVariable("LootPosition", "Low")
+    self.character:faceThisObject(self.tub)
     self.startedAt = Env.gameMinutes()
     self.beatAt = self.startedAt
     ColdBath.current[self.character] = self
@@ -163,11 +132,6 @@ function ColdBathAction:update()
     self.character:setMetabolicTarget(Metabolics.LightWork)
     local progress = math.min(1, (now - self.startedAt) / Data.heatStroke.BATH_MINUTES)
     self:setJobDelta(progress)
-    if self.inTub and not self.settled and progress > SETTLE_AT then
-        self.settled = true
-        place(self.character, self.tub, Lifestyle.TUB_SEAT[self.facing])
-        self:setActionAnim(Lifestyle.TUB_ANIM_SEAT)
-    end
     if now - self.beatAt >= HEARTBEAT_MINUTES then
         self.beatAt = now
         Client.send(self.character, "weather.bathBeat", {})
@@ -175,15 +139,12 @@ function ColdBathAction:update()
 end
 
 function ColdBathAction:stop()
-    climbOut(self)
     ColdBath.current[self.character] = nil
     Client.send(self.character, "weather.bathStop", {})
     ISBaseTimedAction.stop(self)
 end
 
 function ColdBathAction:perform()
-    climbOut(self)
-    Lifestyle.markColdBath(self.character)
     ColdBath.current[self.character] = nil
     ISBaseTimedAction.perform(self)
 end

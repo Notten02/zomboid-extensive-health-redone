@@ -96,7 +96,7 @@ end
 
 local function effectsDefaults()
     return { speed = 1, noSprint = false, blur = 0, tint = 0, noSleep = false, sleepBy = false, attackSpeed = 1,
-        boost = 1, bladder = 0, night = 0, aim = 1 }
+        boost = 1, night = 0, aim = 1 }
 
 end
 

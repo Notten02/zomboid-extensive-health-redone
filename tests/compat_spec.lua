@@ -1,7 +1,7 @@
 -- LuaLS's bundled luassert definitions omit the optional failure-message argument.
 ---@diagnostic disable: redundant-parameter
 -- Compatibility checks that need no third-party mod: the original mod enabled beside ours is called out in the log,
--- and mod.info marks both spellings of the original's ids incompatible.
+-- and mod.info marks both spellings of the original's ids, and of Lifestyle: Hobbies, incompatible.
 local LuaSource = require("LuaSource")
 
 insulate("original mod beside the rewrite", function()
@@ -34,6 +34,14 @@ describe("mod.info", function()
             assert.is_true(ids[id], id)
             assert.is_true(ids["\\" .. id], "\\" .. id)
         end
+    end)
+
+    it("marks Lifestyle: Hobbies incompatible in both id spellings", function()
+        local list = info:match("\nincompatible=([^\n]*)")
+        local ids = {}
+        for id in list:gmatch("[^,]+") do ids[id] = true end
+        assert.is_true(ids.LifestyleHobbies)
+        assert.is_true(ids["\\LifestyleHobbies"])
     end)
 
     it("names the poster and icon files that exist", function()

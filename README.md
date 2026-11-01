@@ -16,13 +16,14 @@ Gameplay matches the original; the code does not.
   Medical Monitor Watch.
 - **World content:** loot, flyers and knowledge, the radio, crafting, two search minigames, professions and traits.
 - **Multiplayer and admin:** examining and treating other players with consent, server-side actions and admin commands.
-- **Compatibility:** Lifestyle: Hobbies, Indoor Climate Redone, MoodleFramework and others (see `docs/competability/` and
+- **Compatibility:** Indoor Climate Redone, MoodleFramework and others (see `docs/competability/` and
   `docs/incompetable/`), and a one-time importer for the original mod's saves.
 
 ## Compatibility with the original
 
 - Mod ID `ExtensiveHealthRedone`. It cannot be enabled together with the original (`ExtensiveHealthReworkEvolved`) or
-  its predecessor (`EHR`).
+  its predecessor (`EHR`), nor with Lifestyle: Hobbies (`LifestyleHobbies`), which overwrites the saved health state
+  (see `docs/incompetable/Lifestyle-Hobbies.md`).
 - The item module `ExtensiveHealth`, every item ID and every sandbox option name are kept, so existing saves and server
   configs carry over. On first load, long-term character data (blood type, disease knowledge, immunity, Knox
   gene-therapy and Patient Zero flags) is imported, and active illnesses and treatments are reset.
@@ -32,7 +33,7 @@ Gameplay matches the original; the code does not.
 **Players:** subscribe on the
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3824731938), enable *Extensive Health Redone*
 in the mod list, and disable the original. Needs Build 42.21 or newer. Optional:
-MoodleFramework, Indoor Climate Redone, Lifestyle: Hobbies.
+MoodleFramework, Indoor Climate Redone. Not supported: Lifestyle: Hobbies.
 
 **From source:** `tools/deploy-dev.sh` copies `Contents/` into `~/Zomboid/Workshop/ExtensiveHealthRedone/` (the game
 loads local mods from there, not through a symlink); enable the mod in the game's mod list. Run it again after each

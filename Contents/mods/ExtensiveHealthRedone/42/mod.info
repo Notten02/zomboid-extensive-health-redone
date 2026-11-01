@@ -4,6 +4,6 @@ description=Diseases, blood, medication and immunity for Build 42. A from-scratc
 author=Nick Otten
 modversion=0.3.0
 versionMin=42.21.0
-incompatible=\ExtensiveHealthReworkEvolved,\EHR,ExtensiveHealthReworkEvolved,EHR
+incompatible=\ExtensiveHealthReworkEvolved,\EHR,ExtensiveHealthReworkEvolved,EHR,\LifestyleHobbies,LifestyleHobbies
 poster=poster.png
 icon=icon.png
