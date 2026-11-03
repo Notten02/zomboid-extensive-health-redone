@@ -217,6 +217,7 @@ The Knox infection is never taught by radio.
 | **Mini Health Panel** | A small "EHR Status" panel docks beside it. |
 | **Antibodies** | Works beside Redone. |
 | **Zombie Virus Vaccine** (B42 port) | Works beside Redone, with three ties. |
+| **The Only Cure** | Works beside Redone. Amputating an infected arm cures its wound infection (not sepsis), a dirty fresh stump can get infected, and a character with no hands eats face first (Wash Face at sinks). |
 | **Raven Creek** | EHR medicine should spawn in its medical rooms. |
 | **Red Days, Unseasonal Weather** | Listed as compatible by the original; not yet verified here. |
 | **Hephas Vitamins** | Overlaps: both rework the vitamin pills. Use one. |

@@ -1,6 +1,6 @@
 -- Every simulation system, in one list. Server/Health registers them with the runtime; tests run them directly.
--- Order: blood (200), wounds (300: infection, tetanus triggers), disease triggers and exposure meters (310-390),
--- medication (390: doses, courses and their cures), immunity (395), conditions (400), effects that read the
+-- Order: blood (200), amputations (290: The Only Cure, Wounds/Amputation), wounds (300: infection, tetanus
+-- triggers), disease triggers and exposure meters (310-390), medication (390: doses, courses and their cures), immunity (395), conditions (400), effects that read the
 -- conditions (410-789), body temperature (790: takes every TEMPERATURE contribution), pre-disease stages (795),
 -- healing (800), and the monitor's timer refresh (990).
 
@@ -10,6 +10,7 @@ local Temperature = require "ExtensiveHealthRedone/Body/Temperature"
 local TemperatureStages = require "ExtensiveHealthRedone/Body/TemperatureStages"
 local Infection = require "ExtensiveHealthRedone/Wounds/Infection"
 local TetanusTriggers = require "ExtensiveHealthRedone/Wounds/Tetanus"
+local Amputation = require "ExtensiveHealthRedone/Wounds/Amputation"
 local Engine = require "ExtensiveHealthRedone/Conditions/Engine"
 local defs = require "ExtensiveHealthRedone/Conditions/Registry"
 local Groups = require "ExtensiveHealthRedone/Diseases/Groups"
@@ -19,6 +20,7 @@ local Refresh = require "ExtensiveHealthRedone/Conditions/Refresh"
 
 local systems = {
     Blood.system,
+    Amputation.system,
     {
         name = "wounds",
         order = 300,

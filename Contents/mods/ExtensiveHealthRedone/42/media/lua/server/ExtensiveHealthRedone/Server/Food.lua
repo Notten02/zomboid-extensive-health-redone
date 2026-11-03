@@ -1,6 +1,7 @@
 -- Wires the food-borne diseases to the game on the authority: what is eaten (ISEatFoodAction complete, and the partial
 -- bite of a cancelled meal), what is drunk (ISDrinkFluidAction from a container, ISTakeWaterAction from a world
--- source), the wash-hands command, the hand-soil facts, and debug commands. The rules live in Diseases/Food.
+-- source), the wash-hands command (also Wash Face and worn prostheses with The Only Cure), the hand-soil facts, and
+-- debug commands. The rules live in Diseases/Food.
 -- An MP client loads this file too and stops at the first line.
 
 if isClient() then
@@ -17,6 +18,8 @@ local Facts = require "ExtensiveHealthRedone/Server/Facts"
 local defs = require "ExtensiveHealthRedone/Conditions/Registry"
 local Risk = require "ExtensiveHealthRedone/Diseases/Food/Risk"
 local Washing = require "ExtensiveHealthRedone/Diseases/Food/Washing"
+local BodySoil = require "ExtensiveHealthRedone/Game/BodySoil"
+local OnlyCure = require "ExtensiveHealthRedone/Game/OnlyCure"
 
 local log = Env.logger("Food")
 
@@ -24,27 +27,39 @@ local Food = {}
 
 -- Hands -------------------------------------------------------------------------------------------------------------
 
--- Visible blood and dirt, averaged over both hands.
+-- Visible blood and dirt on what touches the food: both hands, averaged (Game/BodySoil has The Only Cure's cases).
 function Food.hands(player)
-    local visual = player:getHumanVisual()
-    local blood = (visual:getBlood(BloodBodyPartType.Hand_L) + visual:getBlood(BloodBodyPartType.Hand_R)) / 2
-    local dirt = (visual:getDirt(BloodBodyPartType.Hand_L) + visual:getDirt(BloodBodyPartType.Hand_R)) / 2
-    return { blood = blood, dirt = dirt }
+    return BodySoil.hands(player)
 end
 
 Facts.extend("hands", function(player, facts)
     facts.hands = Food.hands(player)
 end)
 
--- Blood and dirt on the hands and arms, by BloodBodyPartType name.
+-- Blood and dirt on what washing cleans, by BloodBodyPartType name (or Prosthesis_L/R), and the mode: "hands", or
+-- "face" for a character with no hand or prosthesis left (Game/BodySoil).
 function Food.soil(player)
-    local visual = player:getHumanVisual()
-    local soil = {}
-    for _, name in ipairs(Washing.PARTS) do
-        local part = BloodBodyPartType[name]
-        soil[name] = { blood = visual:getBlood(part), dirt = visual:getDirt(part) }
+    return BodySoil.wash(player)
+end
+
+-- Cleans one part of a washing plan: the skin, or a worn prosthesis (as vanilla's ISWashClothing cleans a garment).
+-- Returns the prosthesis it cleaned, if any.
+local function clean(player, visual, name)
+    local side = name:match("^Prosthesis_(%a)$")
+    if not side then
+        visual:setBlood(BloodBodyPartType[name], 0)
+        visual:setDirt(BloodBodyPartType[name], 0)
+        return nil
     end
-    return soil
+    local item = OnlyCure.prosthesis(player, side)
+    if item then
+        local covered = item:getCoveredParts()
+        for i = 0, covered:size() - 1 do
+            item:setBlood(covered:get(i), 0)
+            item:setDirt(covered:get(i), 0)
+        end
+    end
+    return item
 end
 
 -- Eating -------------------------------------------------------------------------------------------------------------
@@ -320,22 +335,30 @@ Runtime.registry:register("food.washHands", {
             return
         end
         local soap = soapOf(player)
-        local plan = Washing.plan(Food.soil(player), soap ~= nil)
+        local soil, mode = Food.soil(player)
+        local face = mode == "face"
+        local plan = Washing.plan(soil, soap ~= nil)
         if not plan then
-            return notice(player, "UI_EHR_Context_WashHandsClean")
+            return notice(player, face and "UI_EHR_Context_WashFaceClean" or "UI_EHR_Context_WashHandsClean")
         end
         if sink:getFluidAmount() < plan.water then
             return notice(player, "UI_EHR_Context_WashHandsNoWater")
         end
         local visual = player:getHumanVisual()
+        local garments = {}
         for _, name in ipairs(plan.parts) do
-            visual:setBlood(BloodBodyPartType[name], 0)
-            visual:setDirt(BloodBodyPartType[name], 0)
+            garments[#garments + 1] = clean(player, visual, name)
         end
         if soap and plan.bloody then
             soap:UseAndSync()
         end
         sendHumanVisual(player)
+        for _, item in ipairs(garments) do
+            syncItemFields(player, item)
+        end
+        if #garments > 0 then
+            syncVisuals(player)
+        end
         player:resetModelNextFrame()
         if sink:useFluid(plan.water) > 0 and not instanceof(sink, "IsoWorldInventoryObject") then
             sink:transmitModData()
@@ -344,9 +367,10 @@ Runtime.registry:register("food.washHands", {
             if soap then
                 p.stats:add("UNHAPPINESS", "washHands", -Washing.UNHAPPINESS_WITH_SOAP)
             end
-            p.say("UI_EHR_Text_WashesHandsMuchBetter")
+            p.say(face and "UI_EHR_Text_WashesFaceMuchBetter" or "UI_EHR_Text_WashesHandsMuchBetter")
         end)
-        log:debug(ctx.actor.key, "washed", #plan.parts, "parts with", plan.water, "water", soap and "and soap" or "")
+        log:debug(ctx.actor.key, "washed", #plan.parts, "parts with", plan.water, "water", soap and "and soap" or "",
+            face and "(face)" or "")
     end,
 })
 

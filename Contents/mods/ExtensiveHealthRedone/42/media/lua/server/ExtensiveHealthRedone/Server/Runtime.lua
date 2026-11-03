@@ -200,18 +200,19 @@ local function newContext(key)
     local state = Runtime.store:get(key)
     local ranges = StatWriter.ranges()
     local outbox = {}
+    local facts = Facts.read(player, ranges)
     local p = {
         key = key,
         player = nil,       -- never for systems; adapters use Runtime.playerFor
         state = state,
         stats = StatAggregator.new(ranges),
-        body = BodyAggregator.new(),
+        body = BodyAggregator.new(facts.missing),
         fx = ClientEffects.new(),
         mods = Modifiers.new(),
         perks = PerkAggregator.new(),
         rng = Env.rng,
         sandbox = Env.sandbox,
-        facts = Facts.read(player, ranges),
+        facts = facts,
         treatment = Treatments.forState(state),
         fresh = fresh[key] == true,
         dirty = function(section)

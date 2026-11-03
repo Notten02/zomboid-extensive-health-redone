@@ -210,5 +210,7 @@
     "Sandbox_EHR_ImmunityDeclineRate": "Швидкість ослаблення імунітету",
     "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Масштабує швидкість зниження показника імунної системи до поточного цільового значення. 1.0 = типово.",
     "Sandbox_EHR_BloodTypeTraitsDisabled": "Вимкнути перки групи крові",
-    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Коли ввімкнено, перки групи крові приховано під час створення персонажа, і кожен персонаж отримує випадкову групу крові. Персонажі, які вже обрали групу, зберігають її."
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Коли ввімкнено, перки групи крові приховано під час створення персонажа, і кожен персонаж отримує випадкову групу крові. Персонажі, які вже обрали групу, зберігають її.",
+    "Sandbox_EHR_StumpInfectionChanceMultiplier": "(The Only Cure) Stump Infection Chance",
+    "Sandbox_EHR_StumpInfectionChanceMultiplier_tooltip": "Only with The Only Cure. Scales the chance that an open, dirty amputation stump starts a wound infection, rolled every 12 hours until the stump heals or is cauterized. <LINE> 1.0 = default. <LINE> 0 = stumps never get infected."
 }

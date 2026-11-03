@@ -118,6 +118,8 @@ dirt, up to 33%, and nothing at all if your hands are almost clean. Immune sensi
 **Treatment:** **Antiviral Capsules** (6 doses, 8 hours apart; cures 48 hours after the first) or **IV Ciprofloxacin**
 (one dose, cures after 12 hours). Relief: Anti-Nausea Tablets, Electrolyte Powder.
 **Prevention:** **Wash your hands** before eating (Wash Hands at a water source; soap uses less water and is quicker).
+With The Only Cure, a worn prosthesis touches the food like a hand and is washed with it, and a character with no hands
+left eats face first: use **Wash Face** instead.
 
 ## Trichinosis
 
@@ -368,6 +370,11 @@ extra pain (0, +10, +30). In stage 3 a fever of about 38 C starts.
 72 hours; ointment does not weaken immunity), **IV Antibiotics** (36 hours). **Vanilla antibiotics** drop every infected
 part by one stage per dose. Relief: Anti-Inflammatory Pills, Antipyretic Tablets.
 **Prevention:** disinfect, bandage cleanly, replace dirty bandages, do not close dirty wounds.
+
+**With The Only Cure:** amputating the infected arm part (or a part above it) ends its wound infection at any stage. It
+does not stop a Sepsis that has already started. A fresh stump counts as a wound on the part above it: until it heals
+or is cauterized, it rolls every 12 hours for an infection, more often the dirtier it is. Cleaning the stump with the
+mod's **Clean Wound** works like disinfecting during the incubation.
 
 ## Cellulitis
 

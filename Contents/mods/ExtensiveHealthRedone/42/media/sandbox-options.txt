@@ -185,6 +185,16 @@ option ExtensiveHealthRework.TetanusChanceMultiplier
     translation = EHR_TetanusChanceMultiplier,
 }
 
+option ExtensiveHealthRework.StumpInfectionChanceMultiplier
+{
+    type = double,
+    min = 0.0,
+    max = 5.0,
+    default = 1.0,
+    page = EHR_Disease,
+    translation = EHR_StumpInfectionChanceMultiplier,
+}
+
 option ExtensiveHealthRework.FoodPoisoningEnabled
 {
     type = boolean,

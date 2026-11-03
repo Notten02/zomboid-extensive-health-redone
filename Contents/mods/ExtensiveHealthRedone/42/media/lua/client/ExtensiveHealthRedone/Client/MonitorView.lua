@@ -33,6 +33,7 @@ local defs = require "ExtensiveHealthRedone/Conditions/Registry"
 local Schema = require "ExtensiveHealthRedone/Core/Schema"
 
 local Monitor = require "ExtensiveHealthRedone/UI/Monitor"
+require "ExtensiveHealthRedone/UI/Amputation"     -- The Only Cure's amputation rows
 local BodyStatus = require "ExtensiveHealthRedone/UI/BodyStatus"
 local Client = require "ExtensiveHealthRedone/Client/Client"
 local Options = require "ExtensiveHealthRedone/Client/Options"

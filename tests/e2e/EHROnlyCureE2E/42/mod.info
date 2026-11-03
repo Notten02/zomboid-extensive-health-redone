@@ -1,0 +1,7 @@
+name=EHR The Only Cure E2E test (dev only)
+id=EHROnlyCureE2E
+description=Dev-only end-to-end test: The Only Cure's amputations seen by Extensive Health Redone on a dedicated server.
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness,\ExtensiveHealthRedone,\TheOnlyCure

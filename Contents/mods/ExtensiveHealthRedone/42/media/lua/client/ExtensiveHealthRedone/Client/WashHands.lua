@@ -2,6 +2,8 @@
 -- arms with less water than vanilla's "Wash yourself"; soap makes it quicker and lifts the mood. Clean hands lower the
 -- gastroenteritis risk. The shared timed action (Actions/WashHands) has the server check the water source, the
 -- soil and the soap again and do the washing (Server/Food) when its time is up. Rules: Diseases/Food/Washing.
+-- With The Only Cure a character with no hand or prosthesis left gets "Wash Face" instead: they eat face first, so
+-- the face is what touches the food (Game/BodySoil).
 
 require "ISUI/ISWorldObjectContextMenu"
 
@@ -34,13 +36,15 @@ local function fill(playerIndex, context, worldobjects, test)
         return true
     end
     local soap = WashAction.hasSoap(player)
-    local plan = WashAction.plan(player)
-    local option = context:addOptionOnTop(getText("UI_EHR_Context_WashHands"), player, WashHands.onWash, sink)
+    local plan, mode = WashAction.plan(player)
+    local face = mode == "face"
+    local option = context:addOptionOnTop(getText(face and "UI_EHR_Context_WashFace" or "UI_EHR_Context_WashHands"),
+        player, WashHands.onWash, sink)
     local tooltip = ISWorldObjectContextMenu.addToolTip()
-    tooltip.description = getText("UI_EHR_Context_WashHandsDesc")
+    tooltip.description = getText(face and "UI_EHR_Context_WashFaceDesc" or "UI_EHR_Context_WashHandsDesc")
     if not plan then
         option.notAvailable = true
-        tooltip.description = getText("UI_EHR_Context_WashHandsClean")
+        tooltip.description = getText(face and "UI_EHR_Context_WashFaceClean" or "UI_EHR_Context_WashHandsClean")
     elseif sink:getFluidAmount() < plan.water then
         option.notAvailable = true
         tooltip.description = getText("UI_EHR_Context_WashHandsNoWater")

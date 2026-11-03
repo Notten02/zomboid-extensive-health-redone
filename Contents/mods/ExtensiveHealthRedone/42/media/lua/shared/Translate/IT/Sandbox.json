@@ -210,5 +210,7 @@
     "Sandbox_EHR_ImmunityDeclineRate": "Velocità di calo immunitario",
     "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Regola la velocità con cui il punteggio del sistema immunitario scende verso il valore obiettivo attuale. 1.0 = predefinito.",
     "Sandbox_EHR_BloodTypeTraitsDisabled": "Disattiva tratti del gruppo sanguigno",
-    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Se attivo, i tratti del gruppo sanguigno vengono nascosti durante la creazione del personaggio e ogni personaggio riceve un gruppo sanguigno casuale. I personaggi che ne hanno già scelto uno lo mantengono."
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "Se attivo, i tratti del gruppo sanguigno vengono nascosti durante la creazione del personaggio e ogni personaggio riceve un gruppo sanguigno casuale. I personaggi che ne hanno già scelto uno lo mantengono.",
+    "Sandbox_EHR_StumpInfectionChanceMultiplier": "(The Only Cure) Stump Infection Chance",
+    "Sandbox_EHR_StumpInfectionChanceMultiplier_tooltip": "Only with The Only Cure. Scales the chance that an open, dirty amputation stump starts a wound infection, rolled every 12 hours until the stump heals or is cauterized. <LINE> 1.0 = default. <LINE> 0 = stumps never get infected."
 }

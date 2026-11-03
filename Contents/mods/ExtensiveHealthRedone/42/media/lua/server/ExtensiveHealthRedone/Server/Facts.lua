@@ -10,7 +10,9 @@
 --   env = { airC, vehicleC (nil outside a vehicle), indoors, shade, wetness 0-1, raining, snowing, groundSnow,
 --           hour (0-24, fractional), month (1-12), sitOnGround, moving, running, sprinting, exerting, naturalFloor,
 --           female },
---   plus whatever feature readers add (Facts.extend), e.g. facts.corpses.
+--   plus whatever feature readers add (Facts.extend), e.g. facts.corpses. With The Only Cure (Server/OnlyCure):
+--   toc (Wounds/Amputation), missing = { [part] = true }, parts[part].missing on a cut part, parts[part].stump on the
+--   part under a fresh stump.
 -- }
 --
 -- Feature readers: Facts.extend("corpses", function(player, facts, ranges) facts.corpses = ... end). They run after
