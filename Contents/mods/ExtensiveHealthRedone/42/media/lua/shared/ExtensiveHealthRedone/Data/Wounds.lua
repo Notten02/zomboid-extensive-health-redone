@@ -33,6 +33,16 @@ return {
         LINE = "UI_EHR_Text_ThatWasANastyWoundHopeItDoesntGetInfected",
     },
 
+    -- The Only Cure's fresh stumps (Wounds/Amputation): while a stump is neither healed nor cauterized, a roll every
+    -- 12 h may start a wound infection incubation on the part above it; chance = CHANCE x the mod's wound dirtiness
+    -- (0-1) x StumpInfectionChanceMultiplier. A dirtiness drop of CLEANED or more is the mod's wound cleaning.
+    stump = {
+        EVERY_HOURS = 12,
+        CHANCE = 0.25,
+        CLEANED = 0.05,
+        CURED_LINE = "UI_EHR_Text_AtLeastTheInfectionWentWithIt",
+    },
+
     stitch = {
         POINTS = 12,
         MISS_QUALITY = 0.13,        -- quality = max(MIN_QUALITY, 1 - misses * MISS_QUALITY)

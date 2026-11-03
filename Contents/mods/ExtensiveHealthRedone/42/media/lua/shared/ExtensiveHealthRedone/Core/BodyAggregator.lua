@@ -20,14 +20,19 @@
 --   body:fullRestore("admin")                         -- every part back to full health, wounds and stiffness gone
 --
 -- Part names are BodyPartType names ("Hand_L", "Neck", ...). Results never depend on pairs order.
+--
+-- Missing parts (cut off with The Only Cure, facts.missing) take no wishes: healing caps, pain, damage, infection,
+-- new or reopened wounds and healing speeds for them are dropped as they are made.
 
 local Tables = require "ExtensiveHealthRedone/Core/Tables"
 
 local BodyAggregator = {}
 BodyAggregator.__index = BodyAggregator
 
-function BodyAggregator.new()
+-- missing: { [part] = true } for parts that are gone, or nil.
+function BodyAggregator.new(missing)
     return setmetatable({
+        missing = missing,  -- [part] = true: wishes for it are dropped
         heal = {},          -- [part] = lowest factor
         pains = {},         -- [part] = { [source] = amount }
         oneOff = {},        -- [part] = summed one-off pain
@@ -45,9 +50,16 @@ local function needSource(source)
     end
 end
 
+local function gone(self, part)
+    return self.missing ~= nil and self.missing[part] == true
+end
+
 -- Fraction (0-1) of vanilla's HP healing this part may keep. The lowest factor wins; 1 or none means untouched.
 function BodyAggregator:healFactor(part, source, factor)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     local current = self.heal[part]
     if current == nil or factor < current then
         self.heal[part] = factor
@@ -62,6 +74,9 @@ end
 
 function BodyAggregator:pain(part, source, amount)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     local byPart = self.pains[part]
     if not byPart then
         byPart = {}
@@ -72,6 +87,9 @@ end
 
 function BodyAggregator:addPain(part, source, amount)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     self.oneOff[part] = (self.oneOff[part] or 0) + amount
 end
 
@@ -84,11 +102,17 @@ end
 
 function BodyAggregator:partDamage(part, source, hp)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     self.partDamages[part] = (self.partDamages[part] or 0) + hp
 end
 
 function BodyAggregator:infect(part, source)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     if self.infection[part] == nil then
         self.infection[part] = true
     end
@@ -102,6 +126,9 @@ end
 -- A new vanilla scratch on the part (scabies), never carrying Knox. self.scratches is [part] = first source.
 function BodyAggregator:scratch(part, source)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     self.scratches = self.scratches or {}
     if self.scratches[part] == nil then
         self.scratches[part] = source
@@ -114,6 +141,9 @@ BodyAggregator.REOPEN_RANK = { scratch = 1, cut = 2, deep = 3 }
 -- wins. The body writer keeps the Knox guard of scratches. self.reopened is [part] = { kind, source }.
 function BodyAggregator:reopen(part, source, kind)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     local rank = BodyAggregator.REOPEN_RANK[kind]
     if not rank then
         error("reopen kinds are scratch, cut and deep: " .. tostring(kind), 2)
@@ -129,6 +159,9 @@ end
 -- The lowest factor wins; 1 or none means untouched.
 function BodyAggregator:woundSpeed(part, source, factor)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     self.woundSpeeds = self.woundSpeeds or {}
     local current = self.woundSpeeds[part]
     if current == nil or factor < current then
@@ -139,6 +172,9 @@ end
 -- The same for the fracture timer.
 function BodyAggregator:fractureSpeed(part, source, factor)
     needSource(source)
+    if gone(self, part) then
+        return
+    end
     self.fractureSpeeds = self.fractureSpeeds or {}
     local current = self.fractureSpeeds[part]
     if current == nil or factor < current then

@@ -210,5 +210,7 @@
     "Sandbox_EHR_ImmunityDeclineRate": "Immune Decline Rate",
     "Sandbox_EHR_ImmunityDeclineRate_tooltip": "Scales how quickly the immune system score falls toward its current target. 1.0 = default.",
     "Sandbox_EHR_BloodTypeTraitsDisabled": "Disable Blood Type Traits",
-    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "When enabled, the blood type traits are hidden during character creation and every character rolls a random blood type. Characters who already picked one keep it."
+    "Sandbox_EHR_BloodTypeTraitsDisabled_tooltip": "When enabled, the blood type traits are hidden during character creation and every character rolls a random blood type. Characters who already picked one keep it.",
+    "Sandbox_EHR_StumpInfectionChanceMultiplier": "(The Only Cure) Stump Infection Chance",
+    "Sandbox_EHR_StumpInfectionChanceMultiplier_tooltip": "Only with The Only Cure. Scales the chance that an open, dirty amputation stump starts a wound infection, rolled every 12 hours until the stump heals or is cauterized. <LINE> 1.0 = default. <LINE> 0 = stumps never get infected."
 }

@@ -134,8 +134,10 @@ function Infection.update(p, dt, defs)
         local fact = facts[name] or {}
         local e = parts[name]
         if fact.infected and not e then
-            if antiseptic or not fact.wound then
-                -- Prevented by antiseptic cream, or vanilla residue on a healed part.
+            if antiseptic or not fact.wound or fact.stump then
+                -- Prevented by antiseptic cream, or vanilla residue on a healed part. Under an open stump of The Only
+                -- Cure the stump's own roll (Wounds/Amputation) decides instead: vanilla infects the deep wound the
+                -- mod leaves there within minutes.
                 p.body:disinfect(name, "woundInfection")
             else
                 parts[name] = { phase = "incubating", left = Data.INCUBATION_HOURS * 60 / speed(p),

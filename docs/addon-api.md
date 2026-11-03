@@ -21,7 +21,7 @@ The rules that bind EHR's own code bind an add-on too (see "Code layout" in the 
 | A simulation system | `Runtime.sim:add({ name, order, update(p, dt) })` (`Server/Runtime`) | server | Order guide in `Systems.lua`. Run before 200 to scale blood recovery in the same step. |
 | A command | `Runtime.registry:register(name, spec)` | server | `Core/CommandRegistry` lists the argument and access checks. |
 | A scheduled job | `Runtime.scheduler:every(name, minutes, fn, opts)` | server | |
-| Facts from the game | `Facts.extend(name, fn(player, facts))` (`Server/Facts`) | server | Body part facts include the healing timers: `scratchTime`, `cutTime`, `deepTime`, `burnTime`, `fractureTime` and `fracture`. |
+| Facts from the game | `Facts.extend(name, fn(player, facts))` (`Server/Facts`) | server | Body part facts include the healing timers: `scratchTime`, `cutTime`, `deepTime`, `burnTime`, `fractureTime` and `fracture`. With The Only Cure, `facts.missing` lists the cut parts (their facts read `missing = true` and unwounded) and `p.body` drops every wish for them. |
 | Rate multipliers | `p.mods:scale(key, source, factor)` (`Core/Modifiers`) | in a system | Lowest factor per key wins. Keys EHR reads: `bloodRegen` (order 200), `immunityRise` (order 395). |
 | Strength and Fitness loss | `p.perks:drain(perk, source, xpPerHour)` (`Core/PerkAggregator`) | in a system | Highest drain per perk wins. `Server/PerkWriter` applies it the way vanilla's own passive-skill decay does: negative XP, then a level lost below the level's XP. |
 | Admin full heal | `FullHeal.onHeal(fn(p, mode))` (`Admin/FullHeal`) | shared | Runs after a heal or reset changed the state. Every condition ends on a heal, so reset what drives yours here. |

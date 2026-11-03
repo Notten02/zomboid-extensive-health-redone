@@ -16,8 +16,8 @@ Gameplay matches the original; the code does not.
   Medical Monitor Watch.
 - **World content:** loot, flyers and knowledge, the radio, crafting, two search minigames, professions and traits.
 - **Multiplayer and admin:** examining and treating other players with consent, server-side actions and admin commands.
-- **Compatibility:** Indoor Climate Redone, MoodleFramework and others (see `docs/competability/` and
-  `docs/incompetable/`), and a one-time importer for the original mod's saves.
+- **Compatibility:** Indoor Climate Redone, MoodleFramework, The Only Cure's amputations and others (see
+  `docs/competability/` and `docs/incompetable/`), and a one-time importer for the original mod's saves.
 
 ## Compatibility with the original
 
@@ -33,7 +33,7 @@ Gameplay matches the original; the code does not.
 **Players:** subscribe on the
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3824731938), enable *Extensive Health Redone*
 in the mod list, and disable the original. Needs Build 42.21 or newer. Optional:
-MoodleFramework, Indoor Climate Redone. Not supported: Lifestyle: Hobbies.
+MoodleFramework, Indoor Climate Redone, The Only Cure. Not supported: Lifestyle: Hobbies.
 
 **From source:** `tools/deploy-dev.sh` copies `Contents/` into `~/Zomboid/Workshop/ExtensiveHealthRedone/` (the game
 loads local mods from there, not through a symlink); enable the mod in the game's mod list. Run it again after each
@@ -142,6 +142,9 @@ keeps its server and clients in `.cache/pz-e2e/`). Each mod requires the bench's
 `EHRExamTreatE2E` checks that a doctor treats a remote patient from the exam window (issue #3). It needs two clients
 (`admin` the doctor, `player2` the patient), standing together (`teleport "player2" "admin"` on the server console),
 and a world without zombies, since attacks cancel the treatment.
+`EHROnlyCureE2E` cuts a hand off with The Only Cure's own action (that mod must be in the bench: its Workshop folder
+`mods/The-Only-Cure`) and checks our amputation state, the stump roll and the action lengths on both sides. It needs
+one client.
 
 `tools/test.sh` first runs `tools/check-kahlua.lua`, which rejects Lua the game can't run: anything that fails
 `luac5.1 -p` (goto, `//`, bitwise operators) and uses of `io`, `os`, `debug`, `load` and 5.2+ library functions.

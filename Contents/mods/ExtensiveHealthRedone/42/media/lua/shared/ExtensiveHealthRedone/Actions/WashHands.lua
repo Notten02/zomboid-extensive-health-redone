@@ -2,14 +2,16 @@
 --
 --   EHRWashHandsAction:new(character, sink)
 --
--- The length comes from the washing plan for the character's hands and arms and the soap they carry
--- (Diseases/Food/Washing), worked out inside new(), so the authority, which rebuilds the action from its constructor
--- arguments only, times it the same way. complete() hands the intent to food.washHands through Actions/Authority;
+-- The length comes from the washing plan for the character's hands and arms (with The Only Cure: what is left of
+-- them and the prostheses worn, or the face; Game/BodySoil) and the soap they carry (Diseases/Food/Washing), worked
+-- out inside new(), so the authority, which rebuilds the action from its constructor arguments only, times it the
+-- same way. complete() hands the intent to food.washHands through Actions/Authority;
 -- the server checks the water source, the soil and the soap again and does the washing (Server/Food).
 
 require "TimedActions/ISBaseTimedAction"
 
 local Washing = require "ExtensiveHealthRedone/Diseases/Food/Washing"
+local BodySoil = require "ExtensiveHealthRedone/Game/BodySoil"
 local Authority = require "ExtensiveHealthRedone/Actions/Authority"
 
 ---@class EHRWashHandsAction : ISBaseTimedAction
@@ -17,15 +19,9 @@ local Authority = require "ExtensiveHealthRedone/Actions/Authority"
 ---@field sound number?
 EHRWashHandsAction = ISBaseTimedAction:derive("EHRWashHandsAction")
 
--- Blood and dirt on the parts washing cleans, as Washing.plan reads them.
+-- Blood and dirt on the parts washing cleans, as Washing.plan reads them, and the mode ("hands" or "face").
 function EHRWashHandsAction.soil(character)
-    local visual = character:getHumanVisual()
-    local result = {}
-    for _, name in ipairs(Washing.PARTS) do
-        local part = BloodBodyPartType[name]
-        result[name] = { blood = visual:getBlood(part), dirt = visual:getDirt(part) }
-    end
-    return result
+    return BodySoil.wash(character)
 end
 
 function EHRWashHandsAction.hasSoap(character)
@@ -39,9 +35,10 @@ function EHRWashHandsAction.hasSoap(character)
     return false
 end
 
--- The washing plan for this character now (nil: nothing to wash).
+-- The washing plan for this character now (nil: nothing to wash), and the mode ("hands" or "face").
 function EHRWashHandsAction.plan(character)
-    return Washing.plan(EHRWashHandsAction.soil(character), EHRWashHandsAction.hasSoap(character))
+    local soil, mode = EHRWashHandsAction.soil(character)
+    return Washing.plan(soil, EHRWashHandsAction.hasSoap(character)), mode
 end
 
 function EHRWashHandsAction:isValid()
