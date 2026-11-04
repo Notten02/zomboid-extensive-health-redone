@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Healing Requires Hydrated",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Body parts only heal when not thirsty.",
     "Sandbox_EHR_HealingRequiresRested": "Healing Requires Rested",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Body parts only heal when not exhausted.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Body parts only heal while asleep or when not tired (no Tired moodle).",
     "Sandbox_EHR_HealingRequiresCalm": "Healing Requires Calm",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Body parts only heal when not stressed.",
     "Sandbox_EHR_HealingRequiresNoPain": "Healing Requires No Pain",

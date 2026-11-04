@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Cura Requer Hidratação",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Partes do corpo só cicatrizam quando não estiver com sede.",
     "Sandbox_EHR_HealingRequiresRested": "Cura Requer Descanso",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Partes do corpo só cicatrizam quando não estiver exausto.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Partes do corpo só cicatrizam dormindo ou quando não estiver cansado.",
     "Sandbox_EHR_HealingRequiresCalm": "Cura Requer Calma",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Partes do corpo só cicatrizam quando não estiver estressado.",
     "Sandbox_EHR_HealingRequiresNoPain": "Cura Requer Ausência de Dor",

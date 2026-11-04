@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Curacion requiere estar hidratado",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Las partes solo sanan si no tienes sed.",
     "Sandbox_EHR_HealingRequiresRested": "Curacion requiere estar descansado",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Las partes solo sanan si no estas exhausto.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Las partes solo sanan durmiendo o si no estas cansado.",
     "Sandbox_EHR_HealingRequiresCalm": "Curacion requiere estar calmado",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Las partes solo sanan si no estas estresado.",
     "Sandbox_EHR_HealingRequiresNoPain": "Curacion requiere sin dolor",

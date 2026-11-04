@@ -72,8 +72,9 @@ return {
         "UI_EHR_Hemodilution_Lethal_3", "UI_EHR_Hemodilution_Lethal_4",
     },
 
-    -- Conditional healing thresholds (fractions of each stat's range; pain 5 of 100).
-    HEALING = { hunger = 0.3, thirst = 0.3, stress = 0.5, fatigue = 0.5, pain = 0.05, fatigueBypassHealth = 10 },
+    -- Conditional healing thresholds (fractions of each stat's range; pain 5 of 100; fatigue 0.6 is vanilla's first
+    -- Tired moodle).
+    HEALING = { hunger = 0.3, thirst = 0.3, stress = 0.5, fatigue = 0.6, pain = 0.05, fatigueBypassHealth = 10 },
 
     -- Transfusion and draw.
     BAG_ML = 500,

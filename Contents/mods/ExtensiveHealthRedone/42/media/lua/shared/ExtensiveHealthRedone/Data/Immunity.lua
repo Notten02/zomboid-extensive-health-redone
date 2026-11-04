@@ -38,7 +38,7 @@ return {
         healthReserve = 0.15,       -- overall health minus disease pressure
     },
     FACTOR_ORDER = { "nutrition", "hydration", "rest", "stressControl", "bloodCondition", "healthReserve" },
-    REST_FROM = 0.5,
+    REST_FROM = 0.6,                -- vanilla's first Tired moodle
     BLOOD_FLOOR = 40,
 
     -- Disease pressure, subtracted from health in healthReserve: each active condition 8 + 2 x stage,

@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Guerison requiert d'etre hydrate",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Les blessures ne guerissent que si vous n'avez pas soif.",
     "Sandbox_EHR_HealingRequiresRested": "Guerison requiert d'etre repose",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Les blessures ne guerissent que si vous n'etes pas epuise.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Les blessures ne guerissent qu'en dormant ou si vous n'etes pas fatigue.",
     "Sandbox_EHR_HealingRequiresCalm": "Guerison requiert d'etre calme",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Les blessures ne guerissent que si vous n'etes pas stresse.",
     "Sandbox_EHR_HealingRequiresNoPain": "Guerison requiert pas de douleur",
