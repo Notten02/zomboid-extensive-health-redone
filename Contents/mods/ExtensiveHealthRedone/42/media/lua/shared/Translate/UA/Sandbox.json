@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Загоєння вимагає зволоження",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Частини тіла заживають лише тоді, коли немає спраги.",
     "Sandbox_EHR_HealingRequiresRested": "Зцілення вимагає відпочинку",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Частини тіла відновлюються лише тоді, коли вони не виснажені.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Частини тіла відновлюються лише уві сні або коли ви не втомлені.",
     "Sandbox_EHR_HealingRequiresCalm": "Зцілення вимагає спокою",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Частини тіла відновлюються лише тоді, коли немає стресу.",
     "Sandbox_EHR_HealingRequiresNoPain": "Загоєння не вимагає болю",

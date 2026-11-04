@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Guarigione richiede idratazione",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Le ferite guariscono solo se non hai sete.",
     "Sandbox_EHR_HealingRequiresRested": "Guarigione richiede riposo",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Le ferite guariscono solo se non sei esausto.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Le ferite guariscono solo dormendo o se non sei stanco.",
     "Sandbox_EHR_HealingRequiresCalm": "Guarigione richiede calma",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Le ferite guariscono solo se non sei stressato.",
     "Sandbox_EHR_HealingRequiresNoPain": "Guarigione richiede poco dolore",

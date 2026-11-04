@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "癒合需要水分",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "身體部位只有在不渴的時候才會癒合。",
     "Sandbox_EHR_HealingRequiresRested": "治癒需要休息",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "身體部位只有在未耗盡時才會癒合。",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "身體部位只有在睡眠中或不疲倦時才會癒合。",
     "Sandbox_EHR_HealingRequiresCalm": "療癒需要平靜",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "身體部位只有在沒有壓力的情況下才會癒合。",
     "Sandbox_EHR_HealingRequiresNoPain": "治癒不需要痛苦",

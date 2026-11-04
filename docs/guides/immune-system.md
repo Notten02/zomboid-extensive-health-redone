@@ -28,7 +28,7 @@ The target is a weighted sum of six factors, minus a hygiene penalty.
 | Factor | Weight | How it is measured |
 |---|---|---|
 | Nutrition | 22% | The opposite of hunger. |
-| Rest | 22% | Full marks while fatigue is under 50%. Above that it falls, reaching 0 at total exhaustion. |
+| Rest | 22% | Full marks until the Tired moodle (60% fatigue). Above that it falls, reaching 0 at total exhaustion. |
 | Hydration | 18% | The opposite of thirst. |
 | Health reserve | 15% | Your overall health, minus *disease pressure* (below). |
 | Blood | 13% | 0 at 40% blood or less, 100% at full blood. |

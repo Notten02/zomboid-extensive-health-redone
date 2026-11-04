@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "治癒には水分補給が必要です",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "体の一部は喉が渇いていないときにのみ回復します。",
     "Sandbox_EHR_HealingRequiresRested": "治癒には休息が必要です",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "体の部分は疲れていない場合にのみ回復します。",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "体の部分は睡眠中か、疲れていない場合にのみ回復します。",
     "Sandbox_EHR_HealingRequiresCalm": "癒しには冷静さが必要",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "身体の部分はストレスを感じていない場合にのみ回復します。",
     "Sandbox_EHR_HealingRequiresNoPain": "治癒には痛みは必要ありません",

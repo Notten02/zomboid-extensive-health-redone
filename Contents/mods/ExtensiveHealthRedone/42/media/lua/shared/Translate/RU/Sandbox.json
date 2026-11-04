@@ -37,7 +37,7 @@
     "Sandbox_EHR_HealingRequiresHydrated": "Для лечения требуется гидратация",
     "Sandbox_EHR_HealingRequiresHydrated_tooltip": "Части тела заживают только тогда, когда персонаж не хочет пить.",
     "Sandbox_EHR_HealingRequiresRested": "Для лечения требуется отдохнутность",
-    "Sandbox_EHR_HealingRequiresRested_tooltip": "Части тела заживают только тогда, когда нет истощения.",
+    "Sandbox_EHR_HealingRequiresRested_tooltip": "Части тела заживают только во сне или когда нет усталости.",
     "Sandbox_EHR_HealingRequiresCalm": "Для лечения требуется спокойствие",
     "Sandbox_EHR_HealingRequiresCalm_tooltip": "Части тела заживают только тогда, когда нет сильного стресса.",
     "Sandbox_EHR_HealingRequiresNoPain": "Для лечения требуется отсутствие боли",
