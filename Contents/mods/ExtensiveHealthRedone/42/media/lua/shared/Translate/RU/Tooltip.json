@@ -702,5 +702,15 @@
     "Tooltip_EHR_DualOrexinReceptor_Category": "Рецептурный препарат",
     "Tooltip_EHR_DualOrexinReceptor_Description": "Антагонист рецепторов орексина, рецептурное снотворное.",
     "Tooltip_EHR_DualOrexinReceptor_Effect_1": "Помогает заснуть и крепко спать",
-    "Tooltip_EHR_DualOrexinReceptor_Warning": "Слишком рано принятая доза тратится впустую и может вызвать передозировку."
+    "Tooltip_EHR_DualOrexinReceptor_Warning": "Слишком рано принятая доза тратится впустую и может вызвать передозировку.",
+    "Tooltip_EHR_BlisterPatches_Category": "OTC Medication",
+    "Tooltip_EHR_BlisterPatches_Description": "Hydrocolloid blister patches for the feet.",
+    "Tooltip_EHR_BlisterPatches_Effect_1": "Put on before a long walk: stops most blisters forming",
+    "Tooltip_EHR_BlisterPatches_Effect_2": "On a blister: eases the pain and doubles healing",
+    "Tooltip_EHR_FootPowder_Category": "OTC Medication",
+    "Tooltip_EHR_FootPowder_Description": "Drying, antifungal foot powder.",
+    "Tooltip_EHR_FootPowder_Effect_1": "Halves trench foot build-up on damp feet",
+    "Tooltip_EHR_FootPowder_Effect_2": "Helps dry feet recover from trench foot",
+    "Tooltip_EHR_FootPowder_Warning": "Can't dry soaked socks: change them",
+    "Tooltip_EHR_WarmingPack_Effect_3": "Rewarms cold, injured hands and feet"
 }

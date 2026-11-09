@@ -439,7 +439,8 @@ Runtime.registry:register("debug.condition", {
             local c = p.state.conditions.active[args.id]
             if args.action == "start" then
                 p.state.conditions.timers[args.id .. "Block"] = nil
-                Engine.contract(p, defs, args.id, { source = args.id == "cellulitis" and "ForeArm_L" or "debug" })
+                local source = defs[args.id].debugSource or (args.id == "cellulitis" and "ForeArm_L") or "debug"
+                Engine.contract(p, defs, args.id, { source = source })
             elseif args.action == "next" and c then
                 c.left = 0.001
             elseif args.action == "stage" and c and args.stage then

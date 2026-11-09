@@ -108,7 +108,7 @@ M["Base.PillsBeta"] = {
 -- sepsis and pneumonia.
 M["Base.Antibiotics"] = {
     id = "Antibiotics", name = "UI_EHR_Med_Antibiotics", route = "pill", vanilla = "eat", tier = 0,
-    active = 4, treats = { "pneumonia", "cellulitis" }, reliefFor = { sepsis = { fever = 0.15 } },
+    active = 4, treats = { "pneumonia", "cellulitis", "gangrene" }, reliefFor = { sepsis = { fever = 0.15 } },
     woundStep = true, flags = { "antibiotic" }, category = "antibiotic",
     line = T .. "YouTakeTheAntibioticsTheyProvideMinorRelief",
 }
@@ -202,7 +202,8 @@ M["ExtensiveHealth.AntiNauseaTablets"] = {
 }
 M["ExtensiveHealth.AntiInflammatory"] = {
     id = "AntiInflammatory", name = "UI_EHR_Med_AntiInflammatoryPills", route = "pill", tier = 1,
-    active = 6, treats = { "woundInfection", "cellulitis", "trichinosis", "tetanus", "ahtr" },
+    active = 6, treats = { "woundInfection", "cellulitis", "trichinosis", "tetanus", "ahtr", "foot_blisters",
+        "trench_foot", "gangrene", "frostbite" },
     relief = { inflammation = 0.50, pain = 0.55, fever = 0.30 }, category = "antiInflammatory",
     line = T .. "YouTakeAntiInflammatoryPillsSwellingBeginsTo",
 }
@@ -249,6 +250,22 @@ M["ExtensiveHealth.HomemadeAntisepticCream"] = {
     id = "HomemadeAntisepticCream", name = "UI_EHR_Med_HomemadeAntisepticCream", route = "cream", tier = 1,
     active = 8, flags = { "antiseptic" }, needsWound = true, category = "antiseptic",
     line = T .. "YouApplyHomemadeAntisepticCreamToTheWound",
+}
+-- Hydrocolloid blister patches: on the feet before a long walk they stop most friction (flag blisterPatch,
+-- Diseases/Extremities/Blisters), on a blister they ease the pain, double the healing and cure it in 24 h.
+M["ExtensiveHealth.BlisterPatches"] = {
+    id = "BlisterPatches", name = "UI_EHR_Med_BlisterPatches", route = "cream", tier = 1,
+    active = 24, cures = { foot_blisters = 24 }, relief = { pain = 0.6 }, flags = { "blisterPatch" },
+    early = "refuse", category = "footCare",
+    line = T .. "YouPutBlisterPatchesOnYourFeet",
+}
+-- Drying foot powder: on damp feet it halves the build-up of trench foot (only a little on soaked feet), and helps a
+-- dry foot recover (flag footPowder, Diseases/Extremities/TrenchFoot). No cure.
+M["ExtensiveHealth.FootPowder"] = {
+    id = "FootPowder", name = "UI_EHR_Med_FootPowder", route = "cream", tier = 1,
+    active = 12, treats = { "trench_foot" }, relief = { pain = 0.25 }, flags = { "footPowder" },
+    early = "refuse", earlyLine = T .. "YourFeetAreStillPowdered", category = "footCare",
+    line = T .. "YouDustYourFeetWithFootPowder",
 }
 
 -- Utility and emergency ------------------------------------------------------------------------------------------------
@@ -304,11 +321,11 @@ M["ExtensiveHealth.AntiviralCapsules"] = {
 }
 M["ExtensiveHealth.PrescriptionAntibiotics"] = {
     id = "PrescriptionAntibiotics", name = "UI_EHR_Med_PrescriptionAntibiotics", route = "pill", tier = 2,
-    active = 8, interval = 8, doses = 9, cures = { woundInfection = 72, cellulitis = 72, pneumonia = 72 },
-    overdose = true, flags = { "antibiotic" }, category = "antibiotic",
+    active = 8, interval = 8, doses = 9,
+    cures = { woundInfection = 72, cellulitis = 72, pneumonia = 72, gangrene = 72 }, overdose = true, flags = { "antibiotic" }, category = "antibiotic",
     line = T .. "YouTakePrescriptionAntibioticsTheInfectionShould",
 }
-local BROAD = { woundInfection = 72, sepsis = 72, pneumonia = 72, cellulitis = 72, dysentery = 72 }
+local BROAD = { woundInfection = 72, sepsis = 72, pneumonia = 72, cellulitis = 72, dysentery = 72, gangrene = 72 }
 M["ExtensiveHealth.BroadSpectrumAntibiotics"] = {
     id = "BroadSpectrumAntibiotics", name = "UI_EHR_Med_BroadSpectrumAntibiotics", route = "pill", tier = 2,
     active = 8, interval = 8, doses = 6, cures = BROAD, overdose = true, flags = { "antibiotic" },
@@ -432,7 +449,8 @@ M["ExtensiveHealth.IVFluids"] = {
 }
 M["ExtensiveHealth.IVAntibiotics"] = {
     id = "IVAntibiotics", name = "UI_EHR_Med_IVAntibiotics", route = "iv", tier = 3,
-    active = 4, cures = { sepsis = 36, woundInfection = 36, cellulitis = 36, dysentery = 36 }, supply = "ivKit",
+    active = 4, cures = { sepsis = 36, woundInfection = 36, cellulitis = 36, dysentery = 36, gangrene = 36 },
+    supply = "ivKit",
     side = { "nausea", "fatigue" }, flags = { "antibiotic" }, category = "antibiotic",
     line = T .. "YouAdministerIVAntibioticsTheInfectionIsBeing",
 }
@@ -474,7 +492,7 @@ M["ExtensiveHealth.TetanusImmunoglobulin"] = {
 }
 M["ExtensiveHealth.IVVancomycin"] = {
     id = "IVVancomycin", name = "UI_EHR_Med_IVVancomycin", route = "iv", tier = 3,
-    active = 4, cures = { sepsis = 48, cellulitis = 48 }, supply = "ivKit", side = { "red_man_syndrome",
+    active = 4, cures = { sepsis = 48, cellulitis = 48, gangrene = 48 }, supply = "ivKit", side = { "red_man_syndrome",
         "kidney_stress" },
     flags = { "antibiotic" }, category = "antibiotic", line = T .. "YouAdministerIVVancomycinLastResortAntibiotic",
 }

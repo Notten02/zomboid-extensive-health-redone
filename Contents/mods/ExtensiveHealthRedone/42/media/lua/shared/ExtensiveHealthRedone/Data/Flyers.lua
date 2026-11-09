@@ -4,8 +4,8 @@
 -- The knowledge ids equal the original mod's for every flyer kept, so imported knowledge carries over. There are no
 -- Tuberculosis, Flu or Knox flyers; Knox knowledge comes only from the Kentucky Herald (Server/Knox).
 --
--- Four flyers teach a self-evident condition (food poisoning, hypothermia, heat exhaustion, heat stroke): they only
--- record the id and give the XP. The Blood Types flyer teaches "blood_types" (Blood/Transfusion reads it); it has no
+-- Six flyers teach a self-evident condition (food poisoning, hypothermia, heat exhaustion, heat stroke, foot
+-- blisters, frostbite): they only record the id and give the XP. The Blood Types flyer teaches "blood_types" (Blood/Transfusion reads it); it has no
 -- handbook entry.
 --
 -- The recipe guides are not here: vanilla teaches their LearnedRecipes (scripts/EHR_Flyers.txt) through the read-book
@@ -35,6 +35,10 @@ Flyers.DISEASES = {
     DiseaseFlyer_WoundInfection = "wound_infection",
     DiseaseFlyer_Cellulitis = "cellulitis",
     DiseaseFlyer_AHTR = "ahtr",
+    DiseaseFlyer_FootBlisters = "foot_blisters",
+    DiseaseFlyer_TrenchFoot = "trench_foot",
+    DiseaseFlyer_Gangrene = "gangrene",
+    DiseaseFlyer_Frostbite = "frostbite",
     DiseaseFlyer_BloodType = "blood_types",
 }
 

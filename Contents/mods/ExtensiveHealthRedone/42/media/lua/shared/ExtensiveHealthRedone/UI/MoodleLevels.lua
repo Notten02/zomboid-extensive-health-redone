@@ -3,7 +3,8 @@
 --   Medical Alert  the worst of: each active condition's stage (sepsis one higher), the worst infected wound's
 --                  stage, side effects (1 for one, 2 for several). Knox counts only once symptomatic (stage 2+) and at
 --                  its stage, so the alert never reveals a fresh bite.
---                  Conditions defined with alert = false never count (add-on conditions, Conditions/Registration).
+--                  Conditions defined with alert = false never count (add-on conditions, Conditions/Registration);
+--                  with alertFrom = n they count from stage n (foot blisters: not for a hot spot).
 --   Corpse         the corpse meter: 1 low, 2 medium (Exposure bands), 3 from the hourly risk, 4 when certain
 --   Cadaveric      the spore meter: 1 from 1, 2 from 72, 3 from 102, 4 at 120 (certain); hidden once the disease runs
 --   Heat           the heat meter share: 1 from 5 %, 2 from 50 %, 3 from 85 %; 4 while heat stroke runs
@@ -59,7 +60,8 @@ function MoodleLevels.medical(conditions, wounds, meds)
     local level, diseases = 0, 0
     for id, c in pairs(conditions and conditions.active or {}) do
         local stage = tonumber(c.stage) or 1
-        local silent = defs[id] ~= nil and defs[id].alert == false
+        local def = defs[id]
+        local silent = def ~= nil and (def.alert == false or stage < (def.alertFrom or 1))
         if not silent and (id ~= MoodleLevels.KNOX or stage >= MoodleLevels.KNOX_FROM_STAGE) then
             diseases = diseases + 1
             level = math.max(level, id == "sepsis" and stage + 1 or stage)

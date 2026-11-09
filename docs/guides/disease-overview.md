@@ -28,12 +28,13 @@ Exceptions:
 - **Insomnia** and **painkiller addiction** have 3 stages. Stage 3 never recovers on its own.
 - **Sepsis** never ends on its own: stage 4 stays deadly.
 - **Hypothermia, heat exhaustion** follow your body temperature and heat meter, not a timer.
+- **Foot blisters, trench foot and frostbite** follow their own meters, per hand or foot, not a timer.
 - **Knox infection** is vanilla's mechanic, which the mod only mirrors.
 - **Wound infection** is tracked per body part, with its own stage clock.
 
 **What you can see.** A disease shows by name only once your character can identify it: read its flyer, hear it on the
-radio, be an EHR Doctor or Surgeon, or have **First Aid 8**. Hypothermia, heat exhaustion, heat stroke and food poisoning
-are self-evident. Once the name is known, **First Aid 4** shows the stage and **First Aid 6** shows the time left and the
+radio, be an EHR Doctor or Surgeon, or have **First Aid 8**. Hypothermia, heat exhaustion, heat stroke, food poisoning,
+foot blisters and frostbite are self-evident. Once the name is known, **First Aid 4** shows the stage and **First Aid 6** shows the time left and the
 treatment. The Knox infection needs the **Kentucky Herald, July 16, 1993** and nothing else.
 
 **How medicine works.**
@@ -63,10 +64,14 @@ treatment. The Knox infection needs the **Kentucky Herald, July 16, 1993** and n
 | Hypothermia | Nothing: warm up |
 | Heat Exhaustion | Nothing: cool down (water and rehydration help) |
 | Heat Stroke | Instant Ice Pack, cold bath, three hours at 10 C or colder |
+| Foot Blisters | Nothing needed: rest, dry socks and decent shoes (Blister Patches cure them within a day) |
+| Trench Foot | Nothing: dry feet (foot powder, warmth and rest speed it up) |
+| Frostbite | Nothing: warmth (a fire or a Warming Pack speeds it up) |
 | Corpse Exposure Illness | Respiratory Support Kit, Corticosteroid Injection, fresh air |
 | Cadaveric Aspergillosis | Antifungal Tablets, IV Amphotericin B |
 | Wound Infection | Prescription, Broad Spectrum or Plant-Based Antibiotics, Antibiotic Ointment, IV Antibiotics; disinfect early |
 | Cellulitis | Prescription, Broad Spectrum or Plant-Based Antibiotics, Antibiotic Ointment, IV Antibiotics, IV Vancomycin |
+| Gangrene | Prescription, Broad Spectrum or Plant-Based Antibiotics, IV Antibiotics, IV Vancomycin; amputating the hand |
 | Sepsis | Broad Spectrum or Plant-Based Antibiotics, IV Antibiotics, IV Vancomycin, IV Metronidazole, Emergency Sepsis Kit |
 | Tetanus | Tetanus Antitoxin, Tetanus Immunoglobulin |
 | Hyperkeratotic Scabies | Topical Permethrin (homemade too), Antiparasitic Pills |
@@ -298,6 +303,78 @@ It is almost always lethal if you are not cooled.
 
 ---
 
+# Hands and feet
+
+Cold and wet injuries of the hands and feet. Redone reads your **socks, shoes and gloves** (worn, wet, worn out, holed)
+and how much your clothing insulates each hand and foot. Each foot or hand has its own stage; the Monitor shows the worst
+one and lists the affected parts.
+
+## Foot Blisters
+
+**Cause:** friction from walking and running **in shoes**. It builds about four times faster running and eight times
+sprinting, and faster still with **no socks** (x2), **wet socks** (x1.75), **worn-out shoes** (x1.25, or x1.5 below a
+quarter of their condition) and **holes** in shoes or socks. In good footwear a hot spot takes about 12 hours of
+walking. Barefoot walking builds no blister friction (vanilla has its own barefoot hazards). It falls while you rest,
+faster asleep.
+
+**Stages:** 1 hot spot, 2 blister, 3 burst. Pain on the foot (6, 14, 24) and movement at 98%, 94% and 88%. A **burst
+blister is a real scratch** on the foot, so bandage and disinfect it like any wound. The Medical Alert shows from stage
+2.
+
+**Healing:** blisters heal **on their own**. A foot steps down a stage after 4 hours (hot spot), 24 hours (blister) or
+36 hours (burst) of healing. Resting heals at full speed, sleep at 1.5x, and walking in **dry socks and decent shoes**
+at half speed without rubbing the blister further. Running, wet or no socks and worn or holed shoes pause the healing
+and keep rubbing.
+
+**Treatment:** none needed. **Blister Patches** (over the counter) put on before a long walk stop most friction for a
+day; on a blister they ease the pain, double the healing and cure it within 24 hours. A clean bandage on the foot also
+cuts friction. Anti-Inflammatory Pills ease the pain. Warming and cooling don't help blisters.
+**Prevention:** dry socks under decent shoes, change wet socks, and patch your feet before a long trip.
+
+## Trench Foot
+
+**Cause:** feet kept **cold and wet** for a long time. The feet count as wet when the socks are at least 35% wet (without
+socks the inside of the shoes, less their water resistance; barefoot your body's wetness) and the air is **15 C or
+colder** (sandbox). Soaked feet (70%+) count 1.5x. **Foot Powder** halves it on damp feet, but barely helps soaked ones.
+Dry feet (under 15%) let the count fall, faster when warm and resting. The Monitor shows a **Cold, Wet Feet** meter.
+
+**Stages** (after 12, 24, 48 and 72 hours of cold, wet feet by default):
+
+| Stage | Effects |
+|---|---|
+| 1 | Cold, numb feet. Pain 8, movement at 97%. |
+| 2 | Swollen, painful feet. Pain 18, movement at 92%. |
+| 3 | The skin breaks down: a scratch every 8 hours, healing halved, **no sprinting**, movement at 85%. |
+| 4 | **Necrosis:** the foot loses health; after 24 hours it turns **gangrenous**. Movement at 75%. |
+
+**Treatment:** **dry feet.** Change into dry socks or dry off. A dry foot recovers a stage after 4, 12, 24 or 48 hours
+(stage 1 to 4); resting, warmth (a fire, indoors or a **Warming Pack**) and Foot Powder each speed it up. Getting wet
+again restarts the count. A gangrenous foot stays at stage 4 until the gangrene is cured. Anti-Inflammatory Pills ease
+the pain. It is not obvious: without knowledge it shows as an unknown foot condition.
+**Prevention:** carry spare socks, change wet ones, dry your feet by a fire, and use foot powder.
+
+## Frostbite
+
+**Cause:** a hand or foot freezing. Its **effective temperature** is the air (with **wind chill** outdoors, the room
+indoors, the cabin in a vehicle), plus the clothing insulation over it, minus 8 C when it is wet, and minus 3 C when
+your body is below 36 C (6 C with hypothermia stage 2+). Below **-10 C** (sandbox) frost builds up, faster the colder.
+Bare hands freeze first; gloves and dry, insulated boots protect. A Warming Pack held in your hands halves the build-up
+there.
+
+**Stages:**
+- 1 **frostnip:** stinging, white skin. Thaws fully within an hour of warmth (20 minutes by a fire or with a Warming
+  Pack).
+- 2 superficial frostbite: pain, clumsy hands (aim 85%), slow feet (90%).
+- 3 deep frostbite: a **blister** (a scratch), healing halved, aim 70%, feet at 82% and **no sprinting**.
+- 4 **necrosis:** numb, dead tissue that loses health; after 24 hours it turns **gangrenous**.
+
+**Treatment:** **warmth.** A part rewarms in warm surroundings (a fire, indoors, a Warming Pack) or air of 5 C or more.
+Deeper stages heal a stage per 2 to 3 days of warmth, faster by a fire or with a Warming Pack. Cold that is not
+freezing the part further doesn't heal it. Anti-Inflammatory Pills ease the pain.
+**Prevention:** gloves and dry, insulated boots in freezing weather, stay out of the wind, keep your core warm.
+
+---
+
 # Corpses
 
 Corpses within **10 tiles** on your floor count. Fresh corpses (under a day) are weak, decomposing ones (1 to 2 days) count
@@ -393,9 +470,27 @@ quality. **40%**, modified by immunity (sensitivity 0.90). Excellent and stable 
 **IV Antibiotics** (36 hours), **IV Vancomycin** (48 hours). Relief: Anti-Inflammatory Pills, Antipyretic Tablets.
 **Prevention:** clean the wound before stitching, and stitch carefully. At most two misses is a "stable" stitch.
 
+## Gangrene
+
+**Cause:** a hand or foot held at the worst stage (necrosis) of **Trench Foot** or **Frostbite** for **24 hours**
+(sandbox). More parts can join a running case. After a cure it cannot restart for 48 hours.
+
+**Timing:** stage 1 lasts 12 to 24 hours, stage 2 24 to 36, stage 3 24 to 48. **Untreated, it turns into Sepsis** as it
+reaches stage 4.
+
+**Stages:** strong pain and health loss on each gangrenous part, which no longer heals; from stage 2 fever (38 to
+39 C), sickness and fatigue.
+
+**Treatment:** **Prescription**, **Broad Spectrum** or **Plant-Based Antibiotics** (72 hours), **IV Antibiotics**
+(36 hours), **IV Vancomycin** (48 hours). Relief: Anti-Inflammatory Pills, vanilla antibiotics, Antipyretic Tablets.
+**With The Only Cure:** amputating a gangrenous hand removes it; the last gangrenous part gone cures it. Feet can't be
+amputated, so foot gangrene needs antibiotics.
+**Prevention:** treat trench foot and frostbite before the tissue dies.
+
 ## Sepsis
 
-**Cause:** an untreated Wound Infection reaching the end of stage 3, or an untreated Cellulitis reaching stage 4.
+**Cause:** an untreated Wound Infection reaching the end of stage 3, an untreated Cellulitis reaching stage 4, or an
+untreated Gangrene reaching stage 4.
 Immunity does not help. After a cure it cannot restart for 2 hours.
 
 **Timing:** incubation 6 to 24 hours (already symptomatic), then stages 2 and 3 over about 2 to 4 days. **Stage 4 never
@@ -603,12 +698,13 @@ Server admins can disable it. Bites still wound you.
 | Electrolyte Powder | Dehydration and weakness: food diseases, dysentery, heat exhaustion, heat stroke |
 | Anti-Diarrheal Tablets | Dysentery's diarrhea and bathroom urgency |
 | Antipyretic Tablets or Tea | Fever in any feverish disease |
-| Anti-Inflammatory Pills | Pain and inflammation: wound infection, cellulitis, trichinosis, tetanus, AHTR |
+| Anti-Inflammatory Pills | Pain and inflammation: wound infection, cellulitis, trichinosis, tetanus, AHTR, foot blisters, trench foot, frostbite, gangrene |
 | Muscle Relaxants (homemade too) | Tetanus spasms and lockjaw, trichinosis muscle pain |
 | Bronchodilator Inhaler | Breathing and endurance: pneumonia, corpse illness, aspergillosis |
 | Cough Syrup (homemade too), Cough Suppressant | Coughing: cold, pneumonia, aspergillosis |
 | Painkillers | Vanilla pain relief only. **Addictive.** |
 | Antiseptic Cream (homemade too) | Prevents wound infection for 8 hours while on a wound |
+| Foot Powder | Halves trench foot build-up on damp feet for 12 hours and helps dry feet recover |
 
 ## Cures
 
@@ -617,8 +713,8 @@ Server admins can disable it. Bites still wound you.
 | Activated Charcoal (homemade too) | 1 dose | Food Poisoning (6 h), Toxin Poisoning (12 h) |
 | Cold & Flu Tablets, Herbal Cold Tea | 8 doses, 4 h apart | Common Cold (28 h) |
 | Antiviral Capsules | 6 doses, 8 h | Common Cold, Gastroenteritis (48 h) |
-| Prescription Antibiotics | 9 doses, 8 h | Wound Infection, Cellulitis, Pneumonia (72 h) |
-| Broad Spectrum, Plant-Based Antibiotics | 6 doses, 8 h | Wound Infection, Sepsis, Pneumonia, Cellulitis, Dysentery (72 h) |
+| Prescription Antibiotics | 9 doses, 8 h | Wound Infection, Cellulitis, Pneumonia, Gangrene (72 h) |
+| Broad Spectrum, Plant-Based Antibiotics | 6 doses, 8 h | Wound Infection, Sepsis, Pneumonia, Cellulitis, Dysentery, Gangrene (72 h) |
 | Antibiotic Ointment (homemade too) | 6 doses, 8 h | Wound Infection, Cellulitis (72 h) |
 | Antifungal Tablets | 10 doses, 12 h | Cadaveric Aspergillosis (120 h) |
 | Antiparasitic Pills | 14 doses, 12 h | Trichinosis, Scabies (168 h) |
@@ -630,6 +726,7 @@ Server admins can disable it. Bites still wound you.
 | Antidepressants | 14 doses, 12 h | Insomnia (168 h) |
 | Buprenorphine | 10 doses, 12 h | Painkiller Addiction (120 h) |
 | Instant Ice Pack | 4 doses, 1 h | Heat Stroke (4 h) |
+| Blister Patches | 1 dose | Foot Blisters (24 h); prevents most friction while on |
 | Respiratory Support Kit | 3 doses, 3 h | Corpse Exposure Illness (6 h) |
 | Tetanus Antitoxin (syringe) | 1 dose | Tetanus (120 h) |
 
@@ -637,11 +734,11 @@ Server admins can disable it. Bites still wound you.
 
 | Medicine | Cures | Side effects |
 |---|---|---|
-| IV Antibiotics | Sepsis, Wound Infection, Cellulitis, Dysentery (36 h) | Nausea, fatigue |
+| IV Antibiotics | Sepsis, Wound Infection, Cellulitis, Dysentery, Gangrene (36 h) | Nausea, fatigue |
 | IV Metronidazole | Dysentery, Sepsis (24 h) | Metallic taste, nausea |
 | IV Ciprofloxacin | Gastroenteritis, Dysentery, Pneumonia (12 h) | Tendon weakness, dizziness |
 | IV Amphotericin B | Cadaveric Aspergillosis (24 h) | Fever, kidney stress, fatigue |
-| IV Vancomycin | Sepsis, Cellulitis (48 h) | Red man syndrome, kidney stress |
+| IV Vancomycin | Sepsis, Cellulitis, Gangrene (48 h) | Red man syndrome, kidney stress |
 | Emergency Sepsis Kit | Sepsis (24 h) | Severe fatigue, nausea, fever |
 | IV Fluids | AHTR (24 h) | |
 | Albendazole Injection (syringe) | Trichinosis (72 h) | Abdominal pain, dizziness |
@@ -658,7 +755,8 @@ Server admins can disable it. Bites still wound you.
   crash. Can lead to insomnia.
 - **Epinephrine Auto-Injector:** wakes the character, even from a blackout (so usually another player gives it).
   **Last Chance Epinephrine** is the emergency version. Both have headache and insomnia side effects.
-- **Warming Pack:** pulls body temperature toward 37 C for 2 hours.
+- **Warming Pack:** pulls body temperature toward 37 C for 2 hours. It also rewarms frostbitten hands and feet faster,
+  halves frost on the hands, and speeds up trench foot recovery. The Instant Ice Pack does nothing for cold injuries.
 - **Beta Blockers** (vanilla): steady the heart. They do not help hypothermia.
 - **Saline and IV fluids** boost hydration. Too much saline dilutes blood and becomes lethal.
 

@@ -19,6 +19,10 @@
 --   { v, known = bool (the mod's data was seen), cut = { [part] = true }, prosthesis = { L, R },
 --     stumps = { [limb] = { part, healed, cauterized, dirt, shown, elapsed } } }
 --   dirt is the last dirtiness seen, shown the one the client has (a tenth), elapsed the minutes since the last roll.
+--
+-- Listeners: Amputation.onCut(name, fn) runs fn(p, part, known, defs) for each part cut since the last step (known:
+-- EHR saw the mod before, so this is a new cut rather than one found in an old save). Frostbite and gangrene drop a
+-- cut hand this way (Diseases/Extremities/Group).
 
 local Data = require("ExtensiveHealthRedone/Data/Wounds").stump
 local Infection = require "ExtensiveHealthRedone/Wounds/Infection"
@@ -42,6 +46,16 @@ Amputation.ABOVE = {
     Hand_L = "ForeArm_L", ForeArm_L = "UpperArm_L", UpperArm_L = "Torso_Upper",
     Hand_R = "ForeArm_R", ForeArm_R = "UpperArm_R", UpperArm_R = "Torso_Upper",
 }
+
+-- name -> fn, so a module loaded again replaces its listener instead of adding a second one.
+local cutListeners, cutOrder = {}, {}
+
+function Amputation.onCut(name, fn)
+    if not cutListeners[name] then
+        cutOrder[#cutOrder + 1] = name
+    end
+    cutListeners[name] = fn
+end
 
 function Amputation.defaults()
     return { known = false, cut = {}, prosthesis = {}, stumps = {} }
@@ -184,7 +198,8 @@ local function stumps(p, s, toc, dt)
     end
 end
 
-function Amputation.update(p, dt)
+-- defs: the condition definitions (Systems.lua passes them), for the onCut listeners.
+function Amputation.update(p, dt, defs)
     local toc = p.facts and p.facts.toc
     if not toc then
         return
@@ -199,6 +214,11 @@ function Amputation.update(p, dt)
                 s.cut[name] = true
                 p.dirty(Amputation.SECTION)
                 cured = cured or (infected and s.known)
+                if defs then
+                    for _, listener in ipairs(cutOrder) do
+                        cutListeners[listener](p, name, s.known, defs)
+                    end
+                end
             end
         elseif s.cut[name] then
             s.cut[name] = nil

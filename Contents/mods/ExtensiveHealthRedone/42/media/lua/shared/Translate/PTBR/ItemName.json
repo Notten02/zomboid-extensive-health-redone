@@ -108,5 +108,11 @@
     "ExtensiveHealth.CommonColdTea": "Chá de ervas",
     "ExtensiveHealth.AntipyreticTea": "Chá antitérmico",
     "ExtensiveHealth.RelaxantTea": "Chá relaxante",
-    "ExtensiveHealth.MedicineStorageBox": "Caixa de armazenamento de medicamentos"
+    "ExtensiveHealth.MedicineStorageBox": "Caixa de armazenamento de medicamentos",
+    "ExtensiveHealth.BlisterPatches": "Blister Patches",
+    "ExtensiveHealth.DiseaseFlyer_FootBlisters": "Disease Information: Foot Blisters",
+    "ExtensiveHealth.FootPowder": "Foot Powder",
+    "ExtensiveHealth.DiseaseFlyer_TrenchFoot": "Disease Information: Trench Foot",
+    "ExtensiveHealth.DiseaseFlyer_Gangrene": "Disease Information: Gangrene",
+    "ExtensiveHealth.DiseaseFlyer_Frostbite": "Disease Information: Frostbite"
 }

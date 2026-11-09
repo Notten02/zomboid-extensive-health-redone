@@ -1,0 +1,7 @@
+name=EHR extremities spike E2E (dev only)
+id=EHRExtremitiesSpikeE2E
+description=Dev-only spike: what a dedicated server can read of a remote player's feet and hands (wetness, skin temperature, socks, shoes, gloves).
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness

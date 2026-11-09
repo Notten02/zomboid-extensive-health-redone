@@ -28,7 +28,7 @@
 - Sterilized Bandages (the most common), then Cold & Flu Tablets, Antipyretic Tablets, Anti-Inflammatory Pills, Antiseptic Cream
 - Cough Syrup, Cough Suppressant, Anti-Nausea Tablets, Anti-Diarrheal Tablets, Electrolyte Powder
 - Muscle Relaxants, Bronchodilator Inhaler (less common)
-- Instant Ice Packs, Topical Permethrin
+- Instant Ice Packs, Topical Permethrin, Blister Patches, Foot Powder
 - Alcoholic Bandages
 - Saline Bags (rare)
 
@@ -41,7 +41,8 @@ a pharmacy should have, including Antipsychotics, Dual Orexin Receptor, Buprenor
 
 Houses are the worst source, but they are everywhere.
 - **Always:** a small chance of basic OTC medicine in bedroom sidetables and dressers, living room shelves and desks.
-- **Bathrooms** (cabinets best, counters and shelves less): OTC medicine, Topical Permethrin and Nitric Oxide Boosters.
+- **Bathrooms** (cabinets best, counters and shelves less): OTC medicine, Topical Permethrin, Nitric Oxide Boosters,
+  Blister Patches and Foot Powder.
 - **Prescription leftovers** (only if *Household Prescription Loot* is on, which is the default): Prescription
   Antibiotics most often, then Broad Spectrum Antibiotics, Antibiotic Ointment, and now and then Antipsychotics, Dual
   Orexin Receptor, Buprenorphine, Furosemide and others. Rare, and usually nearly empty.
@@ -83,7 +84,8 @@ smaller helping of the clinical list, and the Medicine Storage Box. Hospital roo
 ### Emergency sources
 
 **First aid kits** hold basic field medicine: Antiseptic Cream, Anti-Inflammatory Pills, Antipyretic Tablets,
-Electrolyte Powder, bandages, Instant Ice Packs, Topical Permethrin, a Syringe, and rarely a Nitric Oxide Booster.
+Electrolyte Powder, bandages, Instant Ice Packs, Topical Permethrin, Blister Patches, Foot Powder, a Syringe, and
+rarely a Nitric Oxide Booster.
 The newer, professional and military kits also roll an advanced set: Antibiotic Ointment, Oral Rehydration Kit,
 Bronchodilator Inhaler, Prescription Antibiotics, and rarely an IV Kit, Corticosteroid Injection or Respiratory Support
 Kit.
@@ -97,13 +99,14 @@ holds the most Medicine Storage Boxes.
 
 **Medical bags and medical satchels** roll more times than vanilla, and the trauma gear is placed first: IV Kits,
 Syringes, Saline Bags, IV Fluids, Empty Blood Bags, Prescription and Broad Spectrum Antibiotics, plus bandages, basic
-medicine, and a small chance of clinical drugs.
+medicine, Blister Patches and Foot Powder, and a small chance of clinical drugs.
 
 ### Military, police and tactical
 
 **Military medical storage and bunkers** carry the high-value list: Saline Bags, Empty Blood Bags, IV Antibiotics, IV
 Ciprofloxacin, IV Fluids, Emergency Sepsis Kit, Corticosteroid Injection, Respiratory Support Kit, Tetanus
-Immunoglobulin, IV Kits, Syringes, Broad Spectrum Antibiotics, blood bags, and bandages. The bunker and story
+Immunoglobulin, IV Kits, Syringes, Broad Spectrum Antibiotics, blood bags, and bandages, plus foot care (Blister
+Patches and Foot Powder are standard issue). The bunker and story
 safehouses get smaller helpings of the clinical list.
 
 **Police** storage guns, evidence rooms and SWAT truck beds get the military list at **30%** of its weight, so

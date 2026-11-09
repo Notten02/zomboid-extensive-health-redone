@@ -247,6 +247,66 @@ module ExtensiveHealth
         UnhappyChange = -5,
     }
 
+    /* Placeholder icon: vanilla's flier until EHR has its own (ASSETS.md). */
+    item DiseaseFlyer_FootBlisters
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Foot Blisters,
+        Weight = 0.1,
+        Icon = Flier,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 5,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    /* Placeholder icon: vanilla's flier until EHR has its own (ASSETS.md). */
+    item DiseaseFlyer_TrenchFoot
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Trench Foot,
+        Weight = 0.1,
+        Icon = Flier,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 6,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    /* Placeholder icon: vanilla's flier until EHR has its own (ASSETS.md). */
+    item DiseaseFlyer_Frostbite
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Frostbite,
+        Weight = 0.1,
+        Icon = Flier,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 6,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
+    /* Placeholder icon: vanilla's flier until EHR has its own (ASSETS.md). */
+    item DiseaseFlyer_Gangrene
+    {
+        DisplayCategory = Literature,
+        ItemType = base:literature,
+        DisplayName = Disease Information: Gangrene,
+        Weight = 0.1,
+        Icon = Flier,
+        WorldStaticModel = Flier1,
+        NumberOfPages = 8,
+        BoredomChange = -10,
+        StressChange = -5,
+        UnhappyChange = -5,
+    }
+
     item DiseaseFlyer_AHTR
     {
         DisplayCategory = Literature,

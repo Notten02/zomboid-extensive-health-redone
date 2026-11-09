@@ -108,5 +108,11 @@
     "ExtensiveHealth.WarmingPack": "Согревающий пакет",
     "ExtensiveHealth.Buprenorphine": "Бупренорфин",
     "ExtensiveHealth.Honeycomb": "Пчелиные соты",
-    "ExtensiveHealth.Spiderweb": "Паутина"
+    "ExtensiveHealth.Spiderweb": "Паутина",
+    "ExtensiveHealth.BlisterPatches": "Blister Patches",
+    "ExtensiveHealth.DiseaseFlyer_FootBlisters": "Disease Information: Foot Blisters",
+    "ExtensiveHealth.FootPowder": "Foot Powder",
+    "ExtensiveHealth.DiseaseFlyer_TrenchFoot": "Disease Information: Trench Foot",
+    "ExtensiveHealth.DiseaseFlyer_Gangrene": "Disease Information: Gangrene",
+    "ExtensiveHealth.DiseaseFlyer_Frostbite": "Disease Information: Frostbite"
 }

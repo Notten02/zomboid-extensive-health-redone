@@ -57,19 +57,20 @@ local pools = {
         ColdFluTablets = 3.5, AntipyreticTablets = 3.5, CoughSyrup = 2.5, CoughSuppressant = 2, AntiNauseaTablets = 2.5,
         AntiDiarrheal = 2.5, AntiInflammatory = 3.5, ElectrolytePowder = 2.5, AntisepticCream = 3.5,
         MuscleRelaxants = 1.2, BronchodilatorInhaler = 1, SterilizedBandages = 6, AlchoholicBandage = 3,
-        InstantIcePack = 3, TopicalPermethrin = 1, SalineBag = 0.3,
+        InstantIcePack = 3, TopicalPermethrin = 1, SalineBag = 0.3, BlisterPatches = 3, FootPowder = 2.5,
     }),
     -- Supermarket toiletries (GigamartToiletries): the guide's lighter OTC list.
     supermarket = med({
         ColdFluTablets = 1.5, AntipyreticTablets = 1.5, CoughSyrup = 1, CoughSuppressant = 0.8, AntiNauseaTablets = 1,
         AntiDiarrheal = 1, AntiInflammatory = 1.5, ElectrolytePowder = 1, AntisepticCream = 1.5,
-        SterilizedBandages = 1, InstantIcePack = 0.5, TopicalPermethrin = 0.5,
+        SterilizedBandages = 1, InstantIcePack = 0.5, TopicalPermethrin = 0.5, BlisterPatches = 1.5,
+        FootPowder = 1,
     }),
     -- Medical cabinets in police SWAT rooms, security and waiting rooms (MedicalCabinet): OTC.
     cabinetOtc = med({
         ColdFluTablets = 3, AntipyreticTablets = 3, CoughSyrup = 2, AntiNauseaTablets = 2, AntiDiarrheal = 2,
         AntiInflammatory = 3, ElectrolytePowder = 2, AntisepticCream = 3, SterilizedBandages = 2, AlchoholicBandage = 1,
-        InstantIcePack = 1, TopicalPermethrin = 1,
+        InstantIcePack = 1, TopicalPermethrin = 1, BlisterPatches = 1,
     }),
     -- Clinics and pharmacy counters (MedicalClinicDrugs). Rare blood bags.
     clinic = med(withBlood({
@@ -118,7 +119,7 @@ local pools = {
         SalineBag = 12, EmptyBloodBag = 6, IVAntibiotics = 5, IVCiprofloxacin = 3, IVFluids = 3,
         EmergencySepsisKit = 2, CorticosteroidInjection = 2, RespiratorySupportKit = 2, TetanusImmunoglobulin = 2,
         IVKit = 6, Syringe = 8, BroadSpectrumAntibiotics = 6, Furosemide = 2, SterilizedBandages = 6,
-        AlchoholicBandage = 4, InstantIcePack = 3,
+        AlchoholicBandage = 4, InstantIcePack = 3, BlisterPatches = 4, FootPowder = 4,
     }, 0.7)),
     combat = med({ CombatStimulants = 1 }),
     -- Plain Epinephrine for hospital rooms; the other lists carry it in their own pools.
@@ -129,7 +130,7 @@ local pools = {
     kitBasic = med({
         AntisepticCream = 7, AntiInflammatory = 5, AntipyreticTablets = 4, ElectrolytePowder = 2,
         NitricOxideBooster = 1, Syringe = 1, SterilizedBandages = 7, AlchoholicBandage = 3, InstantIcePack = 3,
-        TopicalPermethrin = 1,
+        TopicalPermethrin = 1, BlisterPatches = 4, FootPowder = 2,
     }),
     kitAdvanced = med({
         AntibioticOintment = 2, OralRehydrationKit = 1.5, BronchodilatorInhaler = 1.5, PrescriptionAntibiotics = 0.8,
@@ -165,6 +166,7 @@ local pools = {
         AntipyreticTablets = 10, AntiNauseaTablets = 8, AntiDiarrheal = 7, ElectrolytePowder = 8,
         BronchodilatorInhaler = 5, InstantIcePack = 7, AntibioticOintment = 6, ActivatedCharcoal = 4,
         OralRehydrationKit = 3, AntiviralCapsules = 1.5, AntifungalTablets = 1, AntiparasiticPills = 0.8,
+        BlisterPatches = 4, FootPowder = 2,
     }),
     trauma = med(withBlood({
         IVKit = 18, Syringe = 24, SalineBag = 10, IVFluids = 8, EmptyBloodBag = 18, RespiratorySupportKit = 3,
@@ -178,12 +180,14 @@ local pools = {
         ColdFluTablets = 0.3, AntipyreticTablets = 0.3, CoughSyrup = 0.2, CoughSuppressant = 0.15,
         AntiNauseaTablets = 0.2, AntiDiarrheal = 0.2, AntiInflammatory = 0.3, AntisepticCream = 0.2,
         MuscleRelaxants = 0.1, ElectrolytePowder = 0.15, BronchodilatorInhaler = 0.08, NitricOxideBooster = 0.1,
-        SterilizedBandages = 0.15, InstantIcePack = 0.12,
+        SterilizedBandages = 0.15, InstantIcePack = 0.12, BlisterPatches = 0.15,
+        FootPowder = 0.1,
     }),
     homeMedicine = med({
         ColdFluTablets = 4, AntipyreticTablets = 4, CoughSyrup = 3, AntiNauseaTablets = 3, AntiDiarrheal = 3,
         AntisepticCream = 4, AntiInflammatory = 3, NitricOxideBooster = 1, SterilizedBandages = 2,
-        AlchoholicBandage = 1, InstantIcePack = 1, TopicalPermethrin = 1,
+        AlchoholicBandage = 1, InstantIcePack = 1, TopicalPermethrin = 1, BlisterPatches = 2,
+        FootPowder = 1.5,
     }),
     homeRx = med({
         PrescriptionAntibiotics = 0.6, AntibioticOintment = 0.15, BroadSpectrumAntibiotics = 0.25,
@@ -195,7 +199,7 @@ local pools = {
         PrescriptionAntibiotics = 0.6, BroadSpectrumAntibiotics = 0.3, Antipsychotics = 1, DualOrexinReceptor = 0.8,
         Buprenorphine = 0.8,
     }),
-    -- Disease flyers (the 19 remaining) and the Wild Plants guide. Unscaled.
+    -- Disease flyers (the 19 remaining plus EHR's own) and the Wild Plants guide. Unscaled.
     flyers = {
         scale = "lit",
         items = {
@@ -206,6 +210,9 @@ local pools = {
             DiseaseFlyer_HeatStroke = 1, DiseaseFlyer_CadavericAspergillosis = 0.8, DiseaseFlyer_Tetanus = 0.8,
             DiseaseFlyer_WoundInfection = 2, DiseaseFlyer_Cellulitis = 1.2, DiseaseFlyer_AHTR = 0.5,
             DiseaseFlyer_BloodType = 1.5, MedicalWildPlants = 1.2,
+            -- EHR's own: the cold and wet injuries of the hands and feet.
+            DiseaseFlyer_FootBlisters = 2, DiseaseFlyer_TrenchFoot = 1.5, DiseaseFlyer_Frostbite = 1.5,
+            DiseaseFlyer_Gangrene = 0.8,
         },
     },
     -- Recipe guides: each list has its own pair of weights, so its own small pool.

@@ -16,6 +16,7 @@ require "ExtensiveHealthRedone/Server/Consent"
 require "ExtensiveHealthRedone/Server/Exam"
 require "ExtensiveHealthRedone/Server/Food"
 require "ExtensiveHealthRedone/Server/Weather"
+require "ExtensiveHealthRedone/Server/Extremities"     -- socks, shoes, gloves, hand and foot skin (Diseases/Extremities)
 require "ExtensiveHealthRedone/Server/Corpse"
 require "ExtensiveHealthRedone/Server/Mind"
 require "ExtensiveHealthRedone/Server/Knox"

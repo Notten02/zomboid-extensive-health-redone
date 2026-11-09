@@ -108,5 +108,11 @@
     "ExtensiveHealth.CommonColdTea": "ハーブティー",
     "ExtensiveHealth.AntipyreticTea": "解熱ハーブティー",
     "ExtensiveHealth.RelaxantTea": "リラックスティー",
-    "ExtensiveHealth.MedicineStorageBox": "医薬品保管箱"
+    "ExtensiveHealth.MedicineStorageBox": "医薬品保管箱",
+    "ExtensiveHealth.BlisterPatches": "Blister Patches",
+    "ExtensiveHealth.DiseaseFlyer_FootBlisters": "Disease Information: Foot Blisters",
+    "ExtensiveHealth.FootPowder": "Foot Powder",
+    "ExtensiveHealth.DiseaseFlyer_TrenchFoot": "Disease Information: Trench Foot",
+    "ExtensiveHealth.DiseaseFlyer_Gangrene": "Disease Information: Gangrene",
+    "ExtensiveHealth.DiseaseFlyer_Frostbite": "Disease Information: Frostbite"
 }

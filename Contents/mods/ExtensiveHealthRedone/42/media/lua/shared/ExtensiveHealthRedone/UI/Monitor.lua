@@ -102,6 +102,8 @@ Monitor.EXPOSURE = {
         low = 5, medium = 50, high = 85, hiddenBy = { "heat_stroke" } },
     { id = "cold", name = "UI_EHR_Moodle_ColdRisk_Title", icon = "EHR_Disease_CommonCold", max = 100,
         low = 5, medium = 50, high = 85, hiddenBy = { "common_cold", "pneumonia" } },
+    { id = "feet", name = "UI_EHR_WetFeetExposure", icon = "EHR_Disease_TrenchFoot", max = 100,
+        low = 5, medium = 50, high = 85, hiddenBy = { "trench_foot" } },
 }
 
 -- How hard a case hits, as a word beside the stage: severity (baseSeverity +- 0.15, Conditions/Engine) scales the
