@@ -12,6 +12,7 @@ module ExtensiveHealth
         ItemType = base:normal,
         DisplayName = Gene Therapy Injector,
         Icon = GeneTherapyInjector,
+        WorldStaticModel = EHR_World_GeneTherapyKit,
         Weight = 0.3,
         Medical = true,
     }
@@ -22,6 +23,7 @@ module ExtensiveHealth
         ItemType = base:drainable,
         DisplayName = Phalanx Suppressant Pills,
         Icon = PillsCaffeine,
+        WorldStaticModel = CaffeinePills,
         Weight = 0.1,
         UseDelta = 0.3333,
         UseWhileEquipped = false,
@@ -34,6 +36,7 @@ module ExtensiveHealth
         ItemType = base:normal,
         DisplayName = Antibody Compatibility Test,
         Icon = AntibodyCompTest,
+        WorldStaticModel = EHR_World_AntibodyTestKit,
         Weight = 0.2,
         Medical = true,
     }
@@ -44,6 +47,7 @@ module ExtensiveHealth
         ItemType = base:normal,
         DisplayName = Immunobooster Shot,
         Icon = ImmunoboosterShot,
+        WorldStaticModel = EHR_World_ImmunoboosterShot,
         Weight = 0.1,
         Medical = true,
     }
