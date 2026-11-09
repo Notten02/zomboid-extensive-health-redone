@@ -70,6 +70,7 @@ local function exposureDefaults()
         heat = 0,               -- 0-100 heat exposure (heat exhaustion, heat stroke)
         corpse = 0,             -- 0-100 corpse exposure (corpse illness)
         spores = 0,             -- 0-100 spore exposure (cadaveric aspergillosis)
+        feet = 0,               -- 0-100+ cold, wet feet: the worst foot's share of trench foot stage 1
         timers = {},            -- trigger cadences and cooldowns (minutes left)
         data = {},              -- per-trigger scratch (Exposure/*)
     }

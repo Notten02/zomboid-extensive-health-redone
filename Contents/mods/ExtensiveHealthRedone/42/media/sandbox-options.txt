@@ -353,6 +353,108 @@ option ExtensiveHealthRework.HypothermiaEnabled
     translation = EHR_HypothermiaEnabled,
 }
 
+option ExtensiveHealthRework.FootBlistersEnabled
+{
+    type = boolean,
+    default = true,
+    page = EHR_Disease,
+    translation = EHR_FootBlistersEnabled,
+}
+
+option ExtensiveHealthRework.FootBlistersFrictionMultiplier
+{
+    type = double,
+    min = 0.0,
+    max = 5.0,
+    default = 1.0,
+    page = EHR_Disease,
+    translation = EHR_FootBlistersFrictionMultiplier,
+}
+
+option ExtensiveHealthRework.TrenchFootEnabled
+{
+    type = boolean,
+    default = true,
+    page = EHR_Disease,
+    translation = EHR_TrenchFootEnabled,
+}
+
+option ExtensiveHealthRework.TrenchFootHours
+{
+    type = double,
+    min = 2.0,
+    max = 72.0,
+    default = 12.0,
+    page = EHR_Disease,
+    translation = EHR_TrenchFootHours,
+}
+
+option ExtensiveHealthRework.TrenchFootMaxTemperature
+{
+    type = double,
+    min = 0.0,
+    max = 25.0,
+    default = 15.0,
+    page = EHR_Disease,
+    translation = EHR_TrenchFootMaxTemperature,
+}
+
+option ExtensiveHealthRework.TrenchFootExposureMultiplier
+{
+    type = double,
+    min = 0.0,
+    max = 5.0,
+    default = 1.0,
+    page = EHR_Disease,
+    translation = EHR_TrenchFootExposureMultiplier,
+}
+
+option ExtensiveHealthRework.FrostbiteEnabled
+{
+    type = boolean,
+    default = true,
+    page = EHR_Disease,
+    translation = EHR_FrostbiteEnabled,
+}
+
+option ExtensiveHealthRework.FrostbiteTemperature
+{
+    type = double,
+    min = -40.0,
+    max = 5.0,
+    default = -10.0,
+    page = EHR_Disease,
+    translation = EHR_FrostbiteTemperature,
+}
+
+option ExtensiveHealthRework.FrostbiteSpeed
+{
+    type = double,
+    min = 0.1,
+    max = 5.0,
+    default = 1.0,
+    page = EHR_Disease,
+    translation = EHR_FrostbiteSpeed,
+}
+
+option ExtensiveHealthRework.GangreneEnabled
+{
+    type = boolean,
+    default = true,
+    page = EHR_Disease,
+    translation = EHR_GangreneEnabled,
+}
+
+option ExtensiveHealthRework.GangreneOnsetHours
+{
+    type = double,
+    min = 6.0,
+    max = 168.0,
+    default = 24.0,
+    page = EHR_Disease,
+    translation = EHR_GangreneOnsetHours,
+}
+
 option ExtensiveHealthRework.HeatExhaustionEnabled
 {
     type = boolean,

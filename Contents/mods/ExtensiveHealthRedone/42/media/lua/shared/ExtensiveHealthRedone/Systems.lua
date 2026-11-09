@@ -20,7 +20,13 @@ local Refresh = require "ExtensiveHealthRedone/Conditions/Refresh"
 
 local systems = {
     Blood.system,
-    Amputation.system,
+    {
+        name = Amputation.system.name,
+        order = Amputation.system.order,
+        update = function(p, dt)
+            Amputation.update(p, dt, defs)
+        end,
+    },
     {
         name = "wounds",
         order = 300,

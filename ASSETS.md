@@ -65,3 +65,20 @@ Both authors publicly opened their mods for others to continue. Their Workshop p
   entry, it took the English from the original's source code.
 - Line endings normalised to LF. Item IDs, the `ExtensiveHealth` module name and sandbox option names are unchanged so
   that saves and server configs carry over.
+
+## New art (hands and feet)
+
+These icons were made for this project, not copied from the original mods. They follow the style of the originals:
+disease icons are 256×256 neon line art on a dark tile, and item icons are 32×32.
+
+| File in `common/media/textures/` | Used for |
+|---|---|
+| `EHR_Disease_FootBlisters.png` | Foot blisters (Monitor, handbook) |
+| `EHR_Disease_TrenchFoot.png` | Trench foot, and the Monitor's cold, wet feet meter |
+| `EHR_Disease_Frostbite.png` | Frostbite |
+| `EHR_Disease_Gangrene.png` | Gangrene |
+| `Item_BlisterPatches.png` | `BlisterPatches` item |
+| `Item_FootPowder.png` | `FootPowder` item |
+
+The four new disease flyers (`DiseaseFlyer_FootBlisters`, `_TrenchFoot`, `_Frostbite`, `_Gangrene`) use vanilla's
+`Flier` icon (`42/media/scripts/EHR_Flyers.txt`).

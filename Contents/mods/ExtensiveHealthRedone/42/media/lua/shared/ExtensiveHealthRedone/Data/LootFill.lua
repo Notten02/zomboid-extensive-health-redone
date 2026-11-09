@@ -36,7 +36,8 @@ local fillItems = set(prefixed({
     "NitricOxideBooster", "CombatStimulants", "AntiviralCapsules", "AntifungalTablets", "ActivatedCharcoal",
     "AntiparasiticPills", "OralRehydrationKit", "Antipsychotics", "DualOrexinReceptor", "CoughSyrup",
     "AntisepticCream", "TopicalPermethrin", "Furosemide", "AntibioticOintment", "BroadSpectrumAntibiotics", "Syringe",
-    "SterilizedBandages", "ElectrolytePowder", "InstantIcePack", "RespiratorySupportKit",
+    "SterilizedBandages", "ElectrolytePowder", "InstantIcePack", "RespiratorySupportKit", "BlisterPatches",
+    "FootPowder",
 }))
 
 -- MedicationPackageFill 1-4: the chance a pharmacy package is full (with AllowFullPharmacyPackages), and per
@@ -121,7 +122,7 @@ return {
                 "ColdFluTablets", "AntipyreticTablets", "CoughSyrup", "CoughSuppressant", "AntiNauseaTablets",
                 "AntiDiarrheal", "AntiInflammatory", "ElectrolytePowder", "AntisepticCream", "MuscleRelaxants",
                 "BronchodilatorInhaler", "NitricOxideBooster", "SterilizedBandages", "AlchoholicBandage",
-                "InstantIcePack" }) },
+                "InstantIcePack", "BlisterPatches", "FootPowder" }) },
             { weight = 2, items = prefixed({
                 "PrescriptionAntibiotics", "BroadSpectrumAntibiotics", "AntiviralCapsules", "AntifungalTablets",
                 "AntiparasiticPills", "AntibioticOintment", "ActivatedCharcoal", "OralRehydrationKit", "Furosemide",
@@ -138,8 +139,9 @@ return {
                 "DiseaseFlyer_Trichinosis", "DiseaseFlyer_HyperkeratoticScabies", "DiseaseFlyer_ToxinPoisoning",
                 "DiseaseFlyer_HeatStroke", "DiseaseFlyer_CadavericAspergillosis", "DiseaseFlyer_Tetanus",
                 "DiseaseFlyer_WoundInfection", "DiseaseFlyer_Cellulitis", "DiseaseFlyer_AHTR",
-                "DiseaseFlyer_BloodType", "MedicalWildPlants", "EhrRecipePlantBasedAntibiotics",
-                "EhrRecipeUltimateCraftGuide" }) },
+                "DiseaseFlyer_FootBlisters", "DiseaseFlyer_TrenchFoot", "DiseaseFlyer_Frostbite",
+                "DiseaseFlyer_Gangrene", "DiseaseFlyer_BloodType", "MedicalWildPlants",
+                "EhrRecipePlantBasedAntibiotics", "EhrRecipeUltimateCraftGuide" }) },
             { weight = 0.25, items = prefixed({ "EHRMedicalWatch_Left" }) },
         },
         -- Blood bags: Data/Loot's rarity weights times this.

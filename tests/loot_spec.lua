@@ -404,14 +404,14 @@ describe("loot placement follows the guide", function()
             < lists.MedicalStorageOutfit["ExtensiveHealth.BloodBagOPos"])
     end)
 
-    it("spreads all 19 disease flyers, the wild plants guide and both recipe guides", function()
+    it("spreads all 23 disease flyers, the wild plants guide and both recipe guides", function()
         local flyers = 0
         for name in pairs(Data.pools.flyers.items) do
             if name:find("^DiseaseFlyer_") then
                 flyers = flyers + 1
             end
         end
-        assert.equal(19, flyers)
+        assert.equal(23, flyers)
         for _, list in ipairs({ "MedicalStorageDrugs", "MedicalClinicDrugs", "MedicalCabinet", "StoreShelfMedical" }) do
             assert.is_not_nil(lists[list]["ExtensiveHealth.DiseaseFlyer_CommonCold"], list)
             assert.is_not_nil(lists[list]["ExtensiveHealth.MedicalWildPlants"], list)

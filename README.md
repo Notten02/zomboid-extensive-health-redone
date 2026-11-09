@@ -9,6 +9,8 @@ Gameplay matches the original; the code does not.
 - **Blood and wounds:** blood volume and types, transfusion, bleeding, wound infection, sepsis, cellulitis, tetanus and
   the stitch minigame.
 - **Diseases:** food-borne, weather, corpse, scabies, concussion, mental and Knox, with the Knox items.
+- **Hands and feet:** foot blisters, trench foot and frostbite from your socks, shoes, gloves and the cold, with
+  gangrene as the worst outcome; blister patches and foot powder.
 - **Medication:** courses, overdose, side effects, interactions and utility drugs.
 - **Immunity and temperature:** the immune system, body temperature and fevers, Indoor Climate Redone room air,
   food temperature.
@@ -76,8 +78,8 @@ after the mod, and every `require` uses the full path.
   Core/, Data/         pure framework code and data tables: no game API, time and RNG passed in
   Blood/, Body/, Wounds/, Conditions/, Immunity/, Medication/, ...   pure feature rules; Systems.lua lists every
                                          simulation system
-  Diseases/<Group>/                      disease groups (Food, Weather, Corpse, Scabies, Concussion, Mind, Knox,
-                                         Shared); each Group.lua brings its conditions and systems
+  Diseases/<Group>/                      disease groups (Food, Weather, Extremities, Corpse, Scabies, Concussion,
+                                         Mind, Knox, Shared); each Group.lua brings its conditions and systems
   Game/                shared code that touches the game (event hooks, script items); runs in every Lua VM
 42/media/lua/client/ExtensiveHealthRedone/Client/
 42/media/lua/server/ExtensiveHealthRedone/Server/

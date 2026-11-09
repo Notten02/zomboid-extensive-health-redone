@@ -61,7 +61,7 @@ describe("flyer items", function()
         end
         table.sort(scripted)
         assert.same(scripted, Tables.sortedKeys(FlyerData.DISEASES))
-        assert.equal(19, #scripted)
+        assert.equal(23, #scripted)
     end)
 
     it("never teach Knox, tuberculosis or influenza", function()

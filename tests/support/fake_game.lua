@@ -102,6 +102,13 @@ local function newPart(index)
     function part:RestoreToFullHealth()
         self.health, self.additionalPain, self.flags = 100, 0, {}
     end
+    -- Skin and clothing insulation (Server/Extremities): part.skinC (default 33) and part.insulation (default 0).
+    function part:getSkinTemperature() return self.skinC or 33 end
+    function part:getThermalNode()
+        local p = self
+        return { getInsulation = function() return p.insulation or 0 end,
+            getSkinCelcius = function() return p.skinC or 33 end }
+    end
     function part:getStiffness() return self.stiffness or 0 end
     function part:setStiffness(v) self.stiffness = v end
     function part:HasInjury()
@@ -260,6 +267,21 @@ local function newSquare(x, y, z)
     return sq
 end
 FakeGame.newSquare = newSquare
+
+-- A fake worn clothing item for player.worn (Server/Extremities): opts.location ("Socks", "Shoes", "Hands", ...),
+-- wet (0-100), holes, condition, conditionMax, waterRes (0-1), fullType. Tests change the fields directly.
+function FakeGame.newClothing(opts)
+    local item = { location = opts.location, wet = opts.wet or 0, holes = opts.holes or 0,
+        condition = opts.condition or 10, conditionMax = opts.conditionMax or 10, waterRes = opts.waterRes or 0,
+        fullType = opts.fullType or ("Base." .. tostring(opts.location)) }
+    function item:getWetness() return self.wet end
+    function item:getHolesNumber() return self.holes end
+    function item:getCondition() return self.condition end
+    function item:getConditionMax() return self.conditionMax end
+    function item:getWaterResistance() return self.waterRes end
+    function item:getFullType() return self.fullType end
+    return item
+end
 
 local function newPlayer(game, index, opts)
     local stats = { TEMPERATURE = 37 }      -- body temperature in deg C; other stats start at 0
@@ -423,7 +445,11 @@ function FakeGame.install(opts)
     game.climate = { airC = 20, raining = false, snowing = false }
     _G.getClimateManager = function()
         return {
-            getAirTemperatureForCharacter = function() return game.climate.airC end,
+            -- With wind chill (Server/Extremities): game.climate.windChillC, default airC.
+            getAirTemperatureForCharacter = function(_, _, wind)
+                if wind then return game.climate.windChillC or game.climate.airC end
+                return game.climate.airC
+            end,
             -- Outdoor air (Server/IndoorClimate's plausibility band): game.climate.outdoorC, default airC.
             getTemperature = function() return game.climate.outdoorC or game.climate.airC end,
             isRaining = function() return game.climate.raining end,

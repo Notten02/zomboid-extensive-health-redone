@@ -572,6 +572,30 @@ module ExtensiveHealth
         Medical = true,
     }
 
+    item BlisterPatches
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Blister Patches,
+        Icon = BlisterPatches,
+        Weight = 0.05,
+        UseDelta = 0.1,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
+    item FootPowder
+    {
+        DisplayCategory = FirstAid,
+        ItemType = base:drainable,
+        DisplayName = Foot Powder,
+        Icon = FootPowder,
+        Weight = 0.15,
+        UseDelta = 0.1,
+        UseWhileEquipped = false,
+        Medical = true,
+    }
+
     /** =========================================
         TIER 2 - PRESCRIPTION MEDICATION
         Balanced prescription package sizes

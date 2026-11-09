@@ -63,6 +63,12 @@ for _, b in ipairs({ { "Cold meter 100%", "cold", 100 }, { "Heat meter 90%", "he
     BUTTONS[#BUTTONS + 1] = { label = b[1], command = "debug.weatherMeter", args = { meter = b[2], percent = b[3] } }
 end
 
+-- Hands and feet meters (Server/Extremities): both feet's friction and cold, wet hours, or the left hand's frost.
+for _, b in ipairs({ { "Blister friction 90%", "friction", 90 }, { "Wet feet 100%", "wetFeet", 100 },
+    { "Frost L hand 100%", "frost", 100 }, { "Feet/hands 0%", "all", 0 } }) do
+    BUTTONS[#BUTTONS + 1] = { label = b[1], command = "debug.extremityMeter", args = { meter = b[2], percent = b[3] } }
+end
+
 -- World content: the 47.0 MHz radio (Server/Radio; "Radio status" and the loot report answer in the
 -- output), knowledge (Server/Flyers, Server/Professions), recipes (Server/Recipes), the scalpel (Server/Scalpel) and
 -- loot (Server/Loot).

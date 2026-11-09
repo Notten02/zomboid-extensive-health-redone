@@ -18,9 +18,10 @@ DiseaseInfo.UNKNOWN_ICON = "EHR_Disease_Unknown"
 -- The handbook's order.
 DiseaseInfo.ORDER = {
     "food_poisoning", "gastroenteritis", "trichinosis", "toxin_poisoning", "dysentery", "common_cold", "pneumonia",
-    "hypothermia", "heat_exhaustion", "heat_stroke", "corpse_sickness", "cadaveric_aspergillosis", "wound_infection",
-    "cellulitis", "sepsis", "tetanus", "hyperkeratotic_scabies", "concussion", "delirium", "insomnia",
-    "painkiller_addiction", "ahtr", "knox_infection",
+    "hypothermia", "frostbite", "heat_exhaustion", "heat_stroke", "trench_foot", "corpse_sickness",
+    "cadaveric_aspergillosis",
+    "wound_infection", "cellulitis", "gangrene", "sepsis", "tetanus", "hyperkeratotic_scabies", "concussion", "foot_blisters",
+    "delirium", "insomnia", "painkiller_addiction", "ahtr", "knox_infection",
 }
 
 DiseaseInfo.BY_ID = {
@@ -34,18 +35,22 @@ DiseaseInfo.BY_ID = {
     pneumonia = { icon = "EHR_Disease_Pneumonia", category = "environmental", lethal = true,
         unknown = "SevereRespiratory" },
     hypothermia = { icon = "EHR_Disease_Hypotermia", category = "environmental", lethal = true },
+    frostbite = { icon = "EHR_Disease_Frostbite", category = "environmental" },
     heat_exhaustion = { icon = "EHR_Disease_HeatExhaustion", category = "environmental" },
     heat_stroke = { icon = "EHR_Disease_HeatStroke", category = "environmental", lethal = true },
+    trench_foot = { icon = "EHR_Disease_TrenchFoot", category = "environmental", unknown = "Foot" },
     corpse_sickness = { icon = "EHR_Disease_CorpseSickness", category = "corpse", unknown = "Illness" },
     cadaveric_aspergillosis = { icon = "EHR_Disease_CadavericAspergillosis", category = "corpse", lethal = true,
         unknown = "Fungal" },
     wound_infection = { icon = "EHR_Disease_Wound_Infection", category = "wound", unknown = "Wound" },
     cellulitis = { icon = "EHR_Disease_Cellulitis", category = "wound", unknown = "Skin" },
+    gangrene = { icon = "EHR_Disease_Gangrene", category = "wound", lethal = true, unknown = "Tissue" },
     sepsis = { icon = "EHR_Disease_Sepsis", category = "wound", lethal = true, unknown = "Systemic" },
     tetanus = { icon = "EHR_Disease_Tetanus", category = "wound", lethal = true, unknown = "Neuromuscular" },
     hyperkeratotic_scabies = { icon = "EHR_Disease_hyperkeratoticScabies", category = "infection", lethal = true,
         unknown = "Skin_Infestation" },
     concussion = { icon = "EHR_Disease_Concussion", category = "wound" },
+    foot_blisters = { icon = "EHR_Disease_FootBlisters", category = "wound" },
     delirium = { icon = "EHR_Disease_Delirium", category = "mental" },
     insomnia = { icon = "EHR_Disease_Insomina", category = "mental" },
     painkiller_addiction = { icon = "EHR_Disease_PainkillerAddiction", category = "mental" },

@@ -71,26 +71,26 @@ local function render(t)
 end
 
 describe("handbook", function()
-    it("lists the 23 diseases in v0.9's order, without tuberculosis", function()
+    it("lists v0.9's 23 diseases in its order plus EHR's own, without tuberculosis", function()
         local model = Handbook.build(knowledge(), 0, defs, sandbox())
-        assert.equal(23, model.total)
-        assert.equal(23, #model.entries)
+        assert.equal(27, model.total)
+        assert.equal(27, #model.entries)
         assert.equal("food_poisoning", model.entries[1].id)
-        assert.equal("knox_infection", model.entries[23].id)
+        assert.equal("knox_infection", model.entries[27].id)
         assert.is_nil(byId(model).tuberculosis)
     end)
 
-    it("starts a new character with the 8 self-evident diseases known", function()
+    it("starts a new character with the 10 self-evident diseases known", function()
         local model = Handbook.build(knowledge(), 0, defs, sandbox())
-        assert.equal(8, model.known)
+        assert.equal(10, model.known)
         local known = {}
         for _, e in ipairs(model.entries) do
             if e.known then
                 known[#known + 1] = e.id
             end
         end
-        assert.same({ "food_poisoning", "hypothermia", "heat_exhaustion", "heat_stroke", "concussion", "delirium",
-            "insomnia", "painkiller_addiction" }, known)
+        assert.same({ "food_poisoning", "hypothermia", "frostbite", "heat_exhaustion", "heat_stroke", "concussion",
+            "foot_blisters", "delirium", "insomnia", "painkiller_addiction" }, known)
     end)
 
     it("shows a locked entry by its category, with the unlock hint and nothing else", function()
@@ -117,10 +117,10 @@ describe("handbook", function()
     end)
 
     it("unlocks everything but Knox with First Aid 8 or a medical profession", function()
-        assert.equal(22, Handbook.build(knowledge(), 8, defs, sandbox()).known)
-        assert.equal(8, Handbook.build(knowledge(), 7, defs, sandbox()).known)
+        assert.equal(26, Handbook.build(knowledge(), 8, defs, sandbox()).known)
+        assert.equal(10, Handbook.build(knowledge(), 7, defs, sandbox()).known)
         local model = Handbook.build(knowledge({ professionGrant = "ehrdoctor" }), 0, defs, sandbox())
-        assert.equal(22, model.known)
+        assert.equal(26, model.known)
         assert.is_false(byId(model).knox_infection.known)
     end)
 
@@ -290,8 +290,8 @@ insulate("handbook window", function()
         local window = Window.open(0)
         assert.truthy(window)
         assert.is_true(Window.isOpen(0))
-        assert.equal(8, window.model.known)
-        assert.equal(23, #window.list.items)
+        assert.equal(10, window.model.known)
+        assert.equal(27, #window.list.items)
         assert.equal("food_poisoning", window.details.entry.id)
         assert.is_true(ISLayoutManager.registered.ehrhandbook)
         assert.equal(window, Window.open(0))
@@ -304,7 +304,7 @@ insulate("handbook window", function()
         window:onSelect(window.model.entries[3])
         player.firstAid = 8
         window:prerender()
-        assert.equal(22, window.model.known)
+        assert.equal(26, window.model.known)
         assert.equal("trichinosis", window.details.entry.id)
         assert.is_true(window.details.entry.known)
         Window.close(0)

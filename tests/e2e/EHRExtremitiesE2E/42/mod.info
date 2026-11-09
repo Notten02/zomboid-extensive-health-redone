@@ -1,0 +1,7 @@
+name=EHR hands and feet E2E test (dev only)
+id=EHRExtremitiesE2E
+description=Dev-only end-to-end test: wet socks lead to trench foot on a dedicated server, the client sees it, and the cold, wet feet meter and the Monitor row follow.
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness,\ExtensiveHealthRedone
