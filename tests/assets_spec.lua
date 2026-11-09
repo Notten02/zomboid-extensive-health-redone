@@ -89,13 +89,53 @@ describe("item scripts", function()
         assert.is_nil(scripts:find("Magazine_Ground", 1, true))
     end)
 
+    -- Vanilla meshes that EHR_WorldModels.txt repaints with our own textures (checked present in 42.21).
+    local VANILLA_MESHES = {
+        ["WorldItems/ColdPack"] = true,
+        ["WorldItems/PowderedJar"] = true,
+        ["WorldItems/Disinfectant"] = true,
+        ["WorldItems/SourCream"] = true,
+        ["WorldItems/Poultice"] = true,
+    }
+    -- Vanilla models that items use as their world model directly (checked present in 42.21).
+    local VANILLA_MODELS = {
+        Bandage = true,
+        CaffeinePills = true,
+        DigitalWatchRed = true,
+        Flier1 = true,
+        Honey = true,
+        Lard_Ground = true,
+        Magazine = true,
+        MedicalParcel_Green = true,
+        MedicalParcel_Red = true,
+        MugWhite = true,
+        Thread = true,
+    }
+
     it("define models whose mesh and texture ship with the mod", function()
-        for block in scripts:gmatch("model%s+[%w_]+%s*(%b{})") do
+        for name, block in scripts:gmatch("model%s+([%w_]+)%s*(%b{})") do
             local mesh = block:match("mesh%s*=%s*([^,%s]+)")
             local texture = block:match("texture%s*=%s*([^,%s]+)")
-            assert.truthy(exists(COMMON .. "models_X/" .. mesh .. ".fbx"), "mesh " .. mesh)
-            assert.truthy(exists(COMMON .. "textures/" .. texture .. ".png"), "texture " .. texture)
+            local shipped = exists(COMMON .. "models_X/" .. mesh .. ".fbx")
+            assert.truthy(VANILLA_MESHES[mesh] or shipped, name .. ": mesh " .. mesh)
+            assert.truthy(exists(COMMON .. "textures/" .. texture .. ".png"), name .. ": texture " .. texture)
         end
+    end)
+
+    -- Without one, an item dropped on the floor shows as its flat inventory icon.
+    it("give every item a world model that exists", function()
+        local models = {}
+        for name in scripts:gmatch("model%s+([%w_]+)%s*%b{}") do
+            models[name] = true
+        end
+        local count = 0
+        for name, block in scripts:gmatch("\n%s*item%s+([%w_]+)%s*(%b{})") do
+            count = count + 1
+            local model = block:match("WorldStaticModel%s*=%s*([%w_]+)")
+            assert.truthy(model, name .. " has no WorldStaticModel")
+            assert.truthy(models[model] or VANILLA_MODELS[model], name .. ": unknown model " .. tostring(model))
+        end
+        assert.truthy(count > 100, "found only " .. count .. " items")
     end)
 
     it("reference sound files that ship with the mod", function()
