@@ -164,6 +164,7 @@ function Importer.run(modData, state)
     end
 
     state.meta.createdAs = "imported"
+    state.body.claimLeftover = true     -- the original mod's leftover sickness (Body/StatRelease)
     state.meta.importedFrom = Legacy.MOD_ID
     report.imported = true
     report.removedKeys = Importer.removeOldKeys(modData)

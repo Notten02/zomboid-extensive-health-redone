@@ -199,8 +199,13 @@ insulate("Real saves: first load through PlayerState", function()
             assert.same(immunity, state.immunity)
 
             -- Active state: no conditions, medication, wound infections, meters or timers; blood is full.
+            -- The body only flags the original's leftover sickness to be claimed and given back (Body/StatRelease).
             for _, name in ipairs(RESET) do
-                assert.same(Schema.sectionDefaults(name), state[name], name)
+                local defaults = Schema.sectionDefaults(name)
+                if name == "body" then
+                    defaults.claimLeftover = true
+                end
+                assert.same(defaults, state[name], name)
             end
             assert.same({}, state.conditions.active)
             assert.same({}, state.meds.doses)
