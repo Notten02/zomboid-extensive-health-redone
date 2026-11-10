@@ -152,6 +152,20 @@ function StatAggregator:resolve(stat, current)
     return value, value ~= current
 end
 
+-- The highest level a raise target or a floor holds the stat at this update, or nil when none does (deltas, lowers
+-- and ceilings hold no level). Body/StatRelease gives a stat back no lower than this.
+function StatAggregator:wants(stat)
+    local e = self.entries[stat]
+    if not e then
+        return nil
+    end
+    local level = e.floor
+    if e.raise and (level == nil or e.raise.target > level) then
+        level = e.raise.target
+    end
+    return level
+end
+
 -- Removes and returns everything said about one stat this update ({ delta, floor, ceiling, raise, lower, sources },
 -- or nil), for a system that owns the stat itself: Body/Temperature turns TEMPERATURE contributions into a held
 -- fever, so the stat writer never sees them.

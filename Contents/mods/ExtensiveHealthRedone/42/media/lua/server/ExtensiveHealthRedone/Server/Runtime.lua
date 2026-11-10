@@ -23,6 +23,7 @@ local StatAggregator = require "ExtensiveHealthRedone/Core/StatAggregator"
 local Players = require "ExtensiveHealthRedone/Server/Players"
 local PlayerState = require "ExtensiveHealthRedone/Server/PlayerState"
 local StatWriter = require "ExtensiveHealthRedone/Server/StatWriter"
+local StatRelease = require "ExtensiveHealthRedone/Body/StatRelease"
 local BodyAggregator = require "ExtensiveHealthRedone/Core/BodyAggregator"
 local ClientEffects = require "ExtensiveHealthRedone/Core/ClientEffects"
 local Treatments = require "ExtensiveHealthRedone/Core/Treatments"
@@ -237,6 +238,7 @@ end
 
 -- dt: the step's game minutes, or nil for a one-off effect.
 local function finish(p, player, outbox, oneOff, dt)
+    StatRelease.account(p)
     StatWriter.apply(player, p.stats)
     BodyWriter.apply(player, p.body, p.state.body, oneOff)
     if not oneOff then

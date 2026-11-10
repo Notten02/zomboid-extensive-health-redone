@@ -17,7 +17,7 @@ local ImmunityData = require "ExtensiveHealthRedone/Data/Immunity"
 local Schema = {}
 
 Schema.ROOT_KEY = "ExtensiveHealthRedone"
-Schema.VERSION = 5
+Schema.VERSION = 6
 
 -- Sync order. Every section is sent to the owning client.
 Schema.SECTIONS = { "meta", "identity", "knowledge", "knox", "immunity", "blood", "body", "wounds", "conditions",
@@ -45,7 +45,8 @@ local function bodyDefaults()
         healing = { blocked = false, reason = nil },   -- conditional healing status, for the UI
         woundLock = {},         -- [part] = { scratch, cut, deep, burn, fracture }: timers left while healing is slowed
         perkDrain = {},         -- [perk] = XP owed to a passive-skill drain, applied in whole points (Server/PerkWriter)
-
+        statOwned = {},         -- [stat] = raw amount EHR added that is still in it, to give back (Body/StatRelease)
+        claimLeftover = false,  -- true once on a save from before statOwned: claim its leftover (Body/StatRelease)
     }
 end
 
@@ -168,6 +169,15 @@ Schema.MIGRATIONS = {
         local score = type(state.immunity) == "table" and tonumber(state.immunity.score) or ImmunityData.START
         state.immunity = immunityDefaults(score)
         state.temperature = temperatureDefaults()
+    end,
+    -- 5 -> 6: EHR's share of stats vanilla never lowers (Body/StatRelease). Older saves never kept it, so their
+    -- leftover sickness is claimed once on the first step.
+    [5] = function(state)
+        if type(state.body) ~= "table" then
+            state.body = bodyDefaults()
+        end
+        state.body.statOwned = {}
+        state.body.claimLeftover = true
     end,
 }
 
