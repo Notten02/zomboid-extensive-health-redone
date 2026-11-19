@@ -15,6 +15,7 @@ local Data = require "ExtensiveHealthRedone/Diseases/Knox/Data"
 local Knox = require "ExtensiveHealthRedone/Diseases/Knox/Knox"
 local KnoxItems = require "ExtensiveHealthRedone/Diseases/Knox/Items"
 local Vaccine = require "ExtensiveHealthRedone/Game/ZVirusVaccine"
+local Emotions = require "ExtensiveHealthRedone/Game/HardshipEmotions"
 
 local log = Env.logger("Knox")
 
@@ -75,6 +76,8 @@ Facts.extend("knox", function(player, facts)
         hasTrait = token ~= nil and player:hasTrait(token),
         -- Zombie Virus Vaccine delays the infection through its timers (Server/ZVirusVaccine).
         followTimer = Vaccine.active() or nil,
+        -- Hardship: Emotions' "no instant Knox diagnosis": the display waits for this share (Diseases/Knox/Infection).
+        revealAt = Emotions.knoxRevealAt(),
     }
 end)
 

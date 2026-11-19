@@ -22,6 +22,7 @@ require "ExtensiveHealthRedone/Server/Mind"
 require "ExtensiveHealthRedone/Server/Knox"
 require "ExtensiveHealthRedone/Server/ZVirusVaccine"    -- Zombie Virus Vaccine ties (blood sample, Knox test)
 require "ExtensiveHealthRedone/Server/OnlyCure"         -- The Only Cure's amputations in the facts
+require "ExtensiveHealthRedone/Server/HardshipEmotions" -- Hardship: Emotions' EHR integration (EHR global, modData)
 require "ExtensiveHealthRedone/Server/Medication"
 require "ExtensiveHealthRedone/Server/Immunity"
 require "ExtensiveHealthRedone/Server/Temperature"

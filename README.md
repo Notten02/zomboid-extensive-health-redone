@@ -35,7 +35,7 @@ Gameplay matches the original; the code does not.
 **Players:** subscribe on the
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3824731938), enable *Extensive Health Redone*
 in the mod list, and disable the original. Needs Build 42.21 or newer. Optional:
-MoodleFramework, Indoor Climate Redone, The Only Cure. Not supported: Lifestyle: Hobbies.
+MoodleFramework, Indoor Climate Redone, The Only Cure, Hardship: Emotions. Not supported: Lifestyle: Hobbies.
 
 **From source:** `tools/deploy-dev.sh` copies `Contents/` into `~/Zomboid/Workshop/ExtensiveHealthRedone/` (the game
 loads local mods from there, not through a symlink); enable the mod in the game's mod list. Run it again after each

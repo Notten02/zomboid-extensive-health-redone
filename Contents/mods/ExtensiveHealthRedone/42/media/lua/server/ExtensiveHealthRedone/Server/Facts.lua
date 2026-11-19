@@ -12,7 +12,8 @@
 --           female },
 --   plus whatever feature readers add (Facts.extend), e.g. facts.corpses. With The Only Cure (Server/OnlyCure):
 --   toc (Wounds/Amputation), missing = { [part] = true }, parts[part].missing on a cut part, parts[part].stump on the
---   part under a fresh stump.
+--   part under a fresh stump. With Hardship: Emotions (Server/HardshipEmotions), while corpses are around: corpseRisk =
+--   { corpse, spores, chance = { [conditionId] } }, its factors for Diseases/Corpse/Exposure.
 -- }
 --
 -- Feature readers: Facts.extend("corpses", function(player, facts, ranges) facts.corpses = ... end). They run after

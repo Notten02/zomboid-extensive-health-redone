@@ -218,6 +218,7 @@ The Knox infection is never taught by radio.
 | **Antibodies** | Works beside Redone. |
 | **Zombie Virus Vaccine** (B42 port) | Works beside Redone, with three ties. |
 | **The Only Cure** | Works beside Redone. Amputating an infected arm cures its wound infection (not sepsis), a dirty fresh stump can get infected, and a character with no hands eats face first (Wash Face at sinks). |
+| **Hardship: Emotions** | Works beside Redone through its Extensive Health Rework integration. Our stimulants make you Wired, sedatives sedate, beta blockers stop adrenaline, a concussion sours the mood, blood loss blocks Happy, a hungover or dizzy character catches corpse diseases more easily, and an early Knox infection stays off the displays until 30%. Every condition, the newer ones included, counts toward its Sanity strain, a severe illness or dizziness blocks Concentrating, and our dizzy spells make you Dizzy. |
 | **Raven Creek** | EHR medicine should spawn in its medical rooms. |
 | **Red Days, Unseasonal Weather** | Listed as compatible by the original; not yet verified here. |
 | **Hephas Vitamins** | Overlaps: both rework the vitamin pills. Use one. |

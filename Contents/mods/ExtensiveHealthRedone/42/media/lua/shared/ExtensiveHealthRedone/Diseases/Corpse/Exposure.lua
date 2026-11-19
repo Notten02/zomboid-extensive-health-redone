@@ -4,6 +4,9 @@
 --     room, protection = 0-1 (worn mask), sealed = in a closed vehicle }
 -- Both meters build independently, the corpse meter keeps building while the player is ill (so fresh air can shorten
 -- the illness), and the display bands are 30/60/100.
+-- p.facts.corpseRisk, when present, scales them for this player (Server/HardshipEmotions: Hardship: Emotions makes a
+-- hungover or dizzy character easier prey): { corpse = build-up factor, spores = build-up factor,
+--   chance = { [conditionId] = factor on the hourly contraction roll } }. Without it every factor is 1.
 
 local Engine = require "ExtensiveHealthRedone/Conditions/Engine"
 local Risk = require "ExtensiveHealthRedone/Conditions/Risk"
@@ -83,6 +86,24 @@ local function speed(p)
     return s > 0 and s or 1
 end
 
+-- A factor from facts.corpseRisk (field "corpse" or "spores"), 1 without.
+local function risk(p, field)
+    local r = p.facts.corpseRisk
+    local v = r and tonumber(r[field])
+    return (v and v > 0) and v or 1
+end
+
+-- The hourly roll's chance for id, with facts.corpseRisk's factor, at most 1.
+local function rollChance(p, id, chance)
+    local r = p.facts.corpseRisk
+    local f = r and r.chance and tonumber(r.chance[id])
+    chance = Risk.chance(p, id, chance)
+    if f and f > 0 then
+        chance = math.min(1, chance * f)
+    end
+    return chance
+end
+
 -- Corpse meter: one step of dt minutes.
 local function corpseMeter(p, defs, dt, seen)
     local C = Exposure.CORPSE
@@ -102,7 +123,7 @@ local function corpseMeter(p, defs, dt, seen)
         d.minutes = 0
         return
     end
-    set(p, "corpse", exposure.corpse + emission * h * seen.env * (1 - seen.protection) * speed(p))
+    set(p, "corpse", exposure.corpse + emission * h * seen.env * (1 - seen.protection) * speed(p) * risk(p, "corpse"))
     d.minutes = d.minutes + dt
     d.sinceRoll = d.sinceRoll + dt
     d.sinceSmell = d.sinceSmell + dt
@@ -120,7 +141,7 @@ local function corpseMeter(p, defs, dt, seen)
     if not catch and value >= C.RISK and d.minutes >= C.MIN_MINUTES and d.sinceRoll >= 60 then
         d.sinceRoll = 0
         local chance = C.RISK_CHANCE[1] + C.RISK_CHANCE[2] * (value - C.RISK) / (C.GUARANTEED - C.RISK)
-        catch = Chance.roll(p.rng, Risk.chance(p, id, chance))
+        catch = Chance.roll(p.rng, rollChance(p, id, chance))
     end
     if catch and Engine.contract(p, defs, id, { source = "corpses" }) then
         set(p, "corpse", 0)
@@ -163,7 +184,8 @@ local function sporeMeter(p, defs, dt, seen)
         d.sporeMinutes = math.max(0, d.sporeMinutes - dt)
         return
     end
-    set(p, "spores", exposure.spores + load * S.GAIN * weather * (1 - seen.protection) * speed(p) * h)
+    local gain = load * S.GAIN * weather * (1 - seen.protection) * speed(p) * risk(p, "spores")
+    set(p, "spores", exposure.spores + gain * h)
     d.sporeMinutes = d.sporeMinutes + dt
     d.sporeSinceRoll = d.sporeSinceRoll + dt
     local ratio = exposure.spores / S.GUARANTEED
@@ -171,7 +193,7 @@ local function sporeMeter(p, defs, dt, seen)
     if not catch and ratio >= S.RISK and d.sporeMinutes >= S.MIN_MINUTES and d.sporeSinceRoll >= 60 then
         d.sporeSinceRoll = 0
         local chance = S.RISK_CHANCE[1] + S.RISK_CHANCE[2] * (ratio - S.RISK) / (1 - S.RISK)
-        catch = Chance.roll(p.rng, Risk.chance(p, id, chance))
+        catch = Chance.roll(p.rng, rollChance(p, id, chance))
     end
     if catch and Engine.contract(p, defs, id, { source = "spores" }) then
         set(p, "spores", 0)

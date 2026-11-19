@@ -7,7 +7,8 @@
 -- knox_infection mirrors vanilla's infection for the monitor and the dialogue: it is never contracted by a roll of
 -- ours, can't be switched off (master = false), is named only with the Kentucky Herald (Conditions/Knowledge), and
 -- its stage follows infection progress (bounds 0.2/0.5/0.8); c.data.progress is kept for the UI. Vanilla does every
--- effect of the infection itself.
+-- effect of the infection itself. With facts.knox.revealAt (Hardship: Emotions) it starts only once progress reaches
+-- that share (Knox.revealed); once shown it stays until the infection ends.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Knox/Data"
 local Knox = require "ExtensiveHealthRedone/Diseases/Knox/Knox"
@@ -145,7 +146,7 @@ function Infection.update(p, dt, defs)
             if Knox.infected(k) or (k.level or 0) > 0 or (k.fever or 0) > 0 then
                 Items.clearInfection(p, "knoxImmunity")
             end
-        elseif Knox.infected(k) and not p.state.conditions.active[Knox.ID] then
+        elseif Knox.infected(k) and Knox.revealed(k) and not p.state.conditions.active[Knox.ID] then
             local progress = Knox.progress(k)
             local c = Engine.contract(p, defs, Knox.ID, { stage = Knox.stageFor(progress), source = "vanilla" })
             if c then
