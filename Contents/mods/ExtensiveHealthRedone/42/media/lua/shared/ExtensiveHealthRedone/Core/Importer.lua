@@ -8,6 +8,8 @@
 --
 -- Then every EHR_* key is removed, so the import can't run twice: the caller only imports into a brand-new state,
 -- and afterwards there is nothing left to detect. A dead character's data (EHR_DeadCharacter) imports nothing.
+-- Our own copy in the original's shape for Hardship: Emotions (tables flagged Legacy.MIRROR_FLAG) is not old data:
+-- it is neither imported nor removed.
 --
 -- modData is read with type checks throughout: the original often created partial tables.
 
@@ -20,11 +22,16 @@ local function isOldKey(key)
     return type(key) == "string" and key:sub(1, #Legacy.KEY_PREFIX) == Legacy.KEY_PREFIX
 end
 
--- Old keys present, sorted.
+-- Our own copy in the original's shape (Legacy.MIRROR_FLAG), not old data.
+local function isMirror(value)
+    return type(value) == "table" and value[Legacy.MIRROR_FLAG] == true
+end
+
+-- Old keys present, sorted. Mirrors are left out.
 function Importer.oldKeys(modData)
     local keys = {}
-    for key in pairs(modData) do
-        if isOldKey(key) then
+    for key, value in pairs(modData) do
+        if isOldKey(key) and not isMirror(value) then
             keys[#keys + 1] = key
         end
     end

@@ -2,7 +2,8 @@
 -- yourself, or on another player with consent), medication.give for the vanilla pills and antibiotics given to
 -- another player, the vanilla pill, eat and drink hooks, and debug commands. Every way of taking a dose
 -- ends in the same rules (Medication/Doses); this file only finds items and supplies, uses them up as the outcome
--- says, and awards First Aid XP to whoever gave the dose.
+-- says, and awards First Aid XP to whoever gave the dose. A dose that counted is also reported to Hardship: Emotions
+-- (Server/HardshipEmotions) when it is on.
 -- Both commands are the authority half of Actions/Medication's EHRMedicationAction (`action = true`), and a
 -- dose for another player needs their consent for that one item (Server/Consent), used up by the attempt.
 -- An MP client loads this file too and stops at the first line.
@@ -24,6 +25,7 @@ local StitchData = require("ExtensiveHealthRedone/Data/Wounds").stitch
 local Data = require "ExtensiveHealthRedone/Medication/Data"
 local Doses = require "ExtensiveHealthRedone/Medication/Doses"
 local Schema = require "ExtensiveHealthRedone/Core/Schema"
+local Emotions = require "ExtensiveHealthRedone/Server/HardshipEmotions"
 
 local log = Env.logger("Medication")
 
@@ -40,14 +42,19 @@ local function anyWound(p)
     return false
 end
 
--- Takes one dose for the patient's key. supplies: { kind = bool } or nil (a vanilla action needs none).
-local function take(key, med, opts)
-    return Runtime.applyNow(key, function(p)
+-- Takes one dose for the patient (their IsoPlayer and key). supplies: { kind = bool } or nil (a vanilla action needs
+-- none).
+local function take(patient, key, med, opts)
+    local outcome = Runtime.applyNow(key, function(p)
         opts.ctx = opts.ctx or {}
         opts.ctx.wound = anyWound(p)
         opts.ctx.sandbox = p.sandbox
         return Doses.take(p, defs, med, opts)
     end)
+    if outcome and outcome.result == "taken" then
+        Emotions.medicationTaken(patient, med)
+    end
+    return outcome
 end
 
 local function award(player, outcome)
@@ -83,7 +90,7 @@ Runtime.registry:register("medication.take", {
         if med.supply then
             supplies[med.supply] = kit ~= nil
         end
-        local outcome = take(patient.key, med, { ctx = { supplies = supplies } })
+        local outcome = take(patient.player, patient.key, med, { ctx = { supplies = supplies } })
         if not outcome then
             return
         end
@@ -146,7 +153,7 @@ Runtime.registry:register("medication.give", {
         Runtime.attach(patient.player)
         local item = args.item.item
         local med = Data.byType[args.item.fullType]
-        local outcome = take(patient.key, med, { ctx = {} })
+        local outcome = take(patient.player, patient.key, med, { ctx = {} })
         if not outcome then
             return
         end
@@ -171,7 +178,7 @@ local function vanillaDose(character, med, how)
     if not key then
         return
     end
-    local outcome = take(key, med, { consumed = true })
+    local outcome = take(character, key, med, { consumed = true })
     if outcome then
         award(character, outcome)
         log:debug(key, how, med.id, "->", outcome.result, outcome.reason or "")

@@ -7,8 +7,8 @@
 --   * a display condition that mirrors vanilla's infection for the monitor (Diseases/Knox/Infection).
 --
 -- p.facts.knox (Server/Knox reads it): { infected, partInfected, bitten, level 0-1 (ZOMBIE_INFECTION share of its
--- range), fever 0-1 (ZOMBIE_FEVER share), timerProgress 0-1 or nil, hasTrait, followTimer }. Missing when not read (tests,
--- other players' facts), and then Knox does nothing.
+-- range), fever 0-1 (ZOMBIE_FEVER share), timerProgress 0-1 or nil, hasTrait, followTimer, revealAt 0-1 or nil }.
+-- Missing when not read (tests, other players' facts), and then Knox does nothing.
 
 local Data = require "ExtensiveHealthRedone/Diseases/Knox/Data"
 
@@ -41,6 +41,12 @@ end
 
 function Knox.infected(k)
     return k ~= nil and (k.infected == true or k.partInfected == true)
+end
+
+-- Whether an infection may show yet. revealAt (Server/Knox, set by Hardship: Emotions' "no instant Knox diagnosis")
+-- keeps it off the displays until progress reaches it; vanilla's infection runs as always meanwhile.
+function Knox.revealed(k)
+    return k ~= nil and (k.revealAt == nil or Knox.progress(k) >= k.revealAt)
 end
 
 -- Display stage 1-4 from progress.

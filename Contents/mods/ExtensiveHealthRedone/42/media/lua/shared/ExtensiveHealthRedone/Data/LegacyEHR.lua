@@ -8,6 +8,10 @@ return {
     -- the import. The original's own 14-key check missed knowledge-only characters.
     KEY_PREFIX = "EHR_",
 
+    -- A table under such a key that carries this flag is ours: the copy of our state in the original's shape that
+    -- Hardship: Emotions reads (Server/HardshipEmotions). It is not old data and is never imported or removed.
+    MIRROR_FLAG = "EHR_RedoneMirror",
+
     -- Knowledge ids the original could store, less tuberculosis and flu: both diseases and their flyers are gone, so
     -- that knowledge is reported as unknown and dropped.
     KNOWLEDGE_IDS = {
