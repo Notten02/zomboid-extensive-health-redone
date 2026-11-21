@@ -2,12 +2,13 @@
 -- Order: blood (200), amputations (290: The Only Cure, Wounds/Amputation), wounds (300: infection, tetanus
 -- triggers), disease triggers and exposure meters (310-390), medication (390: doses, courses and their cures), immunity (395), conditions (400), effects that read the
 -- conditions (410-789), body temperature (790: takes every TEMPERATURE contribution), pre-disease stages (795),
--- healing (800), giving back stats vanilla never lowers (985: Body/StatRelease), and the monitor's timer refresh (990).
+-- how a fever feels (796: Body/FeverFeel), healing (800), giving back stats vanilla never lowers (985: Body/StatRelease), and the monitor's timer refresh (990).
 
 local Blood = require "ExtensiveHealthRedone/Blood/Blood"
 local Healing = require "ExtensiveHealthRedone/Body/Healing"
 local Temperature = require "ExtensiveHealthRedone/Body/Temperature"
 local TemperatureStages = require "ExtensiveHealthRedone/Body/TemperatureStages"
+local FeverFeel = require "ExtensiveHealthRedone/Body/FeverFeel"
 local Infection = require "ExtensiveHealthRedone/Wounds/Infection"
 local TetanusTriggers = require "ExtensiveHealthRedone/Wounds/Tetanus"
 local Amputation = require "ExtensiveHealthRedone/Wounds/Amputation"
@@ -53,6 +54,7 @@ local systems = {
     },
     Temperature.system,
     TemperatureStages.system,
+    FeverFeel.system,
     Healing.system,
     StatRelease.system,
     Refresh.system,

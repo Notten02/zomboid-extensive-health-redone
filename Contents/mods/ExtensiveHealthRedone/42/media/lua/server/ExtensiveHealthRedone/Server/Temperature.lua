@@ -3,7 +3,8 @@
 --
 -- The hold: vanilla's thermoregulator pulls TEMPERATURE back toward 37 deg C between our once-a-minute simulation
 -- steps, and keeps only half of a single write. So every tick, TEMPERATURE is put back inside the floor and ceiling
--- the simulation keeps.
+-- the simulation keeps. Not while Real Room Temperature's cold model owns the body (Server/RealRoomTemperature): it
+-- faults on any foreign TEMPERATURE write.
 
 if isClient() then
     return
@@ -15,6 +16,8 @@ local Runtime = require "ExtensiveHealthRedone/Server/Runtime"
 local StatWriter = require "ExtensiveHealthRedone/Server/StatWriter"
 local Food = require "ExtensiveHealthRedone/Server/Food"
 local Temperature = require "ExtensiveHealthRedone/Body/Temperature"
+local ServerRRT = require "ExtensiveHealthRedone/Server/RealRoomTemperature"
+local FeverFeel = require "ExtensiveHealthRedone/Body/FeverFeel"
 
 local log = Env.logger("Temperature")
 
@@ -23,13 +26,32 @@ local ServerTemperature = {}
 local function hold()
     Runtime.eachAttached(function(key, player, state)
         local t = state.temperature
-        if t and (t.floor or t.ceiling) and not player:isDead() then
+        if t and (t.floor or t.ceiling) and not player:isDead() and not ServerRRT.yields(key, player) then
             StatWriter.holdTemperature(key, player, t.floor, t.ceiling)
         end
     end)
 end
 
 Events.OnTick.Add(hold)
+
+-- Check for Fever ----------------------------------------------------------------------------------------------------
+
+-- Only Actions/CheckFever's EHRCheckFeverAction runs it, when its time is up (`action = true`). The character says how
+-- warm they feel: our fever, which a body under Real Room Temperature's cold model doesn't show, or the body's
+-- temperature (Body/FeverFeel). Said even with dialogue off: the player asked.
+Runtime.registry:register("temperature.checkFever", {
+    args = {},
+    action = true,
+    rate = { count = 2, seconds = 5 },
+    handler = function(ctx)
+        Runtime.applyNow(ctx.actor.key, function(p)
+            local body = p.facts.stats and p.facts.stats.TEMPERATURE or Temperature.NORMAL
+            local line = FeverFeel.check(p.state.temperature, body)
+            p.say(line)
+            log:debug(ctx.actor.key, "checked for fever:", line, "body", body, "fever", p.state.temperature.fever)
+        end)
+    end,
+})
 
 -- Food temperature ---------------------------------------------------------------------------------------------------
 

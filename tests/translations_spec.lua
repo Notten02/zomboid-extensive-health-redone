@@ -19,6 +19,9 @@ local BUILT = {
     "UI_EHR_Mini_DiseaseStage_1", "UI_EHR_Mini_DiseaseStage_2", "UI_EHR_Mini_DiseaseStage_3",
     "UI_EHR_Mini_DiseaseStage_4", "UI_EHR_Mini_SepsisStage_1", "UI_EHR_Mini_SepsisStage_2",
     "UI_EHR_Mini_SepsisStage_3", "UI_EHR_Mini_SepsisStage_4",
+    -- Body/FeverFeel: "UI_EHR_Fever_Check_" .. band.
+    "UI_EHR_Fever_Check_Cold", "UI_EHR_Fever_Check_Normal", "UI_EHR_Fever_Check_Warm", "UI_EHR_Fever_Check_Fever",
+    "UI_EHR_Fever_Check_High", "UI_EHR_Fever_Check_Burning",
 }
 
 local function readKeys()

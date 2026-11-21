@@ -4,7 +4,8 @@
 --
 -- Why a hold: in 42.21 TEMPERATURE is the thermoregulator's own core temperature. A single write is half kept on the
 -- next tick and then pulled back toward 37 deg C within minutes; writing every tick holds it. Vanilla still decides
--- how the air, clothes and wetness heat or cool the body; we only bound it.
+-- how the air, clothes and wetness heat or cool the body; we only bound it. While Real Room Temperature's cold model
+-- owns the body there is no hold; the pack and hot food then ask it for cold retention (Temperature.coldRetention).
 --
 -- Floor, the highest of:
 --   fever        Diseases, side effects and Knox items ask through the stat aggregator (Conditions/Symptoms.applyFever:
@@ -225,6 +226,33 @@ function Temperature.update(p, dt)
     end
     t.floor, t.ceiling = floor, ceiling
     publish(p, t)
+end
+
+-- Cold retention ------------------------------------------------------------------------------------------------------
+
+-- While Real Room Temperature's cold model owns the body (Game/RealRoomTemperature), the floor can't be held: that
+-- mod faults on any foreign TEMPERATURE write. The warming effects then reach the body as cold retention instead, the
+-- share (0-1) of the heat lost to colder air that is kept in. A fever and frozen food have no such form: they wait
+-- until the cold model lets go (docs/competability/Real-Room-Temperature.md).
+Temperature.RETENTION = {
+    WARMING = 0.6,      -- while the Warming Pack is active
+    HOT_FOOD = 0.5,     -- at FOOD.MAX_TOTAL of hot food, fading with it
+}
+
+-- The cold retention this temperature state asks for (0 for none). Read-only: Real Room Temperature asks it from
+-- inside its body model.
+function Temperature.coldRetention(t)
+    if type(t) ~= "table" then
+        return 0
+    end
+    local R = Temperature.RETENTION
+    local retention = t.warm and R.WARMING or 0
+    local hot = type(t.food) == "table" and t.food.hot or nil
+    if hot then
+        local share = clamp(foodNow(hot) / Temperature.FOOD.MAX_TOTAL, 0, 1)
+        retention = math.max(retention, R.HOT_FOOD * share)
+    end
+    return retention
 end
 
 -- A sudden fever outside the simulation step (a command, e.g. the stale-blood reaction): delta deg C on top of the
