@@ -141,6 +141,7 @@ local function temperatureDefaults()
         cold = 0, hot = 0,      -- pre-disease stages 0-4 (Body/TemperatureStages)
         lineIn = 0,             -- game minutes until the next pre-disease line
         lastThirst = false,     -- THIRST expected after the last write (very-hot thirst drain)
+        feverOn = false,        -- a fever was there at the last update (Body/FeverFeel; nil in older saves)
     }
 end
 

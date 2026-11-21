@@ -10,7 +10,8 @@
 -- dragged from the inventory onto a part treat it as on vanilla's Health tab, and A on a controller opens that tab.
 --
 -- Controller: B closes, LB/RB switch tabs, d-pad up/down picks a body part, left/right scroll the details, X switches
--- compact/expanded, Y opens the handbook.
+-- compact/expanded, Y opens the handbook. The header's "Check for fever" button (own Monitor only) checks the character
+-- for a fever (Actions/CheckFever).
 --
 -- The same view draws another player's Monitor in an exam window (Client/Exam): there a source replaces the local
 -- mirror. MonitorView:new(x, y, playerNum, source) with
@@ -103,6 +104,7 @@ end
 ---@field handbookButton ISButton
 ---@field source table?    nil: the local player's own Monitor (the mirror); else a provided model (an exam)
 ---@field headerButtons ISButton[]
+---@field feverButton ISButton?
 local MonitorView = ISPanelJoypad:derive("ExtensiveHealthRedoneMonitorView")
 
 -- Reading the game ------------------------------------------------------------------------------------------------
@@ -171,6 +173,12 @@ function MonitorView:createChildren()
     self.handbookButton:initialise()
     Draw.styleButton(self.handbookButton)
     self:addChild(self.handbookButton)
+    if not self.source then
+        local fever = getText("UI_EHR_Monitor_CheckFever")
+        self.feverButton = ISButton:new(0, PAD, Draw.width(fever) + 16, bh, fever, self, MonitorView.checkFever)
+        self.feverButton:initialise()
+        self:addHeaderButton(self.feverButton)
+    end
 end
 
 -- An extra button in the header, left of the handbook button (the exam window's Administer).
@@ -195,6 +203,16 @@ end
 
 function MonitorView:openHandbook()
     Handbook.toggle(self.playerNum, self)
+end
+
+-- "Check for fever": a hand to the forehead, then the character says how warm they feel (Actions/CheckFever). Only
+-- on the player's own Monitor. The action is loaded on first use: the game has every shared file loaded by then.
+function MonitorView:checkFever()
+    local player = getSpecificPlayer(self.playerNum)
+    if player and not player:isDead() then
+        local CheckFever = require "ExtensiveHealthRedone/Actions/CheckFever"
+        ISTimedActionQueue.add(CheckFever:new(player))
+    end
 end
 
 -- Vanilla's Health tab (treatment lives there). Not from an exam: that would be the doctor's own.

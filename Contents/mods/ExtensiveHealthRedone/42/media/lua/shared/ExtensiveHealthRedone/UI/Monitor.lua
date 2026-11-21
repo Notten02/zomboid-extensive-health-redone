@@ -2,7 +2,7 @@
 -- tests check it and the exam can build the same view of another player with the doctor's knowledge.
 --
 --   Monitor.build({
---       state = { identity, knowledge, blood, body, wounds, conditions, exposure, meds, knox },   -- mirror sections
+--       state = { identity, knowledge, blood, body, wounds, conditions, exposure, meds, knox, temperature? },   -- mirror sections
 --       firstAid = 0-10, defs = Conditions/Registry, sandbox = function(name, default),
 --       watch = true when a powered Medical Monitor Watch is worn,
 --       bodyC = deg C, airC = deg C or nil (Indoor Climate Lite's room air), parts = { [part] = facts },
@@ -551,10 +551,14 @@ local function oneDecimal(c)
     return string.format("%.1f", c)
 end
 
+-- Body temperature, marked feverish while we keep a fever: under Real Room Temperature's cold model the body's own
+-- reading doesn't show it (Body/FeverFeel).
 local function temperature(input)
     local out = {}
     if input.bodyC then
-        out.body = Text.key("UI_EHR_Monitor_BodyTemp", oneDecimal(input.bodyC))
+        local t = input.state and input.state.temperature
+        local key = (t and t.fever) and "UI_EHR_Monitor_BodyTempFever" or "UI_EHR_Monitor_BodyTemp"
+        out.body = Text.key(key, oneDecimal(input.bodyC))
     end
     if input.airC then
         out.air = Text.key("UI_EHR_Monitor_IndoorAir", oneDecimal(input.airC))

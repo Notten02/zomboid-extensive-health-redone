@@ -55,7 +55,15 @@ treatment menu, or drag an item from your inventory onto it.
 The Monitor shows what your character can work out:
 - active illnesses, with their stage, time left and treatment as your knowledge allows,
 - medication in effect, doses taken, overdose risk and drug interactions,
-- blood (see the watch below), infected wounds, temperature, and heat and cold exposure.
+- blood (see the watch below), infected wounds, temperature (marked *feverish* while you have a fever), and heat and
+  cold exposure.
+
+**Check for fever.** The Monitor's **Check for fever** button has your character feel their forehead and say how warm
+they feel, from "No fever. I feel fine." to "I'm burning up! This fever is dangerous." Your character also remarks on a
+fever by themselves: when it comes on, now and then while it lasts (following the *Dialogue Frequency* sandbox
+option), and when it breaks. A fever while the rest of you is cold feels like **chills**, burning up and shivering at
+once. That happens with Real Room Temperature's Body Temperature Rework, whose cold model can keep a fever off your
+body temperature (see Compatibility).
 
 Not every illness is shown by name. Until your character can identify it, it appears as an **Unknown** illness with a
 hint (such as "Respiratory" or "Gastrointestinal") that narrows it down.
@@ -213,6 +221,7 @@ The Knox infection is never taught by radio.
 |---|---|
 | **MoodleFramework** (optional, recommended) | The five EHR moodles show only with it. Worked in single player on 42.21. |
 | **Indoor Climate Redone** (optional) | Room air feeds the heat and cold meters, also on a dedicated server. The original Indoor Climate (EHR Addon) works in single player only. |
+| **Real Room Temperature 2.0** (optional) | Works beside Redone, its Body Temperature Rework included: unheated rooms cool you through its model, and our cold stages and hypothermia follow. With the rework on, a Warming Pack or hot food slows that cooling instead of warming you to a set temperature, and a fever caught in a cold room doesn't raise your body temperature until you leave the room or sleep: the Monitor still marks you *feverish*, **Check for fever** and your character's remarks tell you (chills). |
 | **Lifestyle: Hobbies** | Not supported, and cannot be enabled together with EHR: it overwrites the saved health state about once per game hour. |
 | **Mini Health Panel** | A small "EHR Status" panel docks beside it. |
 | **Antibodies** | Works beside Redone. |

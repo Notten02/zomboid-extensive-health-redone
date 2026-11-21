@@ -25,6 +25,7 @@ require "ExtensiveHealthRedone/Server/OnlyCure"         -- The Only Cure's amput
 require "ExtensiveHealthRedone/Server/HardshipEmotions" -- Hardship: Emotions' EHR integration (EHR global, modData)
 require "ExtensiveHealthRedone/Server/Medication"
 require "ExtensiveHealthRedone/Server/Immunity"
+require "ExtensiveHealthRedone/Server/RealRoomTemperature" -- Real Room Temperature: hold yields, cold retention
 require "ExtensiveHealthRedone/Server/Temperature"
 require "ExtensiveHealthRedone/Server/IndoorClimate"
 require "ExtensiveHealthRedone/Server/Watch"

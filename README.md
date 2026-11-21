@@ -18,8 +18,9 @@ Gameplay matches the original; the code does not.
   Medical Monitor Watch.
 - **World content:** loot, flyers and knowledge, the radio, crafting, two search minigames, professions and traits.
 - **Multiplayer and admin:** examining and treating other players with consent, server-side actions and admin commands.
-- **Compatibility:** Indoor Climate Redone, MoodleFramework, The Only Cure's amputations and others (see
-  `docs/competability/` and `docs/incompetable/`), and a one-time importer for the original mod's saves.
+- **Compatibility:** Indoor Climate Redone, Real Room Temperature 2.0, MoodleFramework, The Only Cure's amputations
+  and others (see `docs/competability/` and `docs/incompetable/`), and a one-time importer for the original mod's
+  saves.
 
 ## Compatibility with the original
 
@@ -35,7 +36,8 @@ Gameplay matches the original; the code does not.
 **Players:** subscribe on the
 [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3824731938), enable *Extensive Health Redone*
 in the mod list, and disable the original. Needs Build 42.21 or newer. Optional:
-MoodleFramework, Indoor Climate Redone, The Only Cure, Hardship: Emotions. Not supported: Lifestyle: Hobbies.
+MoodleFramework, Indoor Climate Redone, Real Room Temperature 2.0, The Only Cure, Hardship: Emotions. Not supported:
+Lifestyle: Hobbies.
 
 **From source:** `tools/deploy-dev.sh` copies `Contents/` into `~/Zomboid/Workshop/ExtensiveHealthRedone/` (the game
 loads local mods from there, not through a symlink); enable the mod in the game's mod list. Run it again after each
