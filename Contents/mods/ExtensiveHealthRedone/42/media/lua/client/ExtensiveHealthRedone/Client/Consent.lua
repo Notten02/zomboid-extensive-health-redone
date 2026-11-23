@@ -8,6 +8,7 @@
 
 require "ISUI/ISModalDialog"
 
+local Env = require "ExtensiveHealthRedone/Game/Env"
 local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"
 local Client = require "ExtensiveHealthRedone/Client/Client"
 
@@ -21,12 +22,15 @@ local function waitKey(player, targetRef, purpose, itemId)
 end
 
 -- Asks target for consent to purpose. A newer ask for the same patient, purpose and item replaces the callback.
+-- With the sandbox option SkipTreatmentConsent on, the server says yes for the patient without prompting them.
 function Consent.ask(player, target, purpose, onAllowed, item)
     local ref = PlayerKey.ref(target)
     local itemId = item and item:getID() or nil
     waiting[waitKey(player, ref, purpose, itemId)] = onAllowed
     Client.send(player, "consent.ask", { target = ref, purpose = purpose, item = itemId })
-    HaloTextHelper.addText(player, getText("UI_EHR_Consent_Waiting"))
+    if not Env.consentSkipped() then
+        HaloTextHelper.addText(player, getText("UI_EHR_Consent_Waiting"))
+    end
 end
 
 Client.on("consentResult", function(args)

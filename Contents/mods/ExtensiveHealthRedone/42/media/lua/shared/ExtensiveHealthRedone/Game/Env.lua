@@ -51,6 +51,11 @@ function Env.debugMode()
     return Env.sandbox("DebugMode", false) == true
 end
 
+-- Sandbox SkipTreatmentConsent: treating or examining another player needs no yes from them (Server/Consent).
+function Env.consentSkipped()
+    return Env.sandbox("SkipTreatmentConsent", false) == true
+end
+
 -- Random source for pure modules: float() in [0, 1) and int(lo, hi) inclusive.
 Env.rng = {
     float = function()

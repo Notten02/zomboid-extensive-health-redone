@@ -532,6 +532,19 @@ insulate("examining another player", function()
         assert.equal(before, #messages("examModel"))
     end)
 
+    it("starts without asking the patient when SkipTreatmentConsent is on", function()
+        game.sandbox.SkipTreatmentConsent = true
+        local asks = #messages("consentAsk")
+        ClientExam.onExamine(doctor, patient)    -- right after the patient's "no": the cooldown doesn't apply either
+        game.sandbox.SkipTreatmentConsent = nil
+        assert.equal(asks, #messages("consentAsk"))
+        assert.is_true(last("consentResult").accepted)
+        assert.is_true(Exam.isExamining("sp:0", "sp:1"))
+        assert.truthy(ClientExam.window("sp:0", "sp:1"))
+        Exam.finish("sp:1", "sp:0", "gone")
+        assert.is_false(Exam.isExamining("sp:0", "sp:1"))
+    end)
+
     it("ends every session of a doctor who dies", function()
         game.realMs = game.realMs + 31000    -- past the cooldown after the patient's last "no"
         assert.truthy(examine())
