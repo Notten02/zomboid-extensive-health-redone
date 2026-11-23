@@ -932,6 +932,14 @@ option ExtensiveHealthRework.BloodTypeTraitsDisabled
     translation = EHR_BloodTypeTraitsDisabled,
 }
 
+option ExtensiveHealthRework.SkipTreatmentConsent
+{
+    type = boolean,
+    default = false,
+    page = EHR_Other,
+    translation = EHR_SkipTreatmentConsent,
+}
+
 option ExtensiveHealthRework.ImmunitySystemEnabled
 {
     type = boolean,

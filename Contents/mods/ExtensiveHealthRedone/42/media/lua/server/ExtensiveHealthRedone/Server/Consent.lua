@@ -8,6 +8,9 @@
 --                        permit ("medicate:<item id>") covers that one item, used up by the command that applies it.
 --   stitch               stitching another player: one permit for PERMIT_SECONDS, any wound.
 --   exam                 no permit: a yes starts an exam session (Server/Exam registers the starter).
+--
+-- With the sandbox option SkipTreatmentConsent on, the server answers every ask with a yes itself: the patient gets no
+-- prompt, and the doctor gets the same "consentResult" as after a yes.
 
 if isClient() then
     return
@@ -68,6 +71,33 @@ local function mayAsk(patientKey, doctorKey, now)
     return true
 end
 
+-- A yes from patient to doctor: starts what the purpose stands for, or grants the permit. Returns accepted, failed for
+-- the doctor's "consentResult". patient, doctor: player records ({ key, player }).
+local function accept(patient, doctor, purposeName, permitPurpose)
+    local accepted, failed = true, nil
+    local starter = starters[purposeName]
+    if starter then
+        -- A starter that can't start (the patient walked off) has already told the doctor why.
+        accepted = starter(patient, doctor) ~= false
+        failed = not accepted or nil
+    else
+        Runtime.permits:grant(patient.key, doctor.key, permitPurpose, Env.realSeconds(), Consent.PERMIT_SECONDS)
+    end
+    return accepted, failed
+end
+
+local function sendResult(patient, doctor, purposeName, itemId, accepted, failed)
+    Transport.toClient(doctor.player, "consentResult", {
+        target = PlayerKey.ref(patient.player),
+        name = patient.player:getUsername(),
+        purpose = purposeName,
+        item = itemId,
+        accepted = accepted,
+        failed = failed,
+        owner = doctor.key,
+    })
+end
+
 local function askedBy(patientKey, doctorKey)
     asked[patientKey] = asked[patientKey] or {}
     asked[patientKey][doctorKey] = asked[patientKey][doctorKey] or {}
@@ -91,12 +121,18 @@ Runtime.registry:register("consent.ask", {
         if needsItem ~= (args.item ~= nil) then
             return
         end
+        local purpose = CommandRegistry.permitPurpose(args.purpose, args.item and args.item.id)
+        if Env.consentSkipped() then
+            log:debug(ctx.actor.key, "treats", patient.key, purpose, "without asking (SkipTreatmentConsent)")
+            sendResult(patient, ctx.actor, args.purpose, args.item and args.item.id or nil,
+                accept(patient, ctx.actor, args.purpose, purpose))
+            return
+        end
         local now = Env.realSeconds()
         if not mayAsk(patient.key, ctx.actor.key, now) then
             log:debug(ctx.actor.key, "consent ask to", patient.key, "dropped: one is open or was just refused")
             return
         end
-        local purpose = CommandRegistry.permitPurpose(args.purpose, args.item and args.item.id)
         askedBy(patient.key, ctx.actor.key)[purpose] = now + Consent.ASK_SECONDS
         Transport.toClient(patient.player, "consentAsk", {
             from = PlayerKey.ref(ctx.actor.player),
@@ -134,27 +170,12 @@ Runtime.registry:register("consent.answer", {
             refused[ctx.actor.key] = refused[ctx.actor.key] or {}
             refused[ctx.actor.key][doctor.key] = Env.realSeconds() + Consent.REFUSED_COOLDOWN
         end
-        local accepted, failed = args.accepted, nil
-        if accepted then
-            local starter = starters[args.purpose]
-            if starter then
-                -- A starter that can't start (the patient walked off) has already told the doctor why.
-                accepted = starter(ctx.actor, doctor) ~= false
-                failed = not accepted or nil
-            else
-                Runtime.permits:grant(ctx.actor.key, doctor.key, purpose, Env.realSeconds(), Consent.PERMIT_SECONDS)
-            end
+        local accepted, failed = false, nil
+        if args.accepted then
+            accepted, failed = accept(ctx.actor, doctor, args.purpose, purpose)
         end
         log:debug(ctx.actor.key, args.accepted and "allowed" or "refused", doctor.key, purpose)
-        Transport.toClient(doctor.player, "consentResult", {
-            target = PlayerKey.ref(ctx.actor.player),
-            name = ctx.actor.player:getUsername(),
-            purpose = args.purpose,
-            item = args.item,
-            accepted = accepted,
-            failed = failed,
-            owner = doctor.key,
-        })
+        sendResult(ctx.actor, doctor, args.purpose, args.item, accepted, failed)
     end,
 })
 
