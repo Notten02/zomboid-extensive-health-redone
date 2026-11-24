@@ -1303,8 +1303,6 @@
     "UI_EHR_Text_MedicationOverdoseRepeatedOffScheduleDosesOf": "Medication Overdose - repeated off-schedule doses of %s (%d early doses)",
     "UI_EHR_Text_TooManyDosesSomethingIsVeryWrong": "Too many doses... something is very wrong...",
     "UI_EHR_Text__3": "%.1f",
-    "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful": "I took that way too soon... I feel awful.",
-    "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly": "That dose was too early. My body is reacting badly.",
     "UI_EHR_Text_IShouldHaveWaitedAnother": "I should have waited another ",
     "UI_EHR_Text_HBeforeTakingThat": "h before taking that.",
     "UI_EHR_Text_EarlyDoseOverdoseFrom": "Early dose overdose from ",
@@ -2652,5 +2650,7 @@
     "UI_EHR_Extremities_NeedToWarmUp": "I need to warm up.",
     "UI_EHR_Extremities_CantFeelMyFingers": "I can barely feel my fingers.",
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
-    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back."
+    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
+    "UI_EHR_Med_Overdosed": "That dose was too early... I think I overdosed.",
+    "UI_EHR_Med_OverdosedBadly": "I took that way too soon... I've badly overdosed."
 }

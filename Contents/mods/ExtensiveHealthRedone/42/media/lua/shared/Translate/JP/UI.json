@@ -1472,8 +1472,6 @@
     "UI_EHR_Text_MedicationOverdoseRepeatedOffScheduleDosesOf": "薬物の過剰摂取 - %s の予定外投与の繰り返し (%d の早期投与)",
     "UI_EHR_Text_TooManyDosesSomethingIsVeryWrong": "投与量が多すぎます...何かが非常に間違っています...",
     "UI_EHR_Text__3": "%.1f",
-    "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful": "あまりにも早くその道を歩みすぎてしまった…ひどい気分だ。",
-    "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly": "その投与量は早すぎた。体が反応が悪いんです。",
     "UI_EHR_Text_IShouldHaveWaitedAnother": "もうちょっと待てば良かった",
     "UI_EHR_Text_HBeforeTakingThat": "それを取る前にh。",
     "UI_EHR_Text_EarlyDoseOverdoseFrom": "早期の過剰摂取から",
@@ -2652,5 +2650,7 @@
     "UI_EHR_Extremities_NeedToWarmUp": "I need to warm up.",
     "UI_EHR_Extremities_CantFeelMyFingers": "I can barely feel my fingers.",
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
-    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back."
+    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
+    "UI_EHR_Med_Overdosed": "服用が早すぎた…過剰摂取してしまったようだ。",
+    "UI_EHR_Med_OverdosedBadly": "あまりにも早く飲みすぎた…ひどい過剰摂取だ。"
 }

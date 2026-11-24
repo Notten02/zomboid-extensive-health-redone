@@ -165,6 +165,23 @@ describe("dose courses", function()
         assert.is_true(early.consume)
         assert.equal(1, Doses.course(p.state, med("ExtensiveHealth.AntiviralCapsules")).count)
         assert.equal(2, p.state.meds.overdose.level)     -- 7 of 8 hours early: share 0.875
+        -- The character says they overdosed, not that the dose was wasted.
+        assert.is_true(Sim.said(p, "UI_EHR_Med_Overdosed"))
+        assert.is_false(Sim.said(p, "UI_EHR_Med_DoseWasted"))
+    end)
+
+    it("still says a dose was wasted when the drug can't overdose", function()
+        local p = context()
+        infect(p, "dysentery")
+        local salts = "ExtensiveHealth.OralRehydrationKit"
+        assert.is_nil(med(salts).overdose)
+        take(p, salts)
+        step(p, 60)
+        local early = take(p, salts)
+        assert.equal("wasted", early.result)
+        assert.is_true(Sim.said(p, early.reason))
+        assert.is_false(p.state.meds.overdose)
+        assert.is_false(Sim.said(p, "UI_EHR_Med_Overdosed"))
     end)
 
     it("counts a course dose from 90% of its interval, and wastes one taken earlier", function()
@@ -175,10 +192,12 @@ describe("dose courses", function()
         step(p, 408)                                                -- 6 h 48 min: 85 %
         assert.equal("UI_EHR_Text_TheCurrentOintmentDoseIsStillActiveMoreNowWillBe",
             Doses.wasteReason(p.state, med(ointment)))
-        assert.equal(24, Doses.nextDoseIn(p.state, med(ointment)))   -- 90 % is 7 h 12 min
+        assert.equal(24, Doses.countsIn(p.state, med(ointment)))     -- 90 % is 7 h 12 min
+        assert.equal(72, Doses.nextDoseIn(p.state, med(ointment)))   -- the shown countdown runs to the full 8 h
         step(p, 30)                                                 -- 7 h 18 min: past 90 %
         assert.is_nil(Doses.wasteReason(p.state, med(ointment)))
-        assert.equal(0, Doses.nextDoseIn(p.state, med(ointment)))
+        assert.equal(0, Doses.countsIn(p.state, med(ointment)))
+        assert.equal(42, Doses.nextDoseIn(p.state, med(ointment)))
         assert.equal("taken", take(p, ointment).result)
         assert.equal(2, Doses.course(p.state, med(ointment)).count)
 
@@ -187,6 +206,24 @@ describe("dose courses", function()
         step(p, 7 * 60)                                             -- 87.5 %: too early
         assert.equal("wasted", take(p, antiviral).result)
         assert.equal(1, p.state.meds.overdose.level)
+    end)
+
+    it("counts every dose taken a few minutes ahead of the shown countdown, without an overdose", function()
+        local p = context()
+        infect(p, "cellulitis")
+        local antibiotics = med("ExtensiveHealth.PrescriptionAntibiotics")   -- 8 h, on the overdose list
+        take(p, antibiotics.fullType)
+        for dose = 2, 5 do
+            step(p, 476)                                            -- 7 h 56 min
+            assert.equal(4, Doses.nextDoseIn(p.state, antibiotics))
+            assert.is_nil(Doses.wasteReason(p.state, antibiotics))
+            assert.equal("taken", take(p, antibiotics.fullType).result)
+            assert.equal(dose, Doses.course(p.state, antibiotics).count)
+            assert.is_false(p.state.meds.overdose)
+        end
+        assert.is_nil(p.body.killed)
+        step(p, 480)
+        assert.equal(0, Doses.nextDoseIn(p.state, antibiotics))    -- due now at the full interval
     end)
 
     it("wastes a vanilla-consumed dose it would have refused", function()

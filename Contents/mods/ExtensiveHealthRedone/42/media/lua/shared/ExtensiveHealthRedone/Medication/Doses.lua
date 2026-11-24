@@ -10,9 +10,11 @@
 --
 -- Rules:
 --   * A course (doses > 1) counts a dose once 90 % of its interval has passed since the last one (Data.DUE_SHARE).
---     An earlier dose is wasted (consumed, no effect); on the overdose list it also overdoses. Some drugs refuse a
---     dose while the last one is active instead (med.early = "refuse"); a dose a vanilla action already consumed
---     can't be refused, so it is wasted.
+--     An earlier dose is wasted (consumed, no effect); on the overdose list it also overdoses, and the character
+--     says they overdosed instead of that the dose was wasted. Some drugs refuse a dose while the last one is active
+--     instead (med.early = "refuse"); a dose a vanilla action already consumed can't be refused, so it is wasted.
+--     The countdown the player sees (Doses.nextDoseIn) runs to the full interval, so the last 10 % is a hidden
+--     allowance for a dose taken a little ahead of the shown time.
 --   * A course cures once every dose is taken and its cure time has passed since the first dose; a single-dose cure
 --     cures that long after the dose. Meanwhile the condition holds its stage (p.treatment:curing, Conditions/Engine).
 --   * A course whose next dose is more than max(24, min(72, 3 x interval)) hours overdue is abandoned.
@@ -85,8 +87,9 @@ local function fullyDosed(state, med)
     return c ~= nil and c.count >= med.doses
 end
 
--- Minutes until the next course dose counts (0 = it counts now); nil when the drug isn't on a course.
-function Doses.nextDoseIn(state, med)
+-- Minutes until `share` of the interval has passed since the last course dose (0 = already there); nil when the drug
+-- isn't on a course or the course needs no more doses.
+local function untilShare(state, med, share)
     if not Data.isCourse(med) then
         return nil
     end
@@ -95,12 +98,25 @@ function Doses.nextDoseIn(state, med)
     if not c or not d or c.count >= med.doses then
         return nil
     end
-    return math.max(0, minutes(med.interval) * Data.DUE_SHARE - d.since)
+    return math.max(0, minutes(med.interval) * share - d.since)
+end
+
+-- Minutes until the next course dose is due as the label says, the full interval (0 = due now); nil when the drug
+-- isn't on a course. This is the countdown the player sees. A dose already counts a little earlier (countsIn), so
+-- one taken slightly ahead of the shown time is fine.
+function Doses.nextDoseIn(state, med)
+    return untilShare(state, med, 1)
+end
+
+-- Minutes until the next course dose counts, 90 % of the interval (0 = it counts now); nil when the drug isn't on a
+-- course. Not shown to the player.
+function Doses.countsIn(state, med)
+    return untilShare(state, med, Data.DUE_SHARE)
 end
 
 -- A course dose now would be early (before 90 % of the interval).
 local function earlyCourseDose(state, med)
-    local wait = Doses.nextDoseIn(state, med)
+    local wait = Doses.countsIn(state, med)
     return wait ~= nil and wait > 0
 end
 
@@ -144,16 +160,16 @@ function Doses.wasteReason(state, med)
     return nil
 end
 
+-- A wasted dose. The character says why (line), unless the dose overdoses: then they say that instead
+-- (Overdose.apply).
 local function wasted(p, med, line)
-    p.say(line)
-    local share
     if med.overdose and earlyCourseDose(p.state, med) then
         -- How early, as a share of the whole interval.
         local since = p.state.meds.doses[med.id].since
-        share = math.max(0, minutes(med.interval) - since) / math.max(1, minutes(med.interval))
-    end
-    if share then
+        local share = math.max(0, minutes(med.interval) - since) / math.max(1, minutes(med.interval))
         Overdose.apply(p, share)
+    else
+        p.say(line)
     end
     return { result = "wasted", consume = true, supply = false, reason = line, xp = {} }
 end
