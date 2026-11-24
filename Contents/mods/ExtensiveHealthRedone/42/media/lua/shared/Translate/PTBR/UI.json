@@ -1472,8 +1472,6 @@
     "UI_EHR_Text_MedicationOverdoseRepeatedOffScheduleDosesOf": "Sobredosagem de medicamentos - doses repetidas fora do cronograma de %s (%d doses iniciais)",
     "UI_EHR_Text_TooManyDosesSomethingIsVeryWrong": "Muitas doses... algo está muito errado...",
     "UI_EHR_Text__3": "%.1f",
-    "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful": "Eu tomei esse caminho muito cedo... me sinto péssimo.",
-    "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly": "Essa dose foi muito cedo. Meu corpo está reagindo mal.",
     "UI_EHR_Text_IShouldHaveWaitedAnother": "Eu deveria ter esperado outro",
     "UI_EHR_Text_HBeforeTakingThat": "h antes de tomar isso.",
     "UI_EHR_Text_EarlyDoseOverdoseFrom": "Overdose de dose precoce de",
@@ -2652,5 +2650,7 @@
     "UI_EHR_Extremities_NeedToWarmUp": "I need to warm up.",
     "UI_EHR_Extremities_CantFeelMyFingers": "I can barely feel my fingers.",
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
-    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back."
+    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
+    "UI_EHR_Med_Overdosed": "Essa dose foi cedo demais... Acho que tive uma overdose.",
+    "UI_EHR_Med_OverdosedBadly": "Tomei isso cedo demais... Tive uma overdose grave."
 }

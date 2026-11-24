@@ -1276,8 +1276,6 @@
     "UI_EHR_Text_MedicationOverdoseRepeatedOffScheduleDosesOf": "Передозування ліками - повторні позапланові дози %s (%d ранні дози)",
     "UI_EHR_Text_TooManyDosesSomethingIsVeryWrong": "Занадто багато доз... щось дуже не так...",
     "UI_EHR_Text__3": "%.1f",
-    "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful": "Я так рано пішов... Почуваюся жахливо.",
-    "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly": "Ця доза була надто ранньою. Мій організм погано реагує.",
     "UI_EHR_Text_IShouldHaveWaitedAnother": "Треба було почекати іншого",
     "UI_EHR_Text_HBeforeTakingThat": "год, перш ніж приймати це.",
     "UI_EHR_Text_EarlyDoseOverdoseFrom": "Рання доза передозування від",
@@ -2652,5 +2650,7 @@
     "UI_EHR_Extremities_NeedToWarmUp": "I need to warm up.",
     "UI_EHR_Extremities_CantFeelMyFingers": "I can barely feel my fingers.",
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
-    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back."
+    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
+    "UI_EHR_Med_Overdosed": "Ця доза була надто ранньою... Здається, у мене передозування.",
+    "UI_EHR_Med_OverdosedBadly": "Я прийняв це надто рано... У мене сильне передозування."
 }

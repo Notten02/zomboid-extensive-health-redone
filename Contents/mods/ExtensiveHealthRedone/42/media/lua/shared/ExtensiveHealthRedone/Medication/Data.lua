@@ -61,7 +61,7 @@ Data.ROUTES = {
 }
 
 -- A course dose counts from this share of its interval on. Earlier, it is wasted, and on the overdose list it
--- overdoses.
+-- overdoses. The player's countdown runs to the full interval (Doses.nextDoseIn), so the rest is a hidden allowance.
 Data.DUE_SHARE = 0.9
 -- A course whose next dose is this late (past due) is abandoned: max(24, min(72, 3 x interval)) hours.
 function Data.abandonHours(interval)

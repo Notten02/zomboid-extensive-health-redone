@@ -1303,8 +1303,6 @@
     "UI_EHR_Text_MedicationOverdoseRepeatedOffScheduleDosesOf": "Передозировка лекарства — повторные приёмы препарата %s раньше положенного срока (досрочных приёмов: %d)",
     "UI_EHR_Text_TooManyDosesSomethingIsVeryWrong": "Слишком много доз... Что-то явно не так...",
     "UI_EHR_Text__3": "%.1f",
-    "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful": "Я принял это слишком рано... Мне ужасно плохо.",
-    "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly": "Я принял дозу слишком рано. Организм плохо на это реагирует.",
     "UI_EHR_Text_IShouldHaveWaitedAnother": "Мне следовало подождать ещё ",
     "UI_EHR_Text_HBeforeTakingThat": " ч, прежде чем принимать это.",
     "UI_EHR_Text_EarlyDoseOverdoseFrom": "Передозировка из-за слишком раннего приёма препарата ",
@@ -2652,5 +2650,7 @@
     "UI_EHR_Extremities_NeedToWarmUp": "I need to warm up.",
     "UI_EHR_Extremities_CantFeelMyFingers": "I can barely feel my fingers.",
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
-    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back."
+    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
+    "UI_EHR_Med_Overdosed": "Я принял дозу слишком рано... Похоже, у меня передозировка.",
+    "UI_EHR_Med_OverdosedBadly": "Я принял это слишком рано... У меня сильная передозировка."
 }

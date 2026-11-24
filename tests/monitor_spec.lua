@@ -239,7 +239,8 @@ describe("monitor: medication", function()
         assert.equal("UI_EHR_Med_ColdFluTablets", r.name.key)
         assert.equal("UI_EHR_MedAction_Tier_OTC", r.tier.key)
         assert.equal("UI_EHR_DoseCount(3,8)", render(r.doses))
-        assert.equal("UI_EHR_NextDoseLine", r.schedule.key)
+        -- 4 h interval, 1 h since the last dose: the countdown runs to the full interval.
+        assert.equal("UI_EHR_NextDoseLine(UI_EHR_Med_Tooltip_HoursMinutes(3,0))", render(r.schedule))
         s.meds.courses.ColdFluTablets.count = 8
         local done = build(s).medications[1]
         assert.equal("UI_EHR_CourseComplete", done.schedule.key)

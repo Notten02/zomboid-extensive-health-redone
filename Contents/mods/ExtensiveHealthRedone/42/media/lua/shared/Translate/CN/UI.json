@@ -1472,8 +1472,6 @@
     "UI_EHR_Text_MedicationOverdoseRepeatedOffScheduleDosesOf": "药物过量 - 重复不按计划服用 %s（%d 早期剂量）",
     "UI_EHR_Text_TooManyDosesSomethingIsVeryWrong": "剂量太多了……出了什么问题……",
     "UI_EHR_Text__3": "%.1f",
-    "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful": "我太早采取了这种方式...我感觉很糟糕。",
-    "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly": "这个剂量太早了。我的身体反应很糟糕。",
     "UI_EHR_Text_IShouldHaveWaitedAnother": "我应该再等一次",
     "UI_EHR_Text_HBeforeTakingThat": "h 在采取之前。",
     "UI_EHR_Text_EarlyDoseOverdoseFrom": "早期剂量过量",
@@ -2652,5 +2650,7 @@
     "UI_EHR_Extremities_NeedToWarmUp": "I need to warm up.",
     "UI_EHR_Extremities_CantFeelMyFingers": "I can barely feel my fingers.",
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
-    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back."
+    "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
+    "UI_EHR_Med_Overdosed": "这次服药太早了……我好像用药过量了。",
+    "UI_EHR_Med_OverdosedBadly": "我吃得太早了……我严重用药过量了。"
 }

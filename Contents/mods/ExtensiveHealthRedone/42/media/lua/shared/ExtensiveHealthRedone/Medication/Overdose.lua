@@ -35,10 +35,11 @@ function Overdose.numbers(level)
     }
 end
 
+-- What the character says, by level. It is all they say about the dose (Doses doesn't add that it was wasted).
 local LINES = {
-    [1] = "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly",
-    [2] = "UI_EHR_Text_ThatDoseWasTooEarlyMyBodyIsReactingBadly",
-    [3] = "UI_EHR_Text_ITookThatWayTooSoonIFeelAwful",
+    [1] = "UI_EHR_Med_Overdosed",
+    [2] = "UI_EHR_Med_Overdosed",
+    [3] = "UI_EHR_Med_OverdosedBadly",
 }
 
 -- An early dose. earlyShare: (interval - time since the last dose) / interval. Returns the overdose record, or
