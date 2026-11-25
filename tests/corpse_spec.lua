@@ -281,12 +281,41 @@ insulate("single-player wiring: corpses, scabies scratches and concussion report
         assert.is_not_true(player.body:IsInfected())
     end)
 
-    it("rolls for a concussion when a reported fall really hurt the head", function()
+    it("doesn't take its own damage to the head for a fall's", function()
         game.float = 0.01
+        Events.OnPlayerGetDamage.trigger(player, "FALLDOWN", 7)
+        assert.truthy(state().exposure.data.concussion.pending)
+        Runtime.applyNow("sp:0", function(p)
+            p.body:partDamage("Head", "test", 12)
+        end)
+        assert.equal(88, player.body:part("Head").health)
+        game.advance(3)
+        assert.is_nil(state().conditions.active.concussion)
+        player.body:part("Head").health = 100
+        game.float = nil
+    end)
+
+    it("opens no window for a stumble, for other damage, or for a client's word alone without trauma", function()
+        game.float = 0.01
+        Events.OnPlayerGetDamage.trigger(player, "FALLDOWN", 2.6)
+        Events.OnPlayerGetDamage.trigger(player, "WEAPONHIT", 40)
+        assert.is_nil(state().exposure.data.concussion.pending)
         Client.send(player, "concussion.trauma", { kind = "fall" })
-        player.body:part("Head").health = 80
+        game.advance(3)
+        assert.is_nil(state().conditions.active.concussion)
+        game.float = nil
+    end)
+
+    it("rolls for a concussion when vanilla's fall damage really hurt", function()
+        game.float = 0.01
+        Events.OnPlayerGetDamage.trigger(player, "FALLDOWN", 13)
+        for _, part in ipairs(player.body.parts) do
+            part.health = part.health - 2
+        end
         game.advance(1)
-        assert.truthy(state().conditions.active.concussion)
+        local c = state().conditions.active.concussion
+        assert.truthy(c)
+        assert.equal("fall", c.source)
         game.float = nil
     end)
 end)

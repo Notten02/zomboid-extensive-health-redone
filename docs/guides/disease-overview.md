@@ -537,7 +537,9 @@ and Antipyretic Tablets ease pain, lockjaw and falls but **do not stop the healt
 ## Concussion
 
 **Cause:** a serious **fall from height** (65%) or a **vehicle crash** (45%), but only if the body shows real trauma
-afterwards (head pain, head damage or a severe new wound).
+afterwards (health lost all over the body, head pain, head damage or a severe new wound). Only the game's own fall
+or crash damage starts the check, and a fall has to be worth it: about two floors or more. Walking down stairs, a
+zombie's wounds, a headache from medication or another disease's health loss never count.
 
 **How it works:** it starts at stage 3 and improves every 16 hours (48 hours in all). **No medicine treats it.**
 
