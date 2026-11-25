@@ -1,0 +1,7 @@
+name=EHR concussion E2E (dev only)
+id=EHRConcussionE2E
+description=Dev-only test: a real fall gives a concussion on a dedicated server, a small one does not, and joining or rejoining never does.
+author=Nick Otten
+modversion=1.0.0
+versionMin=42.21.0
+require=\PZE2EHarness

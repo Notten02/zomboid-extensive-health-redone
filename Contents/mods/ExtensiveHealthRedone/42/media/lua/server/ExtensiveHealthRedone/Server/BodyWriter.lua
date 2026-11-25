@@ -255,13 +255,41 @@ local function applyCold(damage, body, bodyState)
     end
 end
 
+-- Each part's health and extra pain, in Data/BodyParts order.
+local function readParts(list)
+    local health, pain = {}, {}
+    for i = 1, #BodyParts.names do
+        local part = list:get(i - 1)
+        health[i], pain[i] = part:getHealth(), part:getAdditionalPain()
+    end
+    return health, pain
+end
+
+-- What the writes since `health` and `pain` were read changed: { health = { [part] = change }, pain = { [part] =
+-- change } }, changed parts only. Whoever compares the body over time (Diseases/Concussion) can tell our own writes
+-- from what happened to the character.
+local function written(list, health, pain)
+    local wrote = { health = {}, pain = {} }
+    local healthNow, painNow = readParts(list)
+    for i, name in ipairs(BodyParts.names) do
+        if healthNow[i] ~= health[i] then
+            wrote.health[name] = healthNow[i] - health[i]
+        end
+        if painNow[i] ~= pain[i] then
+            wrote.pain[name] = painNow[i] - pain[i]
+        end
+    end
+    return wrote
+end
+
 -- bodyState: the player's state.body section (healLock, painApplied, coldApplied). oneOff: true for a command applying a single
 -- effect between simulation steps; healing caps and tracked pain belong to the step and are left alone then.
--- Returns the number of parts changed.
+-- Returns the number of parts changed, and what the writes changed on each part (see `written`).
 function BodyWriter.apply(player, body, bodyState, oneOff)
     local damage = player:getBodyDamage()
     local list = damage:getBodyParts()
     local changed = {}
+    local healthBefore, painBefore = readParts(list)
 
     fullRestore(player, damage, list, body.full, bodyState, changed)
 
@@ -316,10 +344,11 @@ function BodyWriter.apply(player, body, bodyState, oneOff)
         end
     end
 
+    local wrote = written(list, healthBefore, painBefore)
     if body.killed then
         kill(player, body.killed.cause)
     end
-    return count
+    return count, wrote
 end
 
 return BodyWriter

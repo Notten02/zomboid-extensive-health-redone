@@ -1,7 +1,7 @@
 -- Server side of the corpse, scabies and concussion diseases (Diseases/Corpse, Scabies, Concussion): the facts they
 -- need from the world (corpses sharing the player's air, face protection, a sealed vehicle, natural ground, head
--- trauma), the concussion trauma report, and debug commands. An MP client loads this file too and stops at the first
--- line.
+-- trauma), vanilla's fall and crash damage event for the concussion check, and debug commands. An MP client loads
+-- this file too and stops at the first line.
 
 if isClient() then
     return
@@ -163,14 +163,10 @@ Facts.extend("ground", function(player, facts)
         or name:find("soil", 1, true) ~= nil }
 end)
 
--- Concussion: head pain and fractures, for the trauma check; height and vehicle speed for the server-side causes
--- (Diseases/Concussion). A dedicated server's getZ may lag a fall, and the driver's client simulates the vehicle;
--- where either stays flat on the server, the client's trauma report still works.
+-- Concussion: head pain and fractures, for the trauma check (Diseases/Concussion).
 Facts.extend("trauma", function(player, facts)
     local parts = player:getBodyDamage():getBodyParts()
-    local vehicle = player:getVehicle()
-    local trauma = { headPain = 0, fractures = {}, z = player:getZ(),
-        speed = vehicle and math.abs(vehicle:getCurrentSpeedKmHour()) or nil }
+    local trauma = { headPain = 0, fractures = {} }
     for i, name in ipairs(BodyParts.names) do
         local part = parts:get(i - 1)
         if name == "Head" then
@@ -183,10 +179,49 @@ Facts.extend("trauma", function(player, facts)
     facts.trauma = trauma
 end)
 
+-- Our own body writes (disease drains, healing caps, tracked pain, an overdose) are not trauma: the kept body
+-- samples move along with them.
+Runtime.onBodyWrite(function(p, wrote)
+    Concussion.rebase(p, wrote)
+end)
+
+-- Vanilla's damage event, where we are the authority: single player, and a dedicated server, where B42 raises a
+-- fall's event (verified on 42.21, tests/e2e/EHRConcussionE2E: once per fall, with the whole damage). The
+-- kind and the damage are vanilla's. A stumble is dropped here already; what passes is limited to one per
+-- EVENT_GAP real seconds per player, in case an update raises the event every frame.
+local KINDS = { FALLDOWN = "fall", CARCRASHDAMAGE = "crash" }
+Corpse.EVENT_GAP = 1
+local lastEvent = {}
+Runtime.onDetach(function(key)
+    lastEvent[key] = nil
+end)
+
+Events.OnPlayerGetDamage.Add(function(character, damageType, damage)
+    local kind = KINDS[tostring(damageType)]
+    if not kind or not instanceof(character, "IsoPlayer") then
+        return
+    end
+    damage = tonumber(damage) or 0
+    if damage < (Concussion.MIN_DAMAGE[kind] or 0) then
+        return
+    end
+    local key = PlayerKey.of(character)
+    local now = Env.realSeconds()
+    if lastEvent[key] and now - lastEvent[key] < Corpse.EVENT_GAP then
+        return
+    end
+    lastEvent[key] = now
+    local opened
+    Runtime.applyNow(key, function(p)
+        opened = Concussion.report(p, defs, { kind = kind, damage = damage })
+    end)
+    log:debug(key, "took", damage, kind, "damage; window opened:", opened)
+end)
+
 -- Commands -------------------------------------------------------------------------------------------------------------
 
--- The owning client saw fall or crash damage. The server checks the body itself before rolling, and takes the kind
--- from its own facts (the client's kind is only logged); the server also opens the window by itself.
+-- An MP client saw fall or crash damage the server may not have heard of. The server checks the body itself before
+-- rolling, and takes the kind from its own facts (the client's kind is only logged).
 Runtime.registry:register("concussion.trauma", {
     args = { kind = { type = "string", oneOf = { fall = true, crash = true } } },
     rate = { count = 2, seconds = 5 },

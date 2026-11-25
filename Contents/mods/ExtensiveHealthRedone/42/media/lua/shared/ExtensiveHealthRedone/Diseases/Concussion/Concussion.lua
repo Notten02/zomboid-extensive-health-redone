@@ -3,14 +3,22 @@
 -- temporary health cap that eases with each stage (health is pulled down to 50, then may recover to 75 and 90).
 -- No medicine cures it; relief medication softens it.
 --
--- Detection: a short window in which the server compares the body with how it was just before (head pain or head
--- damage, new wounds, health lost) and only then rolls. Two things open it:
---   - the server's own facts: a drop of at least FALL_Z_DROP floors since the last step outside a
---     vehicle (a fall), or a loss of at least CRASH_SPEED_LOSS km/h since the last step in a vehicle (a crash);
---   - the owning client's report (OnPlayerGetDamage fires for local players only; Client/Concussion ->
---     concussion.trauma), which only speeds things up. The kind is the server's: in a vehicle now or at the last step
---     means a crash, otherwise a fall; the client's word is ignored.
--- A report can at worst ask for a roll the body already justifies, and withholding it doesn't avoid the roll.
+-- Detection starts from vanilla's own damage event (OnPlayerGetDamage, "FALLDOWN" or "CARCRASHDAMAGE") and nothing
+-- else: stairs, a teleport or braking never look like a fall. The event opens a short window in which the server
+-- compares the body with how it was just before, and only then rolls.
+--   - The authority hears the event itself (Server/Corpse): in single player, and on a dedicated server, where
+--     B42 raises a fall's event on the server and never on the client (tests/e2e/EHRConcussionE2E). It knows
+--     the kind and the damage; a fall under MIN_DAMAGE is a stumble and opens nothing.
+--   - An MP client that gets the event itself reports it (Client/Concussion -> concussion.trauma). Its word only
+--     opens the window: the kind is the server's (in a vehicle now or at the last step means a crash, otherwise a
+--     fall), and the body has to show the trauma.
+-- Trauma: a new fracture, health lost on BROAD_PARTS body parts at once (vanilla's fall damage is spread over the
+-- whole body and takes least from the head: 0.6 there for a two-floor fall), head pain or head damage, a severe
+-- new wound, or a new wound with health lost.
+-- What the mod itself did to the body is never trauma: Concussion.rebase moves the kept body samples along with
+-- every write of the body writer (disease drains, tracked pain, an overdose).
+-- The samples are for this session only: the first step after a player is attached (a login, a new character, a
+-- loaded save) drops what was saved and only records.
 -- Honours DiseaseSpeed and DiseaseEnabled.
 --
 -- Treatment: no cure. Relief read: "nausea", "sickness", "pain", "inflammation", "dizziness".
@@ -28,13 +36,16 @@ local Concussion = {}
 Concussion.CHANCE = { fall = 0.65, crash = 0.45 }
 Concussion.MULTIPLIER = { fall = "ConcussionFallChanceMultiplier", crash = "ConcussionVehicleChanceMultiplier" }
 Concussion.WINDOW = { fall = 2, crash = 4 }     -- game minutes to see the trauma
-Concussion.HISTORY = 3                          -- body snapshots kept (one per step) to compare against
+Concussion.HISTORY = 2                          -- body samples kept (one per step) to compare against
 Concussion.COOLDOWN_FAILED = 1.2                -- game minutes after a failed roll
 Concussion.COOLDOWN_STARTED = 15                -- game minutes after a concussion started
--- Server-side causes. Stairs or a slow stop also match, but open only a window: the roll still
--- needs the trauma pattern on the body.
-Concussion.FALL_Z_DROP = 0.9                    -- floors lost between two steps
-Concussion.CRASH_SPEED_LOSS = 20                -- km/h lost between two steps while in a vehicle
+-- The least damage vanilla's event must carry to open a window, where the authority hears it. Measured on 42.21:
+-- a one-floor drop deals 0 to 3, two floors 7, three floors 13.
+Concussion.MIN_DAMAGE = { fall = 5 }
+-- Broad trauma: this many parts lost at least PART_LOSS health each. A two-floor fall does that to 13 parts, a
+-- one-floor fall to the hands at most; a zombie hits one part at a time.
+Concussion.BROAD_PARTS = 4
+Concussion.PART_LOSS = 1
 
 -- Wound score per part flag; severe ones also count separately.
 local WOUNDS = { bleeding = 2, scratch = 1, cut = 2, burn = 2, bite = 4, deep = 4, glass = 3, bullet = 4 }
@@ -114,19 +125,14 @@ end
 
 -- Detection ----------------------------------------------------------------------------------------------------------
 
--- What the trauma check compares: head pain and health, total part health, and wound scores; plus where the
--- player was (height z, in a vehicle, vehicle speed in km/h) for the server-side causes. z and speed are nil when
--- the facts don't have them.
+-- A body sample for the trauma check: head pain, each part's health, wound scores and the number of fractures, and
+-- whether the player was in a vehicle (for the kind of a client's report).
 function Concussion.snapshot(facts)
-    local s = { headPain = 0, headHealth = 100, partHealth = 0, wounds = 0, severe = 0 }
+    local s = { headPain = 0, health = {}, wounds = 0, severe = 0, fractures = 0, inVehicle = facts.inVehicle == true }
     local trauma = facts.trauma or {}
     s.headPain = trauma.headPain or 0
-    s.z, s.speed, s.inVehicle = trauma.z, trauma.speed, facts.inVehicle == true
     for name, f in pairs(facts.parts) do
-        s.partHealth = s.partHealth + (f.health or 100)
-        if name == "Head" then
-            s.headHealth = f.health or 100
-        end
+        s.health[name] = f.health or 100
         for flag, score in pairs(WOUNDS) do
             if f[flag] then
                 s.wounds = s.wounds + score
@@ -138,6 +144,7 @@ function Concussion.snapshot(facts)
         if trauma.fractures and trauma.fractures[name] then
             s.wounds = s.wounds + 4
             s.severe = s.severe + 1
+            s.fractures = s.fractures + 1
         end
     end
     return s
@@ -149,15 +156,29 @@ local function data(p)
     return d.concussion
 end
 
+-- Samples and an open window from before the player was attached say nothing about now (another session, another
+-- place, a body the server had not loaded yet): dropped. The cooldown stays.
+local function forget(d)
+    d.history = {}
+    d.pending = nil
+end
+
 -- Whether the body shows real trauma since `before`.
 function Concussion.traumatic(kind, before, now)
+    local partLoss, broad = 0, 0
+    for name, health in pairs(now.health) do
+        local loss = (before.health[name] or health) - health
+        partLoss = partLoss + loss
+        if loss >= Concussion.PART_LOSS then
+            broad = broad + 1
+        end
+    end
     local rule = TRAUMA[kind]
     local headPainGain = now.headPain - before.headPain
-    local headLoss = before.headHealth - now.headHealth
-    local partLoss = before.partHealth - now.partHealth
+    local headLoss = (before.health.Head or 100) - (now.health.Head or 100)
     local woundGain = now.wounds - before.wounds
     local severeGain = now.severe - before.severe
-    return headPainGain >= rule.headPain or headLoss >= 1 or severeGain > 0
+    return broad >= Concussion.BROAD_PARTS or headPainGain >= rule.headPain or headLoss >= 1 or severeGain > 0
         or (rule.partLoss ~= nil and partLoss >= rule.partLoss)
         or (woundGain > 0 and partLoss >= 1)
 end
@@ -172,44 +193,28 @@ function Concussion.kind(p)
     return "fall"
 end
 
--- A cause the server sees itself, from the kept snapshots (oldest first) and now: "crash" for a speed loss since the
--- last step in a vehicle, "fall" for a drop from the highest kept height outside one (a fall can span two steps), or
--- nil.
-function Concussion.cause(history, now)
-    local last = history[#history]
-    if not last then
-        return nil
-    end
-    if (now.inVehicle or last.inVehicle) and last.speed and now.speed
-        and last.speed - now.speed >= Concussion.CRASH_SPEED_LOSS then
-        return "crash"
-    end
-    if now.inVehicle or last.inVehicle or not now.z then
-        return nil
-    end
-    for _, s in ipairs(history) do
-        if s.z and not s.inVehicle and s.z - now.z >= Concussion.FALL_Z_DROP then
-            return "fall"
-        end
-    end
-    return nil
-end
-
-local function open(p, defs, kind)
+-- Vanilla dealt fall or crash damage: open a window to look for trauma, against the oldest kept sample (the damage
+-- may already be in the newest).
+--   seen: { kind = "fall" | "crash", damage = n } when the authority heard the event itself; a fall under
+--         MIN_DAMAGE opens nothing. nil for a client's report: the kind is then the server's (Concussion.kind).
+-- Before the first step after attaching there is nothing to compare with: the event is dropped.
+-- Returns whether a window opened, and the kind used.
+function Concussion.report(p, defs, seen)
     local d = data(p)
+    if p.fresh then
+        forget(d)
+    end
+    local kind = seen and seen.kind or Concussion.kind(p)
+    local least = seen and Concussion.MIN_DAMAGE[kind]
+    if p.fresh or (least and (seen.damage or 0) < least) then
+        return false, kind
+    end
     if p.state.conditions.active[ID] or (d.cooldown or 0) > 0 or d.pending then
-        return false
+        return false, kind
     end
     d.pending = { kind = kind, before = d.history[1] or Concussion.snapshot(p.facts), left = Concussion.WINDOW[kind] }
     Concussion.check(p, defs, 0)
-    return true
-end
-
--- The client reported fall or crash damage: open a window to look for trauma. The kind is the server's
--- (Concussion.kind), not the client's. Returns whether a window opened, and the kind used.
-function Concussion.report(p, defs)
-    local kind = Concussion.kind(p)
-    return open(p, defs, kind), kind
+    return true, kind
 end
 
 -- Looks at an open window: trauma found -> roll; window over -> forget it.
@@ -237,6 +242,31 @@ function Concussion.check(p, defs, dt)
     end
 end
 
+-- The body writer changed the body for us (Server/Runtime.onBodyWrite, steps and one-off effects alike):
+-- wrote = { health = { [part] = change }, pain = { [part] = change } }. The kept samples move along, so our own
+-- drains, healing caps and pain never read as trauma, and never hide it either.
+function Concussion.rebase(p, wrote)
+    local d = data(p)
+    local samples = { d.pending and d.pending.before }
+    for _, s in ipairs(d.history) do
+        samples[#samples + 1] = s
+    end
+    local seen = {}
+    for _, s in pairs(samples) do
+        -- A sample saved by an older version has no part table; the first step drops it. The window's sample is
+        -- one of the history's until that one is pushed out: moved once.
+        if s.health and not seen[s] then
+            seen[s] = true
+            for name, change in pairs(wrote.health or {}) do
+                if s.health[name] then
+                    s.health[name] = s.health[name] + change
+                end
+            end
+            s.headPain = s.headPain + ((wrote.pain or {}).Head or 0)
+        end
+    end
+end
+
 function Concussion.update(p, dt, defs)
     local d = data(p)
     if d.cooldown then
@@ -245,15 +275,13 @@ function Concussion.update(p, dt, defs)
             d.cooldown = nil
         end
     end
-    Concussion.check(p, defs, dt)
-    local now = Concussion.snapshot(p.facts)
-    -- No report needed: a fall or crash the server sees itself opens the window too.
-    local cause = Concussion.cause(d.history, now)
-    if cause then
-        open(p, defs, cause)
+    if p.fresh then
+        forget(d)
+    else
+        Concussion.check(p, defs, dt)
     end
-    -- Remember the body as it was this step; a window compares against the oldest kept snapshot.
-    table.insert(d.history, now)
+    -- Remember the body as it was this step; a window compares against the oldest kept sample.
+    table.insert(d.history, Concussion.snapshot(p.facts))
     while #d.history > Concussion.HISTORY do
         table.remove(d.history, 1)
     end

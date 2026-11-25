@@ -1,7 +1,12 @@
--- Reports fall and vehicle-crash damage to the server for the concussion check (Diseases/Concussion). Vanilla only
--- raises OnPlayerGetDamage for local players, so the owning client sees it first. The report only speeds things up:
--- the server also notices falls and crashes itself, takes the kind from its own facts, and looks for real trauma on
--- the body before it rolls.
+-- Reports fall and vehicle-crash damage to the server for the concussion check (Diseases/Concussion), for the
+-- damage events vanilla raises on an MP client only. Where the authority hears the event itself it needs no report
+-- (Server/Corpse): in single player, and on a dedicated server for a fall, which B42 raises there and never here.
+-- A report only opens the window: the server takes the kind from its own facts and looks for real trauma on the
+-- body before it rolls.
+
+if not isClient() then
+    return
+end
 
 local Env = require "ExtensiveHealthRedone/Game/Env"
 local PlayerKey = require "ExtensiveHealthRedone/Game/PlayerKey"

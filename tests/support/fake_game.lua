@@ -553,6 +553,7 @@ function FakeGame.install(opts)
         if class == "DrainableComboItem" then return obj.uses ~= nil end
         if class == "Food" then return obj.food == true end
         if class == "AlarmClockClothing" or class == "AlarmClock" then return obj.clock == true end
+        if class == "IsoPlayer" then return type(obj) == "table" and obj.getBodyDamage ~= nil end
         if class == "Clothing" then
             if obj.clothing == true and not obj.getVisual then
                 local soil = obj.soil or {}
@@ -602,7 +603,7 @@ function FakeGame.install(opts)
         return _G.Events[name]
     end
     for _, name in ipairs({ "OnGameBoot", "OnGameStart", "OnServerStarted", "OnTick", "EveryOneMinute",
-        "OnClientCommand", "OnServerCommand", "OnCreatePlayer", "OnKeyPressed",
+        "OnClientCommand", "OnServerCommand", "OnCreatePlayer", "OnKeyPressed", "OnPlayerGetDamage",
         -- Loot, the radio, the scalpel, wild searches
         "OnPreDistributionMerge", "OnFillContainer", "OnZombieDead", "OnInitGlobalModData", "OnReceiveGlobalModData",
         "OnLoadRadioScripts", "OnEquipPrimary", "OnEquipSecondary", "OnWeaponSwing", "OnCharacterDeath",

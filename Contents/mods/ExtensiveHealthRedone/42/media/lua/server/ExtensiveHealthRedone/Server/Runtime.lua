@@ -236,11 +236,22 @@ local function newContext(key)
     return p, player, outbox
 end
 
+local bodyWriteListeners = {}
+
+-- fn(p, wrote) after the body writer ran, for simulation steps and one-off effects alike. wrote = { health =
+-- { [part] = change }, pain = { [part] = change } }: what our own writes changed on the body (Server/BodyWriter).
+function Runtime.onBodyWrite(fn)
+    bodyWriteListeners[#bodyWriteListeners + 1] = fn
+end
+
 -- dt: the step's game minutes, or nil for a one-off effect.
 local function finish(p, player, outbox, oneOff, dt)
     StatRelease.account(p)
     StatWriter.apply(player, p.stats)
-    BodyWriter.apply(player, p.body, p.state.body, oneOff)
+    local _, wrote = BodyWriter.apply(player, p.body, p.state.body, oneOff)
+    for _, fn in ipairs(bodyWriteListeners) do
+        fn(p, wrote)
+    end
     if not oneOff then
         PerkWriter.apply(player, p.perks, p.state.body, dt)
     end
