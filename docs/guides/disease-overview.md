@@ -122,7 +122,9 @@ dirt, up to 33%, and nothing at all if your hands are almost clean. Immune sensi
 
 **Treatment:** **Antiviral Capsules** (6 doses, 8 hours apart; cures 48 hours after the first) or **IV Ciprofloxacin**
 (one dose, cures after 12 hours). Relief: Anti-Nausea Tablets, Electrolyte Powder.
-**Prevention:** **Wash your hands** before eating (Wash Hands at a water source; soap uses less water and is quicker).
+**Prevention:** **Wash your hands** before eating (Wash Hands at a water source, or on a carried bottle, canteen or
+bucket of water; soap uses less water and is quicker). A carried container that doesn't hold enough for everything
+washes your hands first. Water with cleaning liquid or bleach mixed in washes like soap, without using your soap.
 With The Only Cure, a worn prosthesis touches the food like a hand and is washed with it, and a character with no hands
 left eats face first: use **Wash Face** instead.
 

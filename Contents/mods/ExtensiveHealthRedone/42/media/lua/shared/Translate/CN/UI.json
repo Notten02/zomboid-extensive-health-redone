@@ -2652,5 +2652,6 @@
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
     "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
     "UI_EHR_Med_Overdosed": "这次服药太早了……我好像用药过量了。",
-    "UI_EHR_Med_OverdosedBadly": "我吃得太早了……我严重用药过量了。"
+    "UI_EHR_Med_OverdosedBadly": "我吃得太早了……我严重用药过量了。",
+    "UI_EHR_Context_WashHandsPartial": "水不够洗全部：先洗手。"
 }

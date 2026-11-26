@@ -311,6 +311,42 @@ describe("food-borne diseases", function()
             assert.near(0.9, soap.water, 1e-9)
             assert.is_true(soap.ticks < plain.ticks)
         end)
+
+        it("washes what a carried container's water covers, what touches the food first", function()
+            local soil = {}
+            for _, part in ipairs(Washing.PARTS) do
+                soil[part] = { blood = 0, dirt = 1 }
+            end
+            soil.UpperArm_L.blood = 1
+            -- Enough for everything: the plan as it always was.
+            local full = Washing.plan(soil, false, 10) --[[@as table]]
+            assert.equal(6, #full.parts)
+            assert.is_false(full.partial)
+            assert.is_true(Washing.enough(full, 10))
+            assert.is_false(Washing.enough(full, 1))
+            -- A 1 litre bottle without soap: the hands and forearms, and no blood among them.
+            local bottle = Washing.plan(soil, false, 1) --[[@as table]]
+            assert.same({ "Hand_L", "Hand_R", "ForeArm_L", "ForeArm_R" }, bottle.parts)
+            assert.is_true(bottle.partial)
+            assert.is_false(bottle.bloody)
+            assert.near(1, bottle.water, 1e-9)
+            assert.is_true(bottle.ticks < full.ticks)
+            assert.is_true(Washing.enough(bottle, 1))
+            -- A 0.9 canteen as the game stores it (a 32-bit float) covers everything with soap.
+            local canteen = Washing.plan(soil, true, 0.89999998) --[[@as table]]
+            assert.equal(6, #canteen.parts)
+            assert.is_false(canteen.partial)
+            assert.is_true(Washing.enough(canteen, 0.89999998))
+            -- A prosthesis touches the food like a hand: before the arm.
+            local worn = Washing.plan({ ForeArm_L = { blood = 0, dirt = 1 }, Prosthesis_L = { blood = 1, dirt = 0 } },
+                false, 0.3) --[[@as table]]
+            assert.same({ "Prosthesis_L" }, worn.parts)
+            assert.is_true(worn.bloody)
+            -- A mug doesn't hold enough for one part.
+            local mug = Washing.plan(soil, false, 0.2) --[[@as table]]
+            assert.same({}, mug.parts)
+            assert.is_false(Washing.enough(mug, 0.2))
+        end)
     end)
 end)
 
@@ -320,7 +356,8 @@ insulate("single-player wiring: food-borne diseases", function()
 
     -- Fakes only this spec needs.
     _G.ItemTag = { HIDE_UNCOOKED = "hideuncooked" }
-    _G.Fluid = { TaintedWater = "TaintedWater" }
+    _G.Fluid = { TaintedWater = "TaintedWater", Get = function(name) return name end }
+    _G.FluidCategory = { Water = "Water" }
     local visualsSent = 0
     _G.sendHumanVisual = function() visualsSent = visualsSent + 1 end
     local squares = {}
@@ -479,5 +516,119 @@ insulate("single-player wiring: food-borne diseases", function()
         soil.Hand_R = { blood = 1, dirt = 0 }
         Authority.run(player, "food.washHands", { x = 110, y = 100, z = 0 })
         assert.equal(1, soil.Hand_R.blood)
+        soil.Hand_R = nil
+    end)
+
+    -- A carried container holding `amount`, mostly of a fluid in `category` (default Water), with the fluids named
+    -- in `mixed` in it too; .synced counts sendSyncEntity.
+    local function container(fullType, amount, category, mixed)
+        local item = player.inventory:add(fullType)
+        item.synced = 0
+        local primary = { isCategory = function(_, wanted) return wanted == (category or "Water") end }
+        item.fluid = {
+            amount = amount,
+            isEmpty = function(self) return self.amount <= 0 end,
+            getPrimaryFluid = function() return primary end,
+            contains = function(_, fluid) return (mixed or {})[fluid] == true end,
+            getAmount = function(self) return self.amount end,
+            removeFluid = function(self, removed) self.amount = self.amount - removed end,
+        }
+        function item:isSealed() return self.sealed == true end
+        function item:sendSyncEntity() self.synced = self.synced + 1 end
+        return item
+    end
+
+    it("washes hands from a carried bottle, using its water", function()
+        local Authority = require("ExtensiveHealthRedone/Actions/Authority")
+        local bottle = container("Base.WaterBottle", 1)
+        soil.Hand_L = { blood = 0.6, dirt = 0.4 }
+        local sent, lines = visualsSent, #said
+        -- A client can't send it; only the timed action's complete() runs it.
+        Client.send(player, "food.washHandsFromItem", { item = bottle:getID() })
+        assert.equal(0.6, soil.Hand_L.blood)
+        assert.is_true(Authority.run(player, "food.washHandsFromItem", { item = bottle:getID() }))
+        assert.same({ blood = 0, dirt = 0 }, soil.Hand_L)
+        assert.near(0.75, bottle.fluid.amount, 1e-9)
+        assert.equal(1, bottle.synced)
+        assert.equal(sent + 1, visualsSent)
+        assert.equal(lines + 1, #said)
+        assert.equal("UI_EHR_Text_WashesHandsMuchBetter", said[#said])
+        player.inventory:Remove(bottle)
+    end)
+
+    it("washes what the bottle's water covers, the hands first, and empties it", function()
+        local Authority = require("ExtensiveHealthRedone/Actions/Authority")
+        local bottle = container("Base.WaterBottle", 0.6)
+        for _, part in ipairs(Washing.PARTS) do
+            soil[part] = { blood = 0, dirt = 1 }
+        end
+        assert.is_true(Authority.run(player, "food.washHandsFromItem", { item = bottle:getID() }))
+        assert.same({ blood = 0, dirt = 0 }, soil.Hand_L)
+        assert.same({ blood = 0, dirt = 0 }, soil.Hand_R)
+        assert.equal(1, soil.ForeArm_L.dirt)
+        assert.near(0.1, bottle.fluid.amount, 1e-9)
+        -- What is left doesn't cover another part.
+        local lines = #said
+        Authority.run(player, "food.washHandsFromItem", { item = bottle:getID() })
+        assert.equal(1, soil.ForeArm_L.dirt)
+        assert.near(0.1, bottle.fluid.amount, 1e-9)
+        assert.equal(lines, #said)
+        player.inventory:Remove(bottle)
+        for _, part in ipairs(Washing.PARTS) do
+            soil[part] = nil
+        end
+    end)
+
+    it("washes with soapy water as with soap, without using the soap carried", function()
+        local Authority = require("ExtensiveHealthRedone/Actions/Authority")
+        local bar = player.inventory:add("Base.Soap2")
+        bar.uses = 5
+        local getSoapList = player.inventory.getSoapList
+        function player.inventory:getSoapList()
+            return { size = function() return 1 end, get = function() return bar end }
+        end
+        -- Water with a little cleaning liquid, or with bleach; milk in the water is no soap.
+        for _, case in ipairs({ { mixed = { CleaningLiquid = true }, used = Washing.WATER_PER_PART_SOAP, bar = 5 },
+            { mixed = { Bleach = true }, used = Washing.WATER_PER_PART_SOAP, bar = 5 },
+            { mixed = { CowMilk = true }, used = Washing.WATER_PER_PART_SOAP, bar = 4 } }) do
+            local bucket = container("Base.Bucket", 5, "Water", case.mixed)
+            soil.Hand_L = { blood = 0.6, dirt = 0.4 }
+            assert.is_true(Authority.run(player, "food.washHandsFromItem", { item = bucket:getID() }))
+            assert.same({ blood = 0, dirt = 0 }, soil.Hand_L)
+            assert.near(5 - case.used, bucket.fluid.amount, 1e-9)
+            assert.equal(case.bar, bar.uses)
+            player.inventory:Remove(bucket)
+        end
+        -- Without a bar, plain water takes the full amount and soapy water still the smaller one.
+        function player.inventory:getSoapList() return { size = function() return 0 end } end
+        for _, case in ipairs({ { mixed = nil, used = Washing.WATER_PER_PART },
+            { mixed = { CleaningLiquid = true }, used = Washing.WATER_PER_PART_SOAP } }) do
+            local bucket = container("Base.Bucket", 5, "Water", case.mixed)
+            soil.Hand_L = { blood = 0.6, dirt = 0.4 }
+            Authority.run(player, "food.washHandsFromItem", { item = bucket:getID() })
+            assert.near(5 - case.used, bucket.fluid.amount, 1e-9)
+            player.inventory:Remove(bucket)
+        end
+        player.inventory.getSoapList = getSoapList
+        player.inventory:Remove(bar)
+        soil.Hand_L = nil
+    end)
+
+    it("doesn't wash from a sealed bottle, another fluid, or somebody else's bottle", function()
+        local Authority = require("ExtensiveHealthRedone/Actions/Authority")
+        soil.Hand_L = { blood = 0, dirt = 1 }
+        local sealed = container("Base.WaterBottle", 1)
+        sealed.sealed = true
+        Authority.run(player, "food.washHandsFromItem", { item = sealed:getID() })
+        -- Neat bleach: a cleaning fluid, but no water to wash with.
+        local bleach = container("Base.Bleach", 1, "Hazardous", { Bleach = true })
+        Authority.run(player, "food.washHandsFromItem", { item = bleach:getID() })
+        Authority.run(player, "food.washHandsFromItem", { item = 987654 })
+        assert.equal(1, soil.Hand_L.dirt)
+        assert.equal(1, sealed.fluid.amount)
+        assert.equal(1, bleach.fluid.amount)
+        player.inventory:Remove(sealed)
+        player.inventory:Remove(bleach)
+        soil.Hand_L = nil
     end)
 end)

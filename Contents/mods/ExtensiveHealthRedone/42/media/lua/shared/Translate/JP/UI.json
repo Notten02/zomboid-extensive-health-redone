@@ -2652,5 +2652,6 @@
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
     "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
     "UI_EHR_Med_Overdosed": "服用が早すぎた…過剰摂取してしまったようだ。",
-    "UI_EHR_Med_OverdosedBadly": "あまりにも早く飲みすぎた…ひどい過剰摂取だ。"
+    "UI_EHR_Med_OverdosedBadly": "あまりにも早く飲みすぎた…ひどい過剰摂取だ。",
+    "UI_EHR_Context_WashHandsPartial": "全部を洗うには水が足りない：まず手から洗う。"
 }
