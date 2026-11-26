@@ -709,4 +709,113 @@ insulate("client files", function()
             assert.is_nil(ColdBath.find({ { getSquare = function() return FakeGame.newSquare(0, 0, 0) end } }))
         end)
     end)
+
+    -- "Wash Hands" on a bottle, canteen or bucket of water in the inventory menu.
+    describe("wash hands from a carried container", function()
+        local WashAction = require("ExtensiveHealthRedone/Actions/WashHands")
+        local Washing = require("ExtensiveHealthRedone/Diseases/Food/Washing")
+        rawset(_G, "FluidCategory", { Water = "Water" })
+        rawset(_G, "Fluid", { Get = function(name) return name end })
+
+        -- mixed: a fluid type name in the container beside its primary fluid.
+        local function container(amount, category, mixed)
+            local item = player.inventory:add("Base.WaterBottle")
+            local primary = { isCategory = function(_, wanted) return wanted == (category or "Water") end }
+            item.fluid = {
+                isEmpty = function() return amount <= 0 end,
+                getPrimaryFluid = function() return primary end,
+                contains = function(_, fluid) return fluid == mixed end,
+                getAmount = function() return amount end,
+            }
+            function item:isSealed() return self.sealed == true end
+            return item
+        end
+        local function washOption(item)
+            local menu = newContext()
+            function menu:addOption(name, target, onSelect, param1)
+                local option = { name = name, target = target, onSelect = onSelect, param1 = param1 }
+                self.options[#self.options + 1] = option
+                return option
+            end
+            for _, handler in ipairs(Events.OnFillInventoryObjectContextMenu.handlers) do
+                handler(0, menu, { { items = { item } } })
+            end
+            return menu:getOptionFromName("UI_EHR_Context_WashHands")
+        end
+        local function dirty(parts, value)
+            for _, part in ipairs(parts) do
+                player.visual.dirt[part] = value
+            end
+        end
+
+        before_each(function()
+            function player.inventory:getSoapList() return { size = function() return 0 end } end
+        end)
+
+        it("is offered on water only, not on a sealed, empty or other container", function()
+            dirty({ "Hand_L" }, 0.5)
+            local bottle = container(1)
+            assert.truthy(washOption(bottle))
+            bottle.sealed = true
+            assert.is_nil(washOption(bottle))
+            assert.is_nil(washOption(container(0)))
+            assert.is_nil(washOption(container(1, "Fuel")))
+            assert.is_nil(washOption(player.inventory:add("Base.Hammer")))
+            dirty({ "Hand_L" }, nil)
+        end)
+
+        it("queues the wash with the container, and says when the hands are clean", function()
+            local bottle = container(1)
+            local clean = washOption(bottle)
+            assert.is_true(clean.notAvailable)
+            assert.equal("UI_EHR_Context_WashHandsClean", clean.toolTip.description)
+
+            dirty({ "Hand_L", "Hand_R" }, 0.5)
+            local option = washOption(bottle)
+            assert.is_nil(option.notAvailable)
+            assert.equal("UI_EHR_Context_WashHandsDesc", option.toolTip.description)
+            option.onSelect(option.target, option.param1)
+            local action = ISTimedActionQueue.added[#ISTimedActionQueue.added]
+            assert.equal(bottle, action.item)
+            assert.is_nil(action.sink)
+            assert.equal(Washing.MIN_TICKS, action.maxTime)
+            dirty({ "Hand_L", "Hand_R" }, nil)
+        end)
+
+        it("washes what fits from a bottle that doesn't hold a full wash, and refuses a mug", function()
+            dirty(Washing.PARTS, 1)
+            local option = washOption(container(1))
+            assert.is_nil(option.notAvailable)
+            assert.truthy(option.toolTip.description:find("UI_EHR_Context_WashHandsPartial", 1, true))
+            -- The action lasts as long as the four parts the litre covers, not all six.
+            local four = Washing.plan({ Hand_L = { dirt = 1 }, Hand_R = { dirt = 1 }, ForeArm_L = { dirt = 1 },
+                ForeArm_R = { dirt = 1 } }, false) --[[@as table]]
+            assert.equal(four.ticks, WashAction:new(player, nil, option.param1).maxTime)
+            -- A bucket holds it all.
+            local bucket = washOption(container(10))
+            assert.is_nil(bucket.toolTip.description:find("UI_EHR_Context_WashHandsPartial", 1, true))
+
+            local mug = washOption(container(0.2))
+            assert.is_true(mug.notAvailable)
+            assert.equal("UI_EHR_Context_WashHandsNoWater", mug.toolTip.description)
+            dirty(Washing.PARTS, nil)
+        end)
+
+        it("treats water with a cleaning fluid in it as soap", function()
+            dirty(Washing.PARTS, 1)
+            -- A 0.9 canteen covers all six parts when the water is soapy, and the wash is quicker.
+            local plain = washOption(container(0.9))
+            assert.truthy(plain.toolTip.description:find("UI_EHR_Context_WashHandsPartial", 1, true))
+            assert.is_nil(plain.toolTip.description:find("UI_EHR_Context_WashHandsSoap", 1, true))
+            local soapy = washOption(container(0.9, "Water", "CleaningLiquid"))
+            assert.is_nil(soapy.toolTip.description:find("UI_EHR_Context_WashHandsPartial", 1, true))
+            assert.truthy(soapy.toolTip.description:find("UI_EHR_Context_WashHandsSoap", 1, true))
+            assert.equal(Washing.plan({ Hand_L = { dirt = 1 }, Hand_R = { dirt = 1 }, ForeArm_L = { dirt = 1 },
+                ForeArm_R = { dirt = 1 }, UpperArm_L = { dirt = 1 }, UpperArm_R = { dirt = 1 } }, true).ticks,
+                WashAction:new(player, nil, soapy.param1).maxTime)
+            -- Neat cleaning liquid is not water.
+            assert.is_nil(washOption(container(0.5, "Hazardous", "CleaningLiquid")))
+            dirty(Washing.PARTS, nil)
+        end)
+    end)
 end)

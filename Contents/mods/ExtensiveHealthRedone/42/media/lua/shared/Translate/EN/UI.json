@@ -2652,5 +2652,6 @@
     "UI_EHR_Extremities_FrostbiteThrob": "The frozen skin throbs.",
     "UI_EHR_Extremities_FeelingComesBack": "The feeling is coming back.",
     "UI_EHR_Med_Overdosed": "That dose was too early... I think I overdosed.",
-    "UI_EHR_Med_OverdosedBadly": "I took that way too soon... I've badly overdosed."
+    "UI_EHR_Med_OverdosedBadly": "I took that way too soon... I've badly overdosed.",
+    "UI_EHR_Context_WashHandsPartial": "Not enough water for everything: your hands are washed first."
 }

@@ -1,6 +1,6 @@
 -- Wires the food-borne diseases to the game on the authority: what is eaten (ISEatFoodAction complete, and the partial
 -- bite of a cancelled meal), what is drunk (ISDrinkFluidAction from a container, ISTakeWaterAction from a world
--- source), the wash-hands command (also Wash Face and worn prostheses with The Only Cure), the hand-soil facts, and
+-- source), the wash-hands commands (also Wash Face and worn prostheses with The Only Cure), the hand-soil facts, and
 -- debug commands. The rules live in Diseases/Food.
 -- An MP client loads this file too and stops at the first line.
 
@@ -313,7 +313,51 @@ end
 
 Food.WASH_RANGE = 2.5
 
--- Only Actions/WashHands' EHRWashHandsAction runs it, when its time is up (`action = true`).
+-- The washing itself, once the water is found. available: the water in the source; use(amount) takes it out.
+-- limited (a carried container): one that doesn't hold enough for everything washes what fits (Washing.plan).
+-- soapy: the water has a cleaning fluid in it, which washes like soap and leaves the soap carried alone.
+local function wash(ctx, available, limited, soapy, use)
+    local player = ctx.actor.player
+    local soap = not soapy and soapOf(player) or nil
+    local soaped = soapy or soap ~= nil
+    local soil, mode = Food.soil(player)
+    local face = mode == "face"
+    local plan = Washing.plan(soil, soaped, limited and available or nil)
+    if not plan then
+        return notice(player, face and "UI_EHR_Context_WashFaceClean" or "UI_EHR_Context_WashHandsClean")
+    end
+    if not Washing.enough(plan, available) then
+        return notice(player, "UI_EHR_Context_WashHandsNoWater")
+    end
+    local visual = player:getHumanVisual()
+    local garments = {}
+    for _, name in ipairs(plan.parts) do
+        garments[#garments + 1] = clean(player, visual, name)
+    end
+    if soap and plan.bloody then
+        soap:UseAndSync()
+    end
+    sendHumanVisual(player)
+    for _, item in ipairs(garments) do
+        syncItemFields(player, item)
+    end
+    if #garments > 0 then
+        syncVisuals(player)
+    end
+    player:resetModelNextFrame()
+    use(plan.water)
+    Runtime.applyNow(ctx.actor.key, function(p)
+        if soaped then
+            p.stats:add("UNHAPPINESS", "washHands", -Washing.UNHAPPINESS_WITH_SOAP)
+        end
+        p.say(face and "UI_EHR_Text_WashesFaceMuchBetter" or "UI_EHR_Text_WashesHandsMuchBetter")
+    end)
+    log:debug(ctx.actor.key, "washed", #plan.parts, "parts with", plan.water, "water",
+        soapy and "(soapy)" or (soap and "and soap" or ""),
+        face and "(face)" or "", plan.partial and "(what the water covered)" or "")
+end
+
+-- Only Actions/WashHands' EHRWashHandsAction runs these, when its time is up (`action = true`).
 Runtime.registry:register("food.washHands", {
     args = {
         x = { type = "number", integer = true },
@@ -334,43 +378,32 @@ Runtime.registry:register("food.washHands", {
             log:debug(ctx.actor.key, "wash hands refused: no water source in reach")
             return
         end
-        local soap = soapOf(player)
-        local soil, mode = Food.soil(player)
-        local face = mode == "face"
-        local plan = Washing.plan(soil, soap ~= nil)
-        if not plan then
-            return notice(player, face and "UI_EHR_Context_WashFaceClean" or "UI_EHR_Context_WashHandsClean")
-        end
-        if sink:getFluidAmount() < plan.water then
-            return notice(player, "UI_EHR_Context_WashHandsNoWater")
-        end
-        local visual = player:getHumanVisual()
-        local garments = {}
-        for _, name in ipairs(plan.parts) do
-            garments[#garments + 1] = clean(player, visual, name)
-        end
-        if soap and plan.bloody then
-            soap:UseAndSync()
-        end
-        sendHumanVisual(player)
-        for _, item in ipairs(garments) do
-            syncItemFields(player, item)
-        end
-        if #garments > 0 then
-            syncVisuals(player)
-        end
-        player:resetModelNextFrame()
-        if sink:useFluid(plan.water) > 0 and not instanceof(sink, "IsoWorldInventoryObject") then
-            sink:transmitModData()
-        end
-        Runtime.applyNow(ctx.actor.key, function(p)
-            if soap then
-                p.stats:add("UNHAPPINESS", "washHands", -Washing.UNHAPPINESS_WITH_SOAP)
+        wash(ctx, sink:getFluidAmount(), false, false, function(amount)
+            if sink:useFluid(amount) > 0 and not instanceof(sink, "IsoWorldInventoryObject") then
+                sink:transmitModData()
             end
-            p.say(face and "UI_EHR_Text_WashesFaceMuchBetter" or "UI_EHR_Text_WashesHandsMuchBetter")
         end)
-        log:debug(ctx.actor.key, "washed", #plan.parts, "parts with", plan.water, "water", soap and "and soap" or "",
-            face and "(face)" or "")
+    end,
+})
+
+-- From a carried container of water (the registry has checked that the item is the sender's own).
+Runtime.registry:register("food.washHandsFromItem", {
+    args = { item = { type = "item" } },
+    action = true,
+    rate = { count = 2, seconds = 5 },
+    handler = function(ctx, args)
+        local item = args.item.item
+        local available, soapy = WaterSource.carried(item)
+        if available <= 0 then
+            log:debug(ctx.actor.key, "wash hands refused: no water in", args.item.fullType)
+            return
+        end
+        wash(ctx, available, true, soapy, function(amount)
+            -- As vanilla drains a carried container (ISHutchCleanFloor, ISGiveWaterToAnimal).
+            local fluid = item:getFluidContainer()
+            fluid:removeFluid(math.min(amount, fluid:getAmount()), false)
+            item:sendSyncEntity(nil)
+        end)
     end,
 })
 
